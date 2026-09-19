@@ -861,7 +861,13 @@ forloop:
 			return
 		}
 		for _, v := range builder[depth] {
-			nextPrefix := append(currPrefix, v...)
+			// Fix relative to upstream, which has
+			//     nextPrefix := append(currPrefix, v...)
+			// here: when currPrefix has spare capacity, every sibling's
+			// append writes into the same memory, so a prefix key already
+			// stored in out is overwritten by the next sibling's bytes.
+			nextPrefix := make([]byte, 0, len(currPrefix)+len(v))
+			nextPrefix = append(append(nextPrefix, currPrefix...), v...)
 			if c.AllowMissing {
 				out = append(out, nextPrefix)
 			}
