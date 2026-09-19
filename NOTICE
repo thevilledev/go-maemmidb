@@ -1,0 +1,64 @@
+go-maemmidb
+Copyright (c) 2026 Ville Vesilehto
+
+This project is licensed under the Mozilla Public License, version 2.0
+(see LICENSE). It is an independent project and is NOT affiliated with,
+sponsored by, or endorsed by HashiCorp, Inc. or IBM Corp.
+
+===========================================================================
+Derived work: hashicorp/go-memdb
+===========================================================================
+
+go-maemmidb is a derivative work of go-memdb:
+
+    https://github.com/hashicorp/go-memdb
+    Copyright (c) 2015 HashiCorp, Inc.
+    Copyright IBM Corp. 2015, 2026
+    Licensed under the Mozilla Public License, version 2.0
+
+Baseline: upstream commit 7d3fdd5 (v1.3.5 plus header/CI-only commits).
+
+The public API, its documentation, its observable behaviour, and the test
+suite of this project originate from go-memdb. Files fall into three groups:
+
+  Verbatim copies (byte-identical to upstream, checksums in
+  scripts/upstream-verbatim.sha256):
+    schema.go filter.go changes.go
+    filter_test.go index_test.go integ_test.go isolation_test.go
+    memdb_test.go schema_test.go txn_test.go watch_test.go
+
+  Derived and modified (upstream copyright and SPDX header retained, a
+  "Modifications Copyright" line and provenance comment added):
+    memdb.go index.go txn.go watch.go watch_few.go watch-gen/main.go
+
+  New work (Copyright (c) 2026 Ville Vesilehto, MPL-2.0):
+    everything else, including internal/radix and benchmarks/.
+
+===========================================================================
+Studied work: hashicorp/go-immutable-radix
+===========================================================================
+
+    https://github.com/hashicorp/go-immutable-radix
+    Copyright (c) 2015 HashiCorp, Inc.
+    Licensed under the Mozilla Public License, version 2.0
+
+go-memdb stores its indexes in go-immutable-radix (v1.3.1). This project
+replaces it with a new radix tree (internal/radix) written from scratch. The
+observable semantics of go-immutable-radix -- iteration order, prefix and
+lower-bound seeks, longest-prefix matching and the granularity at which watch
+channels fire -- were studied and are deliberately reproduced so that
+go-maemmidb stays behaviourally compatible with go-memdb. No source code of
+go-immutable-radix is included in the main module.
+
+===========================================================================
+Benchmark- and test-only dependencies (benchmarks/ module only)
+===========================================================================
+
+The nested module in benchmarks/ compares this project against the original
+implementations and therefore depends on them. They are never linked into
+programs that import the main module:
+
+    github.com/hashicorp/go-memdb            MPL-2.0
+    github.com/hashicorp/go-immutable-radix  MPL-2.0
+    github.com/hashicorp/golang-lru          MPL-2.0
+    golang.org/x/perf (benchstat tool)       BSD-3-Clause
