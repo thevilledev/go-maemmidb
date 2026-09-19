@@ -1,0 +1,103 @@
+# Copyright (c) 2026 Ville Vesilehto
+# SPDX-License-Identifier: MPL-2.0
+
+name: CI
+
+on:
+  - push
+  - pull_request
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - name: Setup Go
+        uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9 # v4.0.0
+        with:
+          go-version: stable
+      - name: Formatting, vet
+        run: make lint
+      - name: License headers
+        run: make headers
+      - name: Upstream test suite is unmodified
+        run: make verify-upstream-tests
+      - name: Generated code is up to date
+        run: make generate-check
+
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        go-version:
+          - '1.23' # named in go.mod
+          - 'oldstable'
+          - 'stable'
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - name: Setup Go
+        uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9 # v4.0.0
+        with:
+          go-version: ${{ matrix.go-version }}
+      - name: Test
+        run: go test -count=1 -cover ./...
+      - name: Test with the race detector
+        run: go test -count=1 -race ./...
+      - name: Test the pure-safe build (no package unsafe)
+        run: |
+          go test -count=1 -tags memdb_safe ./...
+          go test -count=1 -tags purego ./...
+
+  test-386:
+    # 32-bit: atomic alignment, no hardware popcount, 4-byte ints in index keys.
+    # Upstream's index_test.go does not compile for 32-bit targets (it puts
+    # math.MinInt64 into an int field) and is kept verbatim, so the package
+    # tests cannot run here: the library is built, and the storage engine,
+    # whose tests are ours, is tested.
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - name: Setup Go
+        uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9 # v4.0.0
+        with:
+          go-version: stable
+      - name: Build (GOARCH=386)
+        run: |
+          GOARCH=386 go build ./...
+          GOARCH=386 go build -tags memdb_safe ./...
+      - name: Test the storage engine (GOARCH=386)
+        run: |
+          GOARCH=386 go test -count=1 ./internal/radix
+          GOARCH=386 go test -count=1 -tags memdb_safe ./internal/radix
+
+  differential:
+    # The nested module compares against the original implementations.
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - name: Setup Go
+        uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9 # v4.0.0
+        with:
+          go-version: stable
+      - name: Differential tests against go-memdb and go-immutable-radix
+        run: make diff
+      - name: Fuzz smoke
+        run: |
+          go test ./internal/radix -run '^$' -fuzz FuzzTreeOps -fuzztime 30s
+          cd benchmarks
+          go test ./differential -run '^$' -fuzz FuzzOps -fuzztime 30s
+          go test ./radixdiff -run '^$' -fuzz FuzzDifferential -fuzztime 30s
+      - name: Every benchmark runs against both implementations
+        run: |
+          cd benchmarks
+          BENCH_SIZES=1000 go test -tags upstream -run '^$' -bench . -benchtime 1x .
+          BENCH_SIZES=1000 go test -run '^$' -bench . -benchtime 1x .

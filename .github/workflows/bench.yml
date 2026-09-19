@@ -1,0 +1,36 @@
+# Copyright (c) 2026 Ville Vesilehto
+# SPDX-License-Identifier: MPL-2.0
+
+# Full A/B benchmark run against hashicorp/go-memdb. Shared CI runners are far
+# too noisy to gate on, so this job only reports; the published numbers and
+# the "universally faster" gate come from dedicated hardware (BENCHMARKS.md).
+name: Benchmarks
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 3 * * 0'
+
+permissions:
+  contents: read
+
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - name: Setup Go
+        uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9 # v4.0.0
+        with:
+          go-version: stable
+      - name: Interleaved comparison
+        run: make bench-compare ROUNDS=3 COUNT=2 BENCHTIME=0.5s
+      - name: Gate (report only)
+        run: make bench-gate || true
+      - name: Upload results
+        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808
+        with:
+          name: benchmark-results
+          path: benchmarks/results/
