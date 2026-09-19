@@ -1,0 +1,84 @@
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkParallelTxnFirst/size=1000           	 3710668	       128.8 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000           	 3830828	       125.6 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000-4         	11845051	        39.79 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000-4         	12168932	        40.21 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000-8         	13832636	        32.29 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000-8         	14539616	        32.85 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000         	 1056741	       439.0 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000         	 1097904	       441.3 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000-4       	 3850621	       139.7 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000-4       	 3928838	       144.0 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000-8       	 7000975	        76.81 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000-8       	 7027230	        77.15 ns/op	      96 B/op	       2 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkParallelTxnFirstWithWriter     	  896239	       447.7 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter     	  890668	       456.0 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter-4   	 3841178	       138.4 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter-4   	 3947079	       141.0 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter-8   	 6982998	        77.58 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter-8   	 7045095	        77.16 ns/op	      96 B/op	       2 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkParallelTxnFirst/size=1000           	 3753560	       126.8 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000           	 3754285	       126.6 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000-4         	12127885	        39.28 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000-4         	12082196	        39.92 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000-8         	14878203	        32.30 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000-8         	15713104	        32.78 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000         	  912937	       458.9 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000         	 1054813	       434.2 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000-4       	 3876741	       136.8 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000-4       	 3911019	       143.4 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000-8       	 7018526	        76.47 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000-8       	 7082653	        76.07 ns/op	      96 B/op	       2 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkParallelTxnFirstWithWriter     	  896992	       476.9 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter     	  901612	       458.9 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter-4   	 3849039	       140.7 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter-4   	 3852271	       144.8 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter-8   	 6954300	        78.64 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter-8   	 6963446	        77.96 ns/op	      96 B/op	       2 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkParallelTxnFirst/size=1000           	 3746835	       127.9 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000           	 3709886	       127.6 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000-4         	11991142	        39.22 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000-4         	12194307	        39.29 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000-8         	16214778	        29.73 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000-8         	15758133	        30.21 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000         	  897489	       451.9 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000         	 1073058	       445.2 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000-4       	 3746770	       141.3 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000-4       	 3788433	       144.9 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000-8       	 7040023	        77.67 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000-8       	 6991572	        77.23 ns/op	      96 B/op	       2 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkParallelTxnFirstWithWriter     	  904060	       443.1 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter     	 1062530	       450.3 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter-4   	 3743908	       139.6 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter-4   	 3814624	       143.1 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter-8   	 7033087	        77.75 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter-8   	 7011478	        77.64 ns/op	      96 B/op	       2 allocs/op
+PASS

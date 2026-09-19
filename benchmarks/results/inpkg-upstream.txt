@@ -1,0 +1,36 @@
+goos: darwin
+goarch: arm64
+pkg: memdb
+cpu: Apple M1 Max
+BenchmarkUUIDFieldIndex_parseString-10       	 9389422	       114.0 ns/op	      48 B/op	       2 allocs/op
+BenchmarkUUIDFieldIndex_parseString-10       	10504584	       114.1 ns/op	      48 B/op	       2 allocs/op
+BenchmarkUUIDFieldIndex_parseString-10       	12906324	        92.60 ns/op	      48 B/op	       2 allocs/op
+BenchmarkUUIDFieldIndex_parseString-10       	10545475	       114.5 ns/op	      48 B/op	       2 allocs/op
+BenchmarkUUIDFieldIndex_parseString-10       	12871266	        92.61 ns/op	      48 B/op	       2 allocs/op
+BenchmarkUUIDFieldIndex_parseString-10       	10422464	       120.0 ns/op	      48 B/op	       2 allocs/op
+BenchmarkUUIDFieldIndex_parseString-10       	 9710347	       118.2 ns/op	      48 B/op	       2 allocs/op
+BenchmarkUUIDFieldIndex_parseString-10       	10182542	       118.0 ns/op	      48 B/op	       2 allocs/op
+BenchmarkUUIDFieldIndex_parseString-10       	10171114	       118.0 ns/op	      48 B/op	       2 allocs/op
+BenchmarkUUIDFieldIndex_parseString-10       	10016038	       118.3 ns/op	      48 B/op	       2 allocs/op
+BenchmarkCompoundMultiIndex_FromObject-10    	 1828059	       680.6 ns/op	     640 B/op	      28 allocs/op
+BenchmarkCompoundMultiIndex_FromObject-10    	 1851926	       657.7 ns/op	     640 B/op	      28 allocs/op
+BenchmarkCompoundMultiIndex_FromObject-10    	 1837496	       650.6 ns/op	     640 B/op	      28 allocs/op
+BenchmarkCompoundMultiIndex_FromObject-10    	 1851866	       652.8 ns/op	     640 B/op	      28 allocs/op
+BenchmarkCompoundMultiIndex_FromObject-10    	 1838170	       652.6 ns/op	     640 B/op	      28 allocs/op
+BenchmarkCompoundMultiIndex_FromObject-10    	 1833164	       653.1 ns/op	     640 B/op	      28 allocs/op
+BenchmarkCompoundMultiIndex_FromObject-10    	 1837213	       653.0 ns/op	     640 B/op	      28 allocs/op
+BenchmarkCompoundMultiIndex_FromObject-10    	 1843868	       652.1 ns/op	     640 B/op	      28 allocs/op
+BenchmarkCompoundMultiIndex_FromObject-10    	 1830795	       652.5 ns/op	     640 B/op	      28 allocs/op
+BenchmarkCompoundMultiIndex_FromObject-10    	 1831710	       651.1 ns/op	     640 B/op	      28 allocs/op
+BenchmarkWatch-10                            	   10000	    104457 ns/op	   11232 B/op	      79 allocs/op
+BenchmarkWatch-10                            	   10000	    102603 ns/op	   11255 B/op	      79 allocs/op
+BenchmarkWatch-10                            	   10000	    111753 ns/op	   11256 B/op	      79 allocs/op
+BenchmarkWatch-10                            	   10000	    106966 ns/op	   11283 B/op	      79 allocs/op
+BenchmarkWatch-10                            	   10000	    101135 ns/op	   11226 B/op	      79 allocs/op
+BenchmarkWatch-10                            	   10000	    105280 ns/op	   11239 B/op	      79 allocs/op
+BenchmarkWatch-10                            	   10000	    109066 ns/op	   11247 B/op	      79 allocs/op
+BenchmarkWatch-10                            	   12058	     94028 ns/op	   11216 B/op	      79 allocs/op
+BenchmarkWatch-10                            	   13364	    109199 ns/op	   11214 B/op	      79 allocs/op
+BenchmarkWatch-10                            	   10000	    107263 ns/op	   11226 B/op	      79 allocs/op
+PASS
+ok  	github.com/hashicorp/go-memdb	45.924s
