@@ -1,5 +1,10 @@
 // Copyright IBM Corp. 2015, 2026
 // SPDX-License-Identifier: MPL-2.0
+//
+// Modifications Copyright (c) 2026 Ville Vesilehto
+// Derived from github.com/hashicorp/go-memdb memdb.go @ 7d3fdd5: the exported
+// API and its documentation are upstream's; the storage layout (compiled
+// schema, flat root of index trees) is new.
 
 // Package memdb provides an in-memory database that supports transactions
 // and MVCC.
@@ -7,10 +12,8 @@ package memdb
 
 import (
 	"sync"
-	"sync/atomic"
-	"unsafe"
 
-	"github.com/hashicorp/go-immutable-radix"
+	"github.com/thevilledev/go-maemmidb/internal/radix"
 )
 
 // MemDB is an in-memory database providing Atomicity, Consistency, and
@@ -27,12 +30,43 @@ import (
 // even after they've been deleted from MemDB since there may still be older
 // snapshots of the DB being read from other goroutines.
 type MemDB struct {
-	schema  *DBSchema
-	root    unsafe.Pointer // *iradix.Tree underneath
+	// compiled is the schema, as given and as compiled. It is immutable and
+	// shared with every snapshot of the database; one pointer keeps MemDB --
+	// which Snapshot allocates -- as small as upstream's.
+	*compiled
+	root    rootPtr
 	primary bool
 
 	// There can only be a single writer at once
 	writer sync.Mutex
+}
+
+// compiled is a schema together with its compiled form.
+type compiled struct {
+	schema *DBSchema
+	tables map[string]*compiledTable
+}
+
+// inlineTrees is the number of index trees a dbRoot holds without a second
+// allocation.
+const inlineTrees = 12
+
+// dbRoot is one immutable version of the whole database: the tree of every
+// index, addressed by compiledIndex.slot. A commit publishes a new dbRoot with
+// a single atomic pointer store.
+type dbRoot struct {
+	trees  []radix.Tree
+	inline [inlineTrees]radix.Tree
+}
+
+func newDBRoot(n int) *dbRoot {
+	r := &dbRoot{}
+	if n <= inlineTrees {
+		r.trees = r.inline[:n:n]
+	} else {
+		r.trees = make([]radix.Tree, n)
+	}
+	return r
 }
 
 // NewMemDB creates a new MemDB with the given schema.
@@ -43,16 +77,15 @@ func NewMemDB(schema *DBSchema) (*MemDB, error) {
 	}
 
 	// Create the MemDB
-	db := &MemDB{
-		schema:  schema,
-		root:    unsafe.Pointer(iradix.New()),
-		primary: true,
-	}
-	if err := db.initialize(); err != nil {
-		return nil, err
-	}
+	tables, slots := compileSchema(schema)
 
-	return db, nil
+	// Every index starts as its own empty tree. The roots must be distinct
+	// objects: watching "the whole index" watches its root node.
+	root := newDBRoot(slots)
+	for i := range root.trees {
+		root.trees[i] = radix.New()
+	}
+	return newMemDB(&compiled{schema: schema, tables: tables}, root, true), nil
 }
 
 // DBSchema returns schema in use for introspection.
@@ -63,12 +96,6 @@ func (db *MemDB) DBSchema() *DBSchema {
 	return db.schema
 }
 
-// getRoot is used to do an atomic load of the root pointer
-func (db *MemDB) getRoot() *iradix.Tree {
-	root := (*iradix.Tree)(atomic.LoadPointer(&db.root))
-	return root
-}
-
 // Txn is used to start a new transaction in either read or write mode.
 // There can only be a single concurrent writer, but any number of readers.
 func (db *MemDB) Txn(write bool) *Txn {
@@ -76,9 +103,9 @@ func (db *MemDB) Txn(write bool) *Txn {
 		db.writer.Lock()
 	}
 	txn := &Txn{
-		db:      db,
-		write:   write,
-		rootTxn: db.getRoot().Txn(),
+		db:    db,
+		write: write,
+		root:  db.root.load(),
 	}
 	return txn
 }
@@ -90,30 +117,5 @@ func (db *MemDB) Txn(write bool) *Txn {
 // the Snapshot will not deep copy those values. Therefore, it is still unsafe
 // to modify any inserted values in either DB.
 func (db *MemDB) Snapshot() *MemDB {
-	clone := &MemDB{
-		schema:  db.schema,
-		root:    unsafe.Pointer(db.getRoot()),
-		primary: false,
-	}
-	return clone
-}
-
-// initialize is used to setup the DB for use after creation. This should
-// be called only once after allocating a MemDB.
-func (db *MemDB) initialize() error {
-	root := db.getRoot()
-	for tName, tableSchema := range db.schema.Tables {
-		for iName := range tableSchema.Indexes {
-			index := iradix.New()
-			path := indexPath(tName, iName)
-			root, _, _ = root.Insert(path, index)
-		}
-	}
-	db.root = unsafe.Pointer(root)
-	return nil
-}
-
-// indexPath returns the path from the root to the given table index
-func indexPath(table, index string) []byte {
-	return []byte(table + "." + index)
+	return newMemDB(db.compiled, db.root.load(), false)
 }

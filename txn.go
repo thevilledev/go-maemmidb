@@ -1,16 +1,21 @@
 // Copyright IBM Corp. 2015, 2026
 // SPDX-License-Identifier: MPL-2.0
+//
+// Modifications Copyright (c) 2026 Ville Vesilehto
+// Derived from github.com/hashicorp/go-memdb txn.go @ 7d3fdd5: the exported
+// API, its documentation, the error messages and the observable semantics are
+// upstream's; the implementation on top of internal/radix is new.
 
 package memdb
 
 import (
 	"bytes"
 	"fmt"
+	"hash/maphash"
 	"strings"
-	"sync/atomic"
-	"unsafe"
+	"sync"
 
-	iradix "github.com/hashicorp/go-immutable-radix"
+	"github.com/thevilledev/go-maemmidb/internal/radix"
 )
 
 const (
@@ -22,25 +27,83 @@ var (
 	ErrNotFound = fmt.Errorf("not found")
 )
 
-// tableIndex is a tuple of (Table, Index) used for lookups
-type tableIndex struct {
-	Table string
-	Index string
-}
-
 // Txn is a transaction against a MemDB.
 // This can be a read or write transaction.
 type Txn struct {
-	db      *MemDB
-	write   bool
-	rootTxn *iradix.Txn
-	after   []func()
+	db    *MemDB
+	write bool
+
+	// root is the database version this transaction reads. A write
+	// transaction sets it to nil when it is committed or aborted.
+	//
+	// A read transaction holds nothing else, and nothing it holds is ever
+	// mutated: like upstream's, it may be used from several goroutines.
+	root *dbRoot
+
+	after []func()
 
 	// changes is used to track the changes performed during the transaction. If
 	// it is nil at transaction start then changes are not tracked.
 	changes Changes
 
-	modified map[tableIndex]*iradix.Txn
+	// w is the state of a write transaction, allocated on the first write.
+	w *writeState
+}
+
+// writeState holds the uncommitted index trees of a write transaction plus
+// the scratch buffers its writes build keys in. It never escapes the
+// transaction, so finished transactions return it to a pool: a steady stream
+// of small write transactions allocates no bookkeeping at all.
+type writeState struct {
+	// nf collects what the transaction replaces, for notification at commit.
+	nf radix.Notifier
+	// tables lists the tables written so far; nearly always one or two.
+	tables []tableTxn
+
+	// Scratch for the row being written: its primary key, the keys it has
+	// (newKeys) and the keys its previous version had (oldKeys) in every
+	// secondary index, and where each index's keys are within those lists.
+	id      []byte
+	newKeys keyList
+	oldKeys keyList
+	tmp     keyList // intermediate values of compound multi-indexes
+	ranges  []keyRange
+}
+
+// keyRange locates one index's keys inside writeState.newKeys and oldKeys.
+type keyRange struct {
+	newFrom, newTo int
+	oldFrom, oldTo int
+	ok, okOld      bool
+}
+
+// tableTxn holds the tree transactions of one table, by compiledIndex.ord.
+// Entries are zero (not Started) until the index is first written.
+type tableTxn struct {
+	table *compiledTable
+	idx   []radix.Txn
+}
+
+var writeStatePool = sync.Pool{New: func() interface{} { return new(writeState) }}
+
+// maxPooledScratch keeps a transaction that built enormous keys from pinning
+// that memory in the pool forever.
+const maxPooledScratch = 64 << 10
+
+// release returns the write state to the pool. Everything that could keep
+// database memory alive is cleared first.
+func (w *writeState) release() {
+	w.nf.Reset()
+	for i := range w.tables {
+		tt := &w.tables[i]
+		clear(tt.idx)
+		tt.table = nil
+	}
+	w.tables = w.tables[:0]
+	if cap(w.newKeys.buf) > maxPooledScratch || cap(w.oldKeys.buf) > maxPooledScratch || cap(w.id) > maxPooledScratch {
+		w.newKeys, w.oldKeys, w.id = keyList{}, keyList{}, nil
+	}
+	writeStatePool.Put(w)
 }
 
 // TrackChanges enables change tracking for the transaction. If called at any
@@ -55,53 +118,75 @@ func (txn *Txn) TrackChanges() {
 	}
 }
 
-// readableIndex returns a transaction usable for reading the given index in a
-// table. If the transaction is a write transaction with modifications, a clone of the
-// modified index will be returned.
-func (txn *Txn) readableIndex(table, index string) *iradix.Txn {
-	// Look for existing transaction
-	if txn.write && txn.modified != nil {
-		key := tableIndex{table, index}
-		exist, ok := txn.modified[key]
-		if ok {
-			return exist.Clone()
+// tableTxn returns the write state of a table, creating it if needed. The
+// result is only valid until the next call.
+func (txn *Txn) tableTxn(ct *compiledTable) *tableTxn {
+	if txn.w == nil {
+		txn.w = writeStatePool.Get().(*writeState)
+	}
+	w := txn.w
+	for i := range w.tables {
+		if w.tables[i].table == ct {
+			return &w.tables[i]
 		}
 	}
 
-	// Create a read transaction
-	path := indexPath(table, index)
-	raw, _ := txn.rootTxn.Get(path)
-	indexTxn := raw.(*iradix.Tree).Txn()
-	return indexTxn
+	// Reuse the slot (and its tree-transaction array) a pooled state kept.
+	n := len(w.tables)
+	if n < cap(w.tables) {
+		w.tables = w.tables[:n+1]
+	} else {
+		w.tables = append(w.tables, tableTxn{})
+	}
+	tt := &w.tables[n]
+	tt.table = ct
+	if cap(tt.idx) >= len(ct.indexes) {
+		tt.idx = tt.idx[:len(ct.indexes)]
+	} else {
+		tt.idx = make([]radix.Txn, len(ct.indexes))
+	}
+	return tt
 }
 
-// writableIndex returns a transaction usable for modifying the
-// given index in a table.
-func (txn *Txn) writableIndex(table, index string) *iradix.Txn {
-	if txn.modified == nil {
-		txn.modified = make(map[tableIndex]*iradix.Txn)
+// writableIndex returns the tree transaction used for modifying the given
+// index, starting it if needed.
+func (txn *Txn) writableIndex(tt *tableTxn, ci *compiledIndex) *radix.Txn {
+	it := &tt.idx[ci.ord]
+	if !it.Started() {
+		// If we are the primary DB, enable mutation tracking. Snapshots should
+		// not notify, otherwise we will trigger watches on the primary DB when
+		// the writes will not be visible.
+		var nf *radix.Notifier
+		if txn.db.primary {
+			nf = &txn.w.nf
+		}
+		*it = txn.root.trees[ci.slot].Txn(nf)
 	}
+	return it
+}
 
-	// Look for existing transaction
-	key := tableIndex{table, index}
-	exist, ok := txn.modified[key]
-	if ok {
-		return exist
+// readableIndex returns the tree of an index as this transaction sees it,
+// including its own uncommitted writes.
+//
+// escapes must be true when something derived from the tree outlives the call:
+// an iterator or a watch channel. Uncommitted state is then frozen first, so
+// that later writes of this transaction copy instead of mutating what the
+// caller still observes.
+func (txn *Txn) readableIndex(ci *compiledIndex, escapes bool) radix.Tree {
+	if txn.w != nil {
+		for i := range txn.w.tables {
+			if tt := &txn.w.tables[i]; tt.table == ci.table {
+				if it := &tt.idx[ci.ord]; it.Started() {
+					if escapes {
+						it.Freeze()
+					}
+					return it.Tree()
+				}
+				break
+			}
+		}
 	}
-
-	// Start a new transaction
-	path := indexPath(table, index)
-	raw, _ := txn.rootTxn.Get(path)
-	indexTxn := raw.(*iradix.Tree).Txn()
-
-	// If we are the primary DB, enable mutation tracking. Snapshots should
-	// not notify, otherwise we will trigger watches on the primary DB when
-	// the writes will not be visible.
-	indexTxn.TrackMutate(txn.db.primary)
-
-	// Keep this open for the duration of the txn
-	txn.modified[key] = indexTxn
-	return indexTxn
+	return txn.root.trees[ci.slot]
 }
 
 // Abort is used to cancel this transaction.
@@ -114,13 +199,16 @@ func (txn *Txn) Abort() {
 	}
 
 	// Check if already aborted or committed
-	if txn.rootTxn == nil {
+	if txn.root == nil {
 		return
 	}
 
 	// Clear the txn
-	txn.rootTxn = nil
-	txn.modified = nil
+	txn.root = nil
+	if txn.w != nil {
+		txn.w.release()
+		txn.w = nil
+	}
 	txn.changes = nil
 
 	// Release the writer lock since this is invalid
@@ -137,33 +225,36 @@ func (txn *Txn) Commit() {
 	}
 
 	// Check if already aborted or committed
-	if txn.rootTxn == nil {
+	if txn.root == nil {
 		return
 	}
 
-	// Commit each sub-transaction scoped to (table, index)
-	for key, subTxn := range txn.modified {
-		path := indexPath(key.Table, key.Index)
-		final := subTxn.CommitOnly()
-		txn.rootTxn.Insert(path, final)
-	}
+	if w := txn.w; w != nil {
+		// Build the next database version from the modified index trees.
+		next := newDBRoot(len(txn.root.trees))
+		copy(next.trees, txn.root.trees)
+		for i := range w.tables {
+			tt := &w.tables[i]
+			for ord := range tt.idx {
+				if it := &tt.idx[ord]; it.Started() {
+					next.trees[tt.table.indexes[ord].slot] = it.Commit()
+				}
+			}
+		}
 
-	// Update the root of the DB
-	newRoot := txn.rootTxn.CommitOnly()
-	atomic.StorePointer(&txn.db.root, unsafe.Pointer(newRoot))
+		// Update the root of the DB
+		txn.db.root.store(next)
 
-	// Now issue all of the mutation updates (this is safe to call
-	// even if mutation tracking isn't enabled); we do this after
-	// the root pointer is swapped so that waking responders will
-	// see the new state.
-	for _, subTxn := range txn.modified {
-		subTxn.Notify()
+		// Now issue all of the mutation updates; we do this after
+		// the root pointer is swapped so that waking responders will
+		// see the new state.
+		w.nf.Notify()
+		w.release()
 	}
-	txn.rootTxn.Notify()
 
 	// Clear the txn
-	txn.rootTxn = nil
-	txn.modified = nil
+	txn.root = nil
+	txn.w = nil
 
 	// Release the writer lock since this is invalid
 	txn.db.writer.Unlock()
@@ -186,109 +277,81 @@ func (txn *Txn) Insert(table string, obj interface{}) error {
 	}
 
 	// Get the table schema
-	tableSchema, ok := txn.db.schema.Tables[table]
+	ct, ok := txn.db.tables[table]
 	if !ok {
 		return fmt.Errorf("invalid table '%s'", table)
 	}
 
 	// Get the primary ID of the object
-	idSchema := tableSchema.Indexes[id]
-	idIndexer := idSchema.Indexer.(SingleIndexer)
-	ok, idVal, err := idIndexer.FromObject(obj)
+	tt := txn.tableTxn(ct)
+	w := txn.w
+	idVal, err := ct.primaryKey(w.id[:0], obj)
+	w.id = idVal[:0]
 	if err != nil {
-		return fmt.Errorf("failed to build primary index: %v", err)
-	}
-	if !ok {
-		return fmt.Errorf("object missing primary index")
+		return err
 	}
 
-	// Lookup the object by ID first, to see if this is an update
-	idTxn := txn.writableIndex(table, id)
-	existing, update := idTxn.Get(idVal)
+	// Write the primary index first: a single descent both stores the object
+	// and tells us whether this is an update of an existing one.
+	idTxn := txn.writableIndex(tt, ct.id())
+	existing, update := idTxn.Insert(idVal, obj)
 
-	// On an update, there is an existing object with the given
-	// primary ID. We do the update by deleting the current object
-	// and inserting the new object.
-	for name, indexSchema := range tableSchema.Indexes {
-		indexTxn := txn.writableIndex(table, name)
+	// Build the keys for every secondary index before touching any of them,
+	// so that a failing indexer leaves the transaction exactly as it was.
+	w.newKeys.reset()
+	w.oldKeys.reset()
+	w.ranges = w.ranges[:0]
+	for i := 1; i < len(ct.indexes); i++ {
+		ci := &ct.indexes[i]
+		r := keyRange{newFrom: w.newKeys.len(), oldFrom: w.oldKeys.len()}
 
 		// Determine the new index value
-		var (
-			ok   bool
-			vals [][]byte
-			err  error
-		)
-		switch indexer := indexSchema.Indexer.(type) {
-		case SingleIndexer:
-			var val []byte
-			ok, val, err = indexer.FromObject(obj)
-			vals = [][]byte{val}
-		case MultiIndexer:
-			ok, vals, err = indexer.FromObject(obj)
+		if r.ok, err = ci.keys(&w.newKeys, &w.tmp, obj, idVal); err == nil && update {
+			// On an update, there is an existing object with the given
+			// primary ID. We do the update by deleting the current object
+			// and inserting the new object.
+			r.okOld, err = ci.keys(&w.oldKeys, &w.tmp, existing, idVal)
 		}
 		if err != nil {
-			return fmt.Errorf("failed to build index '%s': %v", name, err)
+			err = fmt.Errorf("failed to build index '%s': %v", ci.name, err)
+		} else if !r.ok && !ci.allowMissing {
+			// If there is no index value, either this is an error or an
+			// expected case and we can skip updating
+			err = fmt.Errorf("missing value for index '%s'", ci.name)
 		}
-
-		// Handle non-unique index by computing a unique index.
-		// This is done by appending the primary key which must
-		// be unique anyways.
-		if ok && !indexSchema.Unique {
-			for i := range vals {
-				vals[i] = append(vals[i], idVal...)
+		if err != nil {
+			// Undo the primary index write.
+			if update {
+				idTxn.Insert(idVal, existing)
+			} else {
+				idTxn.Delete(idVal)
 			}
+			return err
 		}
+		r.newTo, r.oldTo = w.newKeys.len(), w.oldKeys.len()
+		w.ranges = append(w.ranges, r)
+	}
 
-		// Handle the update by deleting from the index first
-		if update {
-			var (
-				okExist   bool
-				valsExist [][]byte
-				err       error
-			)
-			switch indexer := indexSchema.Indexer.(type) {
-			case SingleIndexer:
-				var valExist []byte
-				okExist, valExist, err = indexer.FromObject(existing)
-				valsExist = [][]byte{valExist}
-			case MultiIndexer:
-				okExist, valsExist, err = indexer.FromObject(existing)
-			}
-			if err != nil {
-				return fmt.Errorf("failed to build index '%s': %v", name, err)
-			}
-			if okExist {
-				for i, valExist := range valsExist {
-					// Handle non-unique index by computing a unique index.
-					// This is done by appending the primary key which must
-					// be unique anyways.
-					if !indexSchema.Unique {
-						valExist = append(valExist, idVal...)
-					}
+	for i, r := range w.ranges {
+		indexTxn := txn.writableIndex(tt, &ct.indexes[i+1])
 
-					// If we are writing to the same index with the same value,
-					// we can avoid the delete as the insert will overwrite the
-					// value anyways.
-					if i >= len(vals) || !bytes.Equal(valExist, vals[i]) {
-						indexTxn.Delete(valExist)
-					}
+		// Handle the update by deleting from the index first. Old and new
+		// keys are compared position by position, exactly like upstream.
+		if r.okOld {
+			for k := r.oldFrom; k < r.oldTo; k++ {
+				valExist := w.oldKeys.key(k)
+				// If we are writing to the same index with the same value,
+				// we can avoid the delete as the insert will overwrite the
+				// value anyways.
+				if n := r.newFrom + k - r.oldFrom; n >= r.newTo || !bytes.Equal(valExist, w.newKeys.key(n)) {
+					indexTxn.Delete(valExist)
 				}
 			}
 		}
 
-		// If there is no index value, either this is an error or an expected
-		// case and we can skip updating
-		if !ok {
-			if indexSchema.AllowMissing {
-				continue
-			} else {
-				return fmt.Errorf("missing value for index '%s'", name)
-			}
-		}
-
 		// Update the value of the index
-		for _, val := range vals {
-			indexTxn.Insert(val, obj)
+		for k := r.newFrom; k < r.newTo; k++ {
+			indexTxn.Insert(w.newKeys.key(k), obj)
 		}
 	}
 	if txn.changes != nil {
@@ -296,8 +359,37 @@ func (txn *Txn) Insert(table string, obj interface{}) error {
 			Table:      table,
 			Before:     existing, // might be nil on a create
 			After:      obj,
-			primaryKey: idVal,
+			primaryKey: append([]byte(nil), idVal...),
 		})
+	}
+	return nil
+}
+
+// deleteFromIndexes removes obj from the secondary indexes of its table,
+// except skip. All keys are built before any index is touched.
+func (txn *Txn) deleteFromIndexes(tt *tableTxn, obj interface{}, idVal []byte, skip *compiledIndex) error {
+	ct, w := tt.table, txn.w
+	w.oldKeys.reset()
+	w.ranges = w.ranges[:0]
+	for i := 1; i < len(ct.indexes); i++ {
+		ci := &ct.indexes[i]
+		r := keyRange{oldFrom: w.oldKeys.len()}
+		if ci != skip {
+			if _, err := ci.keys(&w.oldKeys, &w.tmp, obj, idVal); err != nil {
+				return fmt.Errorf("failed to build index '%s': %v", ci.name, err)
+			}
+		}
+		r.oldTo = w.oldKeys.len()
+		w.ranges = append(w.ranges, r)
+	}
+	for i, r := range w.ranges {
+		if r.oldFrom == r.oldTo {
+			continue
+		}
+		indexTxn := txn.writableIndex(tt, &ct.indexes[i+1])
+		for k := r.oldFrom; k < r.oldTo; k++ {
+			indexTxn.Delete(w.oldKeys.key(k))
+		}
 	}
 	return nil
 }
@@ -310,68 +402,39 @@ func (txn *Txn) Delete(table string, obj interface{}) error {
 	}
 
 	// Get the table schema
-	tableSchema, ok := txn.db.schema.Tables[table]
+	ct, ok := txn.db.tables[table]
 	if !ok {
 		return fmt.Errorf("invalid table '%s'", table)
 	}
 
 	// Get the primary ID of the object
-	idSchema := tableSchema.Indexes[id]
-	idIndexer := idSchema.Indexer.(SingleIndexer)
-	ok, idVal, err := idIndexer.FromObject(obj)
+	tt := txn.tableTxn(ct)
+	w := txn.w
+	idVal, err := ct.primaryKey(w.id[:0], obj)
+	w.id = idVal[:0]
 	if err != nil {
-		return fmt.Errorf("failed to build primary index: %v", err)
-	}
-	if !ok {
-		return fmt.Errorf("object missing primary index")
+		return err
 	}
 
-	// Lookup the object by ID first, check if we should continue
-	idTxn := txn.writableIndex(table, id)
-	existing, ok := idTxn.Get(idVal)
+	// Remove the object from the primary index; this also tells us whether
+	// it exists (a miss leaves the tree untouched) and what is stored.
+	idTxn := txn.writableIndex(tt, ct.id())
+	existing, ok := idTxn.Delete(idVal)
 	if !ok {
 		return ErrNotFound
 	}
 
-	// Remove the object from all the indexes
-	for name, indexSchema := range tableSchema.Indexes {
-		indexTxn := txn.writableIndex(table, name)
-
-		// Handle the update by deleting from the index first
-		var (
-			ok   bool
-			vals [][]byte
-			err  error
-		)
-		switch indexer := indexSchema.Indexer.(type) {
-		case SingleIndexer:
-			var val []byte
-			ok, val, err = indexer.FromObject(existing)
-			vals = [][]byte{val}
-		case MultiIndexer:
-			ok, vals, err = indexer.FromObject(existing)
-		}
-		if err != nil {
-			return fmt.Errorf("failed to build index '%s': %v", name, err)
-		}
-		if ok {
-			// Handle non-unique index by computing a unique index.
-			// This is done by appending the primary key which must
-			// be unique anyways.
-			for _, val := range vals {
-				if !indexSchema.Unique {
-					val = append(val, idVal...)
-				}
-				indexTxn.Delete(val)
-			}
-		}
+	// Remove the stored object from all the other indexes
+	if err := txn.deleteFromIndexes(tt, existing, idVal, nil); err != nil {
+		idTxn.Insert(idVal, existing)
+		return err
 	}
 	if txn.changes != nil {
 		txn.changes = append(txn.changes, Change{
 			Table:      table,
 			Before:     existing,
 			After:      nil, // Now nil indicates deletion
-			primaryKey: idVal,
+			primaryKey: append([]byte(nil), idVal...),
 		})
 	}
 	return nil
@@ -390,89 +453,53 @@ func (txn *Txn) DeletePrefix(table string, prefix_index string, prefix string) (
 		return false, fmt.Errorf("Index name for DeletePrefix must be a prefix index, Got %v ", prefix_index)
 	}
 
-	deletePrefixIndex := strings.TrimSuffix(prefix_index, "_prefix")
-
 	// Get an iterator over all of the keys with the given prefix.
 	entries, err := txn.Get(table, prefix_index, prefix)
 	if err != nil {
 		return false, fmt.Errorf("failed kvs lookup: %s", err)
 	}
-	// Get the table schema
-	tableSchema, ok := txn.db.schema.Tables[table]
-	if !ok {
-		return false, fmt.Errorf("invalid table '%s'", table)
-	}
+	// Get succeeded, so the table and the index (prefix_index minus its
+	// "_prefix" suffix) both resolve.
+	ct := txn.db.tables[table]
+	target := ct.byName[prefix_index].index
 
 	foundAny := false
 	for entry := entries.Next(); entry != nil; entry = entries.Next() {
-		if !foundAny {
-			foundAny = true
-		}
+		foundAny = true
 		// Get the primary ID of the object
-		idSchema := tableSchema.Indexes[id]
-		idIndexer := idSchema.Indexer.(SingleIndexer)
-		ok, idVal, err := idIndexer.FromObject(entry)
+		tt := txn.tableTxn(ct)
+		w := txn.w
+		idVal, err := ct.primaryKey(w.id[:0], entry)
+		w.id = idVal[:0]
 		if err != nil {
-			return false, fmt.Errorf("failed to build primary index: %v", err)
+			return false, err
 		}
-		if !ok {
-			return false, fmt.Errorf("object missing primary index")
-		}
+		idTxn := txn.writableIndex(tt, ct.id())
 		if txn.changes != nil {
 			// Record the deletion
-			idTxn := txn.writableIndex(table, id)
-			existing, ok := idTxn.Get(idVal)
+			existing, ok := idTxn.Tree().Get(idVal)
 			if ok {
 				txn.changes = append(txn.changes, Change{
 					Table:      table,
 					Before:     existing,
 					After:      nil, // Now nil indicates deletion
-					primaryKey: idVal,
+					primaryKey: append([]byte(nil), idVal...),
 				})
 			}
 		}
 		// Remove the object from all the indexes except the given prefix index
-		for name, indexSchema := range tableSchema.Indexes {
-			if name == deletePrefixIndex {
-				continue
-			}
-			indexTxn := txn.writableIndex(table, name)
-
-			// Handle the update by deleting from the index first
-			var (
-				ok   bool
-				vals [][]byte
-				err  error
-			)
-			switch indexer := indexSchema.Indexer.(type) {
-			case SingleIndexer:
-				var val []byte
-				ok, val, err = indexer.FromObject(entry)
-				vals = [][]byte{val}
-			case MultiIndexer:
-				ok, vals, err = indexer.FromObject(entry)
-			}
-			if err != nil {
-				return false, fmt.Errorf("failed to build index '%s': %v", name, err)
-			}
-
-			if ok {
-				// Handle non-unique index by computing a unique index.
-				// This is done by appending the primary key which must
-				// be unique anyways.
-				for _, val := range vals {
-					if !indexSchema.Unique {
-						val = append(val, idVal...)
-					}
-					indexTxn.Delete(val)
-				}
-			}
+		if target != ct.id() {
+			idTxn.Delete(idVal)
 		}
-
+		if err := txn.deleteFromIndexes(tt, entry, idVal, target); err != nil {
+			return false, err
+		}
 	}
 	if foundAny {
-		indexTxn := txn.writableIndex(table, deletePrefixIndex)
-		ok = indexTxn.DeletePrefix([]byte(prefix))
+		// Upstream quirk, kept on purpose: the subtree is cut at the RAW
+		// prefix string, not at the key the indexer derives from it.
+		indexTxn := txn.writableIndex(txn.tableTxn(ct), target)
+		ok := indexTxn.DeletePrefix([]byte(prefix))
 		if !ok {
 			panic(fmt.Errorf("prefix %v matched some entries but DeletePrefix did not delete any ", prefix))
 		}
@@ -532,29 +559,35 @@ func (txn *Txn) DeleteAll(table, index string, args ...interface{}) (int, error)
 // match instead of full match on the index. The registered indexer must implement
 // PrefixIndexer, otherwise an error is returned.
 func (txn *Txn) FirstWatch(table, index string, args ...interface{}) (<-chan struct{}, interface{}, error) {
-	// Get the index value
-	indexSchema, val, err := txn.getIndexValue(table, index, args...)
+	watch, obj, err := txn.first(true, table, index, args)
 	if err != nil {
 		return nil, nil, err
 	}
+	return watch.Chan(), obj, nil
+}
+
+// first implements First and FirstWatch. Only the latter hands out a watch
+// channel, which requires freezing uncommitted state (see readableIndex).
+func (txn *Txn) first(watched bool, table, index string, args []interface{}) (radix.Watch, interface{}, error) {
+	// Get the index value
+	var scratch [keyScratch]byte
+	ref, val, err := txn.getIndexValue(scratch[:0], table, index, args)
+	if err != nil {
+		return radix.Watch{}, nil, err
+	}
 
 	// Get the index itself
-	indexTxn := txn.readableIndex(table, indexSchema.Name)
+	tree := txn.readableIndex(ref.index, watched)
 
 	// Do an exact lookup
-	if indexSchema.Unique && val != nil && indexSchema.Name == index {
-		watch, obj, ok := indexTxn.GetWatch(val)
-		if !ok {
-			return watch, nil, nil
-		}
+	if ref.index.unique && val != nil && !ref.prefixScan {
+		watch, obj, _ := tree.GetWatch(val)
 		return watch, obj, nil
 	}
 
 	// Handle non-unique index by using an iterator and getting the first value
-	iter := indexTxn.Root().Iterator()
-	watch := iter.SeekPrefixWatch(val)
-	_, value, _ := iter.Next()
-	return watch, value, nil
+	watch, obj, _ := tree.FirstPrefix(val)
+	return watch, obj, nil
 }
 
 // LastWatch is used to return the last matching object for
@@ -572,29 +605,33 @@ func (txn *Txn) FirstWatch(table, index string, args ...interface{}) (<-chan str
 // match instead of full match on the index. The registered indexer must implement
 // PrefixIndexer, otherwise an error is returned.
 func (txn *Txn) LastWatch(table, index string, args ...interface{}) (<-chan struct{}, interface{}, error) {
-	// Get the index value
-	indexSchema, val, err := txn.getIndexValue(table, index, args...)
+	watch, obj, err := txn.last(true, table, index, args)
 	if err != nil {
 		return nil, nil, err
 	}
+	return watch.Chan(), obj, nil
+}
+
+func (txn *Txn) last(watched bool, table, index string, args []interface{}) (radix.Watch, interface{}, error) {
+	// Get the index value
+	var scratch [keyScratch]byte
+	ref, val, err := txn.getIndexValue(scratch[:0], table, index, args)
+	if err != nil {
+		return radix.Watch{}, nil, err
+	}
 
 	// Get the index itself
-	indexTxn := txn.readableIndex(table, indexSchema.Name)
+	tree := txn.readableIndex(ref.index, watched)
 
 	// Do an exact lookup
-	if indexSchema.Unique && val != nil && indexSchema.Name == index {
-		watch, obj, ok := indexTxn.GetWatch(val)
-		if !ok {
-			return watch, nil, nil
-		}
+	if ref.index.unique && val != nil && !ref.prefixScan {
+		watch, obj, _ := tree.GetWatch(val)
 		return watch, obj, nil
 	}
 
 	// Handle non-unique index by using an iterator and getting the last value
-	iter := indexTxn.Root().ReverseIterator()
-	watch := iter.SeekPrefixWatch(val)
-	_, value, _ := iter.Previous()
-	return watch, value, nil
+	watch, obj, _ := tree.LastPrefix(val)
+	return watch, obj, nil
 }
 
 // First is used to return the first matching object for
@@ -603,7 +640,7 @@ func (txn *Txn) LastWatch(table, index string, args ...interface{}) (<-chan stru
 // Note that all values read in the transaction form a consistent snapshot
 // from the time when the transaction was created.
 func (txn *Txn) First(table, index string, args ...interface{}) (interface{}, error) {
-	_, val, err := txn.FirstWatch(table, index, args...)
+	_, val, err := txn.first(false, table, index, args)
 	return val, err
 }
 
@@ -613,7 +650,7 @@ func (txn *Txn) First(table, index string, args ...interface{}) (interface{}, er
 // Note that all values read in the transaction form a consistent snapshot
 // from the time when the transaction was created.
 func (txn *Txn) Last(table, index string, args ...interface{}) (interface{}, error) {
-	_, val, err := txn.LastWatch(table, index, args...)
+	_, val, err := txn.last(false, table, index, args)
 	return val, err
 }
 
@@ -634,75 +671,81 @@ func (txn *Txn) LongestPrefix(table, index string, args ...interface{}) (interfa
 	}
 
 	// Get the index value.
-	indexSchema, val, err := txn.getIndexValue(table, index, args...)
+	var scratch [keyScratch]byte
+	ref, val, err := txn.getIndexValue(scratch[:0], table, index, args)
 	if err != nil {
 		return nil, err
 	}
 
 	// This algorithm only makes sense against a unique index, otherwise the
 	// index keys will have the IDs appended to them.
-	if !indexSchema.Unique {
+	if !ref.index.unique {
 		return nil, fmt.Errorf("index '%s' is not unique", index)
 	}
 
 	// Find the longest prefix match with the given index.
-	indexTxn := txn.readableIndex(table, indexSchema.Name)
-	if _, value, ok := indexTxn.Root().LongestPrefix(val); ok {
+	if value, ok := txn.readableIndex(ref.index, false).LongestPrefix(val); ok {
 		return value, nil
 	}
 	return nil, nil
 }
 
-// getIndexValue is used to get the IndexSchema and the value
+// getIndexValue is used to get the index and the value
 // used to scan the index given the parameters. This handles prefix based
 // scans when the index has the "_prefix" suffix. The index must support
 // prefix iteration.
-func (txn *Txn) getIndexValue(table, index string, args ...interface{}) (*IndexSchema, []byte, error) {
+//
+// The value is built in scratch when the index's fast path applies; scratch is
+// the caller's stack buffer, which keeps read transactions free of shared
+// mutable state (they may be used from several goroutines, like upstream's).
+func (txn *Txn) getIndexValue(scratch []byte, table, index string, args []interface{}) (indexRef, []byte, error) {
 	// Get the table schema
-	tableSchema, ok := txn.db.schema.Tables[table]
+	ct, ok := txn.db.tables[table]
 	if !ok {
-		return nil, nil, fmt.Errorf("invalid table '%s'", table)
+		return indexRef{}, nil, fmt.Errorf("invalid table '%s'", table)
 	}
 
-	// Check for a prefix scan
-	prefixScan := false
-	if strings.HasSuffix(index, "_prefix") {
-		index = strings.TrimSuffix(index, "_prefix")
-		prefixScan = true
-	}
-
-	// Get the index schema
-	indexSchema, ok := tableSchema.Indexes[index]
+	// Get the index schema; a "_prefix" suffix selects a prefix scan
+	ref, ok := ct.byName[index]
 	if !ok {
-		return nil, nil, fmt.Errorf("invalid index '%s'", index)
+		return indexRef{}, nil, fmt.Errorf("invalid index '%s'", strings.TrimSuffix(index, prefixSuffix))
 	}
 
 	// Hot-path for when there are no arguments
 	if len(args) == 0 {
-		return indexSchema, nil, nil
+		return ref, nil, nil
 	}
 
+	if val, ok := ref.index.ext.appendArgs(scratch, args, ref.prefixScan); ok {
+		return ref, val, nil
+	}
+
+	// Anything else -- custom indexers, and every error -- is the exported
+	// indexer's business. It gets its own copy of the arguments, so that the
+	// argument slice of every query need not be allocated on the heap just
+	// because this slow path exists.
+	heapArgs := append([]interface{}(nil), args...)
+
 	// Special case the prefix scanning
-	if prefixScan {
-		prefixIndexer, ok := indexSchema.Indexer.(PrefixIndexer)
-		if !ok {
-			return indexSchema, nil,
-				fmt.Errorf("index '%s' does not support prefix scanning", index)
+	if ref.prefixScan {
+		if ref.index.prefix == nil {
+			return ref, nil,
+				fmt.Errorf("index '%s' does not support prefix scanning", ref.index.name)
 		}
 
-		val, err := prefixIndexer.PrefixFromArgs(args...)
+		val, err := ref.index.prefix.PrefixFromArgs(heapArgs...)
 		if err != nil {
-			return indexSchema, nil, fmt.Errorf("index error: %v", err)
+			return ref, nil, fmt.Errorf("index error: %v", err)
 		}
-		return indexSchema, val, err
+		return ref, val, err
 	}
 
 	// Get the exact match index
-	val, err := indexSchema.Indexer.FromArgs(args...)
+	val, err := ref.index.schema.Indexer.FromArgs(heapArgs...)
 	if err != nil {
-		return indexSchema, nil, fmt.Errorf("index error: %v", err)
+		return ref, nil, fmt.Errorf("index error: %v", err)
 	}
-	return indexSchema, val, err
+	return ref, val, err
 }
 
 // ResultIterator is used to iterate over a list of results from a query on a table.
@@ -742,19 +785,15 @@ type ResultIterator interface {
 // See the documentation for ResultIterator to understand the behaviour of the
 // returned ResultIterator.
 func (txn *Txn) Get(table, index string, args ...interface{}) (ResultIterator, error) {
-	indexIter, val, err := txn.getIndexIterator(table, index, args...)
+	var scratch [keyScratch]byte
+	ref, val, err := txn.getIndexValue(scratch[:0], table, index, args)
 	if err != nil {
 		return nil, err
 	}
 
 	// Seek the iterator to the appropriate sub-set
-	watchCh := indexIter.SeekPrefixWatch(val)
-
-	// Create an iterator
-	iter := &radixIterator{
-		iter:    indexIter,
-		watchCh: watchCh,
-	}
+	iter := &radixIterator{}
+	iter.watch = iter.iter.SeekPrefixWatch(txn.readableIndex(ref.index, true), val)
 	return iter, nil
 }
 
@@ -767,19 +806,15 @@ func (txn *Txn) Get(table, index string, args ...interface{}) (ResultIterator, e
 // See the documentation for ResultIterator to understand the behaviour of the
 // returned ResultIterator.
 func (txn *Txn) GetReverse(table, index string, args ...interface{}) (ResultIterator, error) {
-	indexIter, val, err := txn.getIndexIteratorReverse(table, index, args...)
+	var scratch [keyScratch]byte
+	ref, val, err := txn.getIndexValue(scratch[:0], table, index, args)
 	if err != nil {
 		return nil, err
 	}
 
 	// Seek the iterator to the appropriate sub-set
-	watchCh := indexIter.SeekPrefixWatch(val)
-
-	// Create an iterator
-	iter := &radixReverseIterator{
-		iter:    indexIter,
-		watchCh: watchCh,
-	}
+	iter := &radixReverseIterator{}
+	iter.watch = iter.iter.SeekPrefixWatch(txn.readableIndex(ref.index, true), val)
 	return iter, nil
 }
 
@@ -797,18 +832,15 @@ func (txn *Txn) GetReverse(table, index string, args ...interface{}) (ResultIter
 // See the documentation for ResultIterator to understand the behaviour of the
 // returned ResultIterator.
 func (txn *Txn) LowerBound(table, index string, args ...interface{}) (ResultIterator, error) {
-	indexIter, val, err := txn.getIndexIterator(table, index, args...)
+	var scratch [keyScratch]byte
+	ref, val, err := txn.getIndexValue(scratch[:0], table, index, args)
 	if err != nil {
 		return nil, err
 	}
 
 	// Seek the iterator to the appropriate sub-set
-	indexIter.SeekLowerBound(val)
-
-	// Create an iterator
-	iter := &radixIterator{
-		iter: indexIter,
-	}
+	iter := &radixIterator{}
+	iter.iter.SeekLowerBound(txn.readableIndex(ref.index, true), val)
 	return iter, nil
 }
 
@@ -823,18 +855,15 @@ func (txn *Txn) LowerBound(table, index string, args ...interface{}) (ResultIter
 // See the documentation for ResultIterator to understand the behaviour of the
 // returned ResultIterator.
 func (txn *Txn) ReverseLowerBound(table, index string, args ...interface{}) (ResultIterator, error) {
-	indexIter, val, err := txn.getIndexIteratorReverse(table, index, args...)
+	var scratch [keyScratch]byte
+	ref, val, err := txn.getIndexValue(scratch[:0], table, index, args)
 	if err != nil {
 		return nil, err
 	}
 
 	// Seek the iterator to the appropriate sub-set
-	indexIter.SeekReverseLowerBound(val)
-
-	// Create an iterator
-	iter := &radixReverseIterator{
-		iter: indexIter,
-	}
+	iter := &radixReverseIterator{}
+	iter.iter.SeekReverseLowerBound(txn.readableIndex(ref.index, true), val)
 	return iter, nil
 }
 
@@ -869,6 +898,12 @@ type mutInfo struct {
 func (txn *Txn) Changes() Changes {
 	if txn.changes == nil {
 		return nil
+	}
+
+	// Most transactions touch each object once. Establish that without
+	// building upstream's string-keyed map, and return the list as is.
+	if !hasDuplicateChanges(txn.changes) {
+		return txn.changes
 	}
 
 	// De-duplicate mutations by key so all take effect at the point of the last
@@ -923,36 +958,43 @@ func (txn *Txn) Changes() Changes {
 	return cs
 }
 
-func (txn *Txn) getIndexIterator(table, index string, args ...interface{}) (*iradix.Iterator, []byte, error) {
-	// Get the index value to scan
-	indexSchema, val, err := txn.getIndexValue(table, index, args...)
-	if err != nil {
-		return nil, nil, err
+// changeSeed keys the hash used to look for repeated objects in a change list.
+var changeSeed = maphash.MakeSeed()
+
+// hasDuplicateChanges reports whether two changes concern the same object,
+// i.e. the same (table, primary key). It may report true when in doubt; the
+// caller then runs the exact de-duplication.
+func hasDuplicateChanges(changes Changes) bool {
+	n := len(changes)
+	if n <= 8 {
+		// A handful of changes: compare them pairwise, allocation free.
+		for i := 1; i < n; i++ {
+			for j := 0; j < i; j++ {
+				if changes[i].Table == changes[j].Table && bytes.Equal(changes[i].primaryKey, changes[j].primaryKey) {
+					return true
+				}
+			}
+		}
+		return false
 	}
 
-	// Get the index itself
-	indexTxn := txn.readableIndex(table, indexSchema.Name)
-	indexRoot := indexTxn.Root()
-
-	// Get an iterator over the index
-	indexIter := indexRoot.Iterator()
-	return indexIter, val, nil
-}
-
-func (txn *Txn) getIndexIteratorReverse(table, index string, args ...interface{}) (*iradix.ReverseIterator, []byte, error) {
-	// Get the index value to scan
-	indexSchema, val, err := txn.getIndexValue(table, index, args...)
-	if err != nil {
-		return nil, nil, err
+	// Many changes: a set of 64-bit hashes instead of a map keyed by
+	// (table, string(primaryKey)), which allocates a string per change. A
+	// hash collision between different objects only costs the slow path.
+	seen := make(map[uint64]struct{}, n)
+	for i := range changes {
+		var h maphash.Hash
+		h.SetSeed(changeSeed)
+		h.WriteString(changes[i].Table)
+		h.WriteByte(0)
+		h.Write(changes[i].primaryKey)
+		sum := h.Sum64()
+		if _, dup := seen[sum]; dup {
+			return true
+		}
+		seen[sum] = struct{}{}
 	}
-
-	// Get the index itself
-	indexTxn := txn.readableIndex(table, indexSchema.Name)
-	indexRoot := indexTxn.Root()
-
-	// Get an interator over the index
-	indexIter := indexRoot.ReverseIterator()
-	return indexIter, val, nil
+	return false
 }
 
 // Defer is used to push a new arbitrary function onto a stack which
@@ -963,62 +1005,64 @@ func (txn *Txn) Defer(fn func()) {
 	txn.after = append(txn.after, fn)
 }
 
-// radixIterator is used to wrap an underlying iradix iterator.
-// This is much more efficient than a sliceIterator as we are not
-// materializing the entire view.
+// radixIterator adapts a forward tree iterator to ResultIterator. The tree
+// iterator is embedded by value, so a query allocates exactly one object.
 type radixIterator struct {
-	iter    *iradix.Iterator
-	watchCh <-chan struct{}
+	iter  radix.Iterator
+	watch radix.Watch
 }
 
 func (r *radixIterator) WatchCh() <-chan struct{} {
-	return r.watchCh
+	return r.watch.Chan()
 }
 
 func (r *radixIterator) Next() interface{} {
-	_, value, ok := r.iter.Next()
-	if !ok {
-		return nil
-	}
+	value, _ := r.iter.Next()
 	return value
 }
 
 type radixReverseIterator struct {
-	iter    *iradix.ReverseIterator
-	watchCh <-chan struct{}
+	iter  radix.ReverseIterator
+	watch radix.Watch
 }
 
 func (r *radixReverseIterator) Next() interface{} {
-	_, value, ok := r.iter.Previous()
-	if !ok {
-		return nil
-	}
+	value, _ := r.iter.Previous()
 	return value
 }
 
 func (r *radixReverseIterator) WatchCh() <-chan struct{} {
-	return r.watchCh
+	return r.watch.Chan()
 }
 
 // Snapshot creates a snapshot of the current state of the transaction.
 // Returns a new read-only transaction or nil if the transaction is already
 // aborted or committed.
 func (txn *Txn) Snapshot() *Txn {
-	if txn.rootTxn == nil {
+	if txn.root == nil {
 		return nil
 	}
 
 	snapshot := &Txn{
-		db:      txn.db,
-		rootTxn: txn.rootTxn.Clone(),
+		db:   txn.db,
+		root: txn.root,
+	}
+	if txn.w == nil {
+		return snapshot
 	}
 
-	// Commit sub-transactions into the snapshot
-	for key, subTxn := range txn.modified {
-		path := indexPath(key.Table, key.Index)
-		final := subTxn.CommitOnly()
-		snapshot.rootTxn.Insert(path, final)
+	// Freeze the uncommitted index trees into the snapshot: from here on the
+	// write transaction copies instead of mutating what the snapshot sees.
+	snapshot.root = newDBRoot(len(txn.root.trees))
+	copy(snapshot.root.trees, txn.root.trees)
+	for i := range txn.w.tables {
+		tt := &txn.w.tables[i]
+		for ord := range tt.idx {
+			if it := &tt.idx[ord]; it.Started() {
+				it.Freeze()
+				snapshot.root.trees[tt.table.indexes[ord].slot] = it.Tree()
+			}
+		}
 	}
-
 	return snapshot
 }
