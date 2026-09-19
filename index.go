@@ -1,5 +1,17 @@
 // Copyright IBM Corp. 2015, 2026
 // SPDX-License-Identifier: MPL-2.0
+//
+// Modifications Copyright (c) 2026 Ville Vesilehto
+// Derived from github.com/hashicorp/go-memdb index.go @ 7d3fdd5. The code below
+// is upstream's, with one mechanical change: the FromObject, FromArgs and
+// PrefixFromArgs methods of the built-in indexers, and UUIDFieldIndex's
+// parseString, are renamed to unexported "...Slow" methods (except where a
+// fast path has nothing to add: boolean arguments, ConditionalIndex,
+// CompoundMultiIndex.FromArgs). The exported methods now live in index_fast.go; they try an allocation-lean fast path
+// and call these originals for everything the fast path does not claim, so
+// every result, error message, quirk and panic of upstream is preserved.
+// One defect is fixed: CompoundMultiIndex no longer corrupts prefix keys
+// through slice aliasing (see the comment in its walkVals).
 
 package memdb
 
@@ -63,7 +75,7 @@ type StringFieldIndex struct {
 	Lowercase bool
 }
 
-func (s *StringFieldIndex) FromObject(obj interface{}) (bool, []byte, error) {
+func (s *StringFieldIndex) fromObjectSlow(obj interface{}) (bool, []byte, error) {
 	v := reflect.ValueOf(obj)
 	v = reflect.Indirect(v) // Dereference the pointer if any
 
@@ -94,7 +106,7 @@ func (s *StringFieldIndex) FromObject(obj interface{}) (bool, []byte, error) {
 	return true, []byte(val), nil
 }
 
-func (s *StringFieldIndex) FromArgs(args ...interface{}) ([]byte, error) {
+func (s *StringFieldIndex) fromArgsSlow(args ...interface{}) ([]byte, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("must provide only a single argument")
 	}
@@ -110,7 +122,7 @@ func (s *StringFieldIndex) FromArgs(args ...interface{}) ([]byte, error) {
 	return []byte(arg), nil
 }
 
-func (s *StringFieldIndex) PrefixFromArgs(args ...interface{}) ([]byte, error) {
+func (s *StringFieldIndex) prefixFromArgsSlow(args ...interface{}) ([]byte, error) {
 	val, err := s.FromArgs(args...)
 	if err != nil {
 		return nil, err
@@ -132,7 +144,7 @@ type StringSliceFieldIndex struct {
 	Lowercase bool
 }
 
-func (s *StringSliceFieldIndex) FromObject(obj interface{}) (bool, [][]byte, error) {
+func (s *StringSliceFieldIndex) fromObjectSlow(obj interface{}) (bool, [][]byte, error) {
 	v := reflect.ValueOf(obj)
 	v = reflect.Indirect(v) // Dereference the pointer if any
 
@@ -168,7 +180,7 @@ func (s *StringSliceFieldIndex) FromObject(obj interface{}) (bool, [][]byte, err
 	return true, vals, nil
 }
 
-func (s *StringSliceFieldIndex) FromArgs(args ...interface{}) ([]byte, error) {
+func (s *StringSliceFieldIndex) fromArgsSlow(args ...interface{}) ([]byte, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("must provide only a single argument")
 	}
@@ -184,7 +196,7 @@ func (s *StringSliceFieldIndex) FromArgs(args ...interface{}) ([]byte, error) {
 	return []byte(arg), nil
 }
 
-func (s *StringSliceFieldIndex) PrefixFromArgs(args ...interface{}) ([]byte, error) {
+func (s *StringSliceFieldIndex) prefixFromArgsSlow(args ...interface{}) ([]byte, error) {
 	val, err := s.FromArgs(args...)
 	if err != nil {
 		return nil, err
@@ -217,7 +229,7 @@ type StringMapFieldIndex struct {
 
 var MapType = reflect.MapOf(reflect.TypeOf(""), reflect.TypeOf("")).Kind()
 
-func (s *StringMapFieldIndex) FromObject(obj interface{}) (bool, [][]byte, error) {
+func (s *StringMapFieldIndex) fromObjectSlow(obj interface{}) (bool, [][]byte, error) {
 	v := reflect.ValueOf(obj)
 	v = reflect.Indirect(v) // Dereference the pointer if any
 
@@ -257,7 +269,7 @@ func (s *StringMapFieldIndex) FromObject(obj interface{}) (bool, [][]byte, error
 
 // WARNING: Because of a bug in FromObject, this function will never return
 // a value when using the single-argument version.
-func (s *StringMapFieldIndex) FromArgs(args ...interface{}) ([]byte, error) {
+func (s *StringMapFieldIndex) fromArgsSlow(args ...interface{}) ([]byte, error) {
 	if len(args) > 2 || len(args) == 0 {
 		return nil, fmt.Errorf("must provide one or two arguments")
 	}
@@ -292,7 +304,7 @@ type IntFieldIndex struct {
 	Field string
 }
 
-func (i *IntFieldIndex) FromObject(obj interface{}) (bool, []byte, error) {
+func (i *IntFieldIndex) fromObjectSlow(obj interface{}) (bool, []byte, error) {
 	v := reflect.ValueOf(obj)
 	v = reflect.Indirect(v) // Dereference the pointer if any
 
@@ -316,7 +328,7 @@ func (i *IntFieldIndex) FromObject(obj interface{}) (bool, []byte, error) {
 	return true, buf, nil
 }
 
-func (i *IntFieldIndex) FromArgs(args ...interface{}) ([]byte, error) {
+func (i *IntFieldIndex) fromArgsSlow(args ...interface{}) ([]byte, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("must provide only a single argument")
 	}
@@ -388,7 +400,7 @@ type UintFieldIndex struct {
 	Field string
 }
 
-func (u *UintFieldIndex) FromObject(obj interface{}) (bool, []byte, error) {
+func (u *UintFieldIndex) fromObjectSlow(obj interface{}) (bool, []byte, error) {
 	v := reflect.ValueOf(obj)
 	v = reflect.Indirect(v) // Dereference the pointer if any
 
@@ -412,7 +424,7 @@ func (u *UintFieldIndex) FromObject(obj interface{}) (bool, []byte, error) {
 	return true, buf, nil
 }
 
-func (u *UintFieldIndex) FromArgs(args ...interface{}) ([]byte, error) {
+func (u *UintFieldIndex) fromArgsSlow(args ...interface{}) ([]byte, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("must provide only a single argument")
 	}
@@ -478,7 +490,7 @@ type BoolFieldIndex struct {
 	Field string
 }
 
-func (i *BoolFieldIndex) FromObject(obj interface{}) (bool, []byte, error) {
+func (i *BoolFieldIndex) fromObjectSlow(obj interface{}) (bool, []byte, error) {
 	v := reflect.ValueOf(obj)
 	v = reflect.Indirect(v) // Dereference the pointer if any
 
@@ -515,7 +527,7 @@ type UUIDFieldIndex struct {
 	Field string
 }
 
-func (u *UUIDFieldIndex) FromObject(obj interface{}) (bool, []byte, error) {
+func (u *UUIDFieldIndex) fromObjectSlow(obj interface{}) (bool, []byte, error) {
 	v := reflect.ValueOf(obj)
 	v = reflect.Indirect(v) // Dereference the pointer if any
 
@@ -534,7 +546,7 @@ func (u *UUIDFieldIndex) FromObject(obj interface{}) (bool, []byte, error) {
 	return true, buf, err
 }
 
-func (u *UUIDFieldIndex) FromArgs(args ...interface{}) ([]byte, error) {
+func (u *UUIDFieldIndex) fromArgsSlow(args ...interface{}) ([]byte, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("must provide only a single argument")
 	}
@@ -552,7 +564,7 @@ func (u *UUIDFieldIndex) FromArgs(args ...interface{}) ([]byte, error) {
 	}
 }
 
-func (u *UUIDFieldIndex) PrefixFromArgs(args ...interface{}) ([]byte, error) {
+func (u *UUIDFieldIndex) prefixFromArgsSlow(args ...interface{}) ([]byte, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("must provide only a single argument")
 	}
@@ -570,7 +582,7 @@ func (u *UUIDFieldIndex) PrefixFromArgs(args ...interface{}) ([]byte, error) {
 // parseString parses a UUID from the string. If enforceLength is false, it will
 // parse a partial UUID. An error is returned if the input, stripped of hyphens,
 // is not even length.
-func (u *UUIDFieldIndex) parseString(s string, enforceLength bool) ([]byte, error) {
+func (u *UUIDFieldIndex) parseStringSlow(s string, enforceLength bool) ([]byte, error) {
 	// Verify the length
 	l := len(s)
 	if enforceLength && l != 36 {
@@ -606,7 +618,7 @@ type FieldSetIndex struct {
 	Field string
 }
 
-func (f *FieldSetIndex) FromObject(obj interface{}) (bool, []byte, error) {
+func (f *FieldSetIndex) fromObjectSlow(obj interface{}) (bool, []byte, error) {
 	v := reflect.ValueOf(obj)
 	v = reflect.Indirect(v) // Dereference the pointer if any
 
@@ -687,7 +699,7 @@ type CompoundIndex struct {
 	AllowMissing bool
 }
 
-func (c *CompoundIndex) FromObject(raw interface{}) (bool, []byte, error) {
+func (c *CompoundIndex) fromObjectSlow(raw interface{}) (bool, []byte, error) {
 	var out []byte
 	for i, idxRaw := range c.Indexes {
 		idx, ok := idxRaw.(SingleIndexer)
@@ -710,7 +722,7 @@ func (c *CompoundIndex) FromObject(raw interface{}) (bool, []byte, error) {
 	return true, out, nil
 }
 
-func (c *CompoundIndex) FromArgs(args ...interface{}) ([]byte, error) {
+func (c *CompoundIndex) fromArgsSlow(args ...interface{}) ([]byte, error) {
 	if len(args) != len(c.Indexes) {
 		return nil, fmt.Errorf("non-equivalent argument count and index fields")
 	}
@@ -725,7 +737,7 @@ func (c *CompoundIndex) FromArgs(args ...interface{}) ([]byte, error) {
 	return out, nil
 }
 
-func (c *CompoundIndex) PrefixFromArgs(args ...interface{}) ([]byte, error) {
+func (c *CompoundIndex) prefixFromArgsSlow(args ...interface{}) ([]byte, error) {
 	if len(args) > len(c.Indexes) {
 		return nil, fmt.Errorf("more arguments than index fields")
 	}
@@ -792,7 +804,7 @@ type CompoundMultiIndex struct {
 	AllowMissing bool
 }
 
-func (c *CompoundMultiIndex) FromObject(raw interface{}) (bool, [][]byte, error) {
+func (c *CompoundMultiIndex) fromObjectSlow(raw interface{}) (bool, [][]byte, error) {
 	// At each entry, builder is storing the results from the next index
 	builder := make([][][]byte, 0, len(c.Indexes))
 
