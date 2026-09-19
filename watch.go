@@ -1,5 +1,13 @@
 // Copyright IBM Corp. 2015, 2026
 // SPDX-License-Identifier: MPL-2.0
+//
+// Modifications Copyright (c) 2026 Ville Vesilehto
+// Derived from github.com/hashicorp/go-memdb watch.go @ 7d3fdd5. The exported
+// API and its documentation are upstream's. The waiting strategy is new: sets
+// of up to maxFew channels wait in one right-sized select together with the
+// timeout or context (no helper goroutine, no context allocation, no slice
+// allocation); bigger sets return at once if the timeout or context is already
+// done and are otherwise spread over goroutines in chunks of fanoutChunk.
 
 package memdb
 
@@ -23,9 +31,7 @@ func (w WatchSet) Add(watchCh <-chan struct{}) {
 		return
 	}
 
-	if _, ok := w[watchCh]; !ok {
-		w[watchCh] = struct{}{}
-	}
+	w[watchCh] = struct{}{}
 }
 
 // AddWithLimit appends a watchCh to the WatchSet if non-nil, and if the given
@@ -54,19 +60,7 @@ func (w WatchSet) Watch(timeoutCh <-chan time.Time) bool {
 		return false
 	}
 
-	// Create a context that gets cancelled when the timeout is triggered
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	go func() {
-		select {
-		case <-timeoutCh:
-			cancel()
-		case <-ctx.Done():
-		}
-	}()
-
-	return w.WatchCtx(ctx) == context.Canceled
+	return w.watch(nil, timeoutCh) == watchTimeout
 }
 
 // WatchCtx blocks until one of the channels in the watch set is closed, or
@@ -79,29 +73,83 @@ func (w WatchSet) WatchCtx(ctx context.Context) error {
 		return nil
 	}
 
-	if n := len(w); n <= aFew {
-		idx := 0
-		chunk := make([]<-chan struct{}, aFew)
-		for watchCh := range w {
-			chunk[idx] = watchCh
-			idx++
-		}
-		return watchFew(ctx, chunk)
+	if w.watch(ctx.Done(), nil) == watchDone {
+		return ctx.Err()
 	}
+	return nil
+}
 
-	return w.watchMany(ctx)
+// The on-stack channel arrays come in three sizes, so that a small watch set
+// -- by far the most common kind -- does not pay for clearing a big one.
+const (
+	smallFew  = 8
+	mediumFew = 32
+)
+
+// watchFew runs the single select for a small set. At most one of done and
+// timeoutCh is in use (see Watch and WatchCtx).
+func watchFew(n int, done <-chan struct{}, timeoutCh <-chan time.Time, ch []<-chan struct{}) int {
+	if timeoutCh != nil {
+		return watchFewTimeout(n, timeoutCh, ch)
+	}
+	return watchFewDone(n, done, ch)
+}
+
+// watch blocks until a channel of the set fires, done is closed, or timeoutCh
+// delivers, and reports which of the three happened.
+func (w WatchSet) watch(done <-chan struct{}, timeoutCh <-chan time.Time) int {
+	n := len(w)
+	switch {
+	case n <= smallFew:
+		var chunk [smallFew]<-chan struct{}
+		i := 0
+		for watchCh := range w {
+			chunk[i] = watchCh
+			i++
+		}
+		return watchFew(n, done, timeoutCh, chunk[:])
+
+	case n <= mediumFew:
+		var chunk [mediumFew]<-chan struct{}
+		i := 0
+		for watchCh := range w {
+			chunk[i] = watchCh
+			i++
+		}
+		return watchFew(n, done, timeoutCh, chunk[:])
+
+	case n <= maxFew:
+		var chunk [maxFew]<-chan struct{}
+		i := 0
+		for watchCh := range w {
+			chunk[i] = watchCh
+			i++
+		}
+		return watchFew(n, done, timeoutCh, chunk[:])
+	}
+	return w.watchMany(done, timeoutCh)
 }
 
 // watchMany is used if there are many watchers.
-func (w WatchSet) watchMany(ctx context.Context) error {
-	// Cancel all watcher goroutines when return.
-	watcherCtx, cancel := context.WithCancel(ctx)
-	defer cancel()
+func (w WatchSet) watchMany(done <-chan struct{}, timeoutCh <-chan time.Time) int {
+	// If the caller is already done there is no need to set up any machinery
+	// at all. (Looking at every watch channel first as well was tried and
+	// measured: it only pays when something has already fired, and costs the
+	// normal, blocking case about 5%.)
+	select {
+	case <-done:
+		return watchDone
+	case <-timeoutCh:
+		return watchTimeout
+	default:
+	}
 
-	// Set up a goroutine for each watcher.
+	// Set up a goroutine for each chunk of watchers, all stopped on return.
+	stopCh := make(chan struct{})
+	defer close(stopCh)
 	triggerCh := make(chan struct{}, 1)
 	watcher := func(chunk []<-chan struct{}) {
-		if err := watchFew(watcherCtx, chunk); err == nil {
+		if watchFewDone(fanoutChunk, stopCh, chunk) == watchFired {
 			select {
 			case triggerCh <- struct{}{}:
 			default:
@@ -109,33 +157,33 @@ func (w WatchSet) watchMany(ctx context.Context) error {
 		}
 	}
 
-	// Apportion the watch channels into chunks we can feed into the
-	// watchFew helper.
+	// Apportion the watch channels into chunks, each its own small slice (a
+	// nil tail is fine: a nil channel is never ready), and fire each chunk off
+	// as soon as it is full.
 	idx := 0
-	chunk := make([]<-chan struct{}, aFew)
+	chunk := make([]<-chan struct{}, fanoutChunk)
 	for watchCh := range w {
-		subIdx := idx % aFew
-		chunk[subIdx] = watchCh
+		chunk[idx%fanoutChunk] = watchCh
 		idx++
-
-		// Fire off this chunk and start a fresh one.
-		if idx%aFew == 0 {
+		if idx%fanoutChunk == 0 {
 			go watcher(chunk)
-			chunk = make([]<-chan struct{}, aFew)
+			if idx < len(w) {
+				chunk = make([]<-chan struct{}, fanoutChunk)
+			}
 		}
 	}
-
-	// Make sure to watch any residual channels in the last chunk.
-	if idx%aFew != 0 {
+	if idx%fanoutChunk != 0 {
 		go watcher(chunk)
 	}
 
 	// Wait for a channel to trigger or timeout.
 	select {
 	case <-triggerCh:
-		return nil
-	case <-ctx.Done():
-		return ctx.Err()
+		return watchFired
+	case <-done:
+		return watchDone
+	case <-timeoutCh:
+		return watchTimeout
 	}
 }
 
