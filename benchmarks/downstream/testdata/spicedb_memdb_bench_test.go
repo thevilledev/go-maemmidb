@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Ville Vesilehto
+// SPDX-License-Identifier: MPL-2.0
+
 package memdb
 
 import (
@@ -14,8 +17,8 @@ import (
 // A mid-size permission graph: 2000 documents, each with 3 viewer
 // relationships drawn from a pool of 50 users (6000 relationships).
 const (
-	benchDocs  = 2000
-	benchUsers = 50
+	benchDocs   = 2000
+	benchUsers  = 50
 	benchPerDoc = 3
 )
 
