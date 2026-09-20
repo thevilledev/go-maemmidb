@@ -72,6 +72,14 @@ inline; field offsets are resolved once; keys are appended to a reused buffer.
 [DESIGN.md](DESIGN.md) has the details, including why Roaring bitmaps proper do
 *not* belong on the ordered hot path and where they will go instead.
 
+[DOWNSTREAM.md](DOWNSTREAM.md) compares performance and compatibility in Docker,
+SwarmKit, Consul, Nomad, Vault and SpiceDB, using go-maemmidb without changes to
+their application source. In Docker's existing container-store benchmarks,
+prefix lookups take 38–40% less time and adding 100 containers takes 73% less
+time. SwarmKit's eight store benchmarks show a 51.5% reduction in time per
+operation by geometric mean. The document includes results for all six
+projects, benchmark sources, test limitations and reproduction instructions.
+
 ## Compatibility
 
 - The complete upstream test suite runs here **unmodified**: the eight
