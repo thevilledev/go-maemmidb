@@ -21,25 +21,25 @@ immutable radix trees. No dependencies.
 ## Performance
 
 Measured against go-memdb v1.3.5 on an Apple M1 Max (Go 1.27.1), 190 benchmarks
-from one shared source: **181 are faster, 9 are statistically equal, none is
-slower, none allocates more or uses more memory** -- geometric mean **2.65x**.
+from one shared source: **182 are faster, 8 are statistically equal, none is
+slower, none allocates more or uses more memory** -- geometric mean **2.58x**.
 
 | 100,000-row table | go-memdb | go-maemmidb | |
 |---|---:|---:|---:|
-| Insert + commit, then delete + commit (3 indexes) | 58.3 µs | 13.4 µs | **4.3x** |
-| The same with 11 indexes | 185 µs | 73 µs | **2.5x** |
-| Update + commit, keys unchanged (3 / 11 indexes) | 25.8 / 118 µs | 9.9 / 44.9 µs | **2.6x** |
-| Bulk load, 3 indexes | 0.80 s | 0.24 s | **3.3x** |
-| `First` by id: hit / miss | 757 / 350 ns | 512 / 131 ns | **1.5x / 2.7x** |
-| Open a read transaction and `First` | 1018 ns | 510 ns | **2.0x** |
-| `Last` on a non-unique index | 632 ns | 240 ns | **2.6x** |
-| Iterate a 100-row group: forward / reverse | 5.2 / 10.0 µs | 2.7 / 2.6 µs | **1.9x / 3.8x** |
-| Scan all 100,000 rows | 5.4 ms | 2.7 ms | **2.0x** |
-| Read your own writes (10 inserts + lookups in one txn) | 138 µs | 50 µs | **2.8x** |
-| `DeletePrefix` of 100 rows | 554 µs | 157 µs | **3.5x** |
-| Track 1,000 changes and call `Changes()` | 12.5 ms | 3.5 ms | **3.6x** |
-| Watch a row, update it, observe the notification | 27.7 µs | 11.4 µs | **2.4x** |
-| Parallel readers on 8 procs, with a writer | 149 ns | 78 ns | **1.9x** |
+| Insert + commit, then delete + commit (3 indexes) | 45.1 µs | 13.3 µs | **3.4x** |
+| The same with 11 indexes | 152 µs | 64 µs | **2.4x** |
+| Update + commit, keys unchanged (3 / 11 indexes) | 29.1 / 50.1 µs | 8.6 / 36.2 µs | **3.4x / 1.4x** |
+| Bulk load, 3 indexes | 0.79 s | 0.24 s | **3.3x** |
+| `First` by id: hit / miss | 683 / 398 ns | 424 / 127 ns | **1.6x / 3.1x** |
+| Open a read transaction and `First` | 939 ns | 451 ns | **2.1x** |
+| `Last` on a non-unique index | 624 ns | 207 ns | **3.0x** |
+| Iterate a 100-row group: forward / reverse | 5.1 / 9.6 µs | 2.5 / 2.8 µs | **2.0x / 3.5x** |
+| Scan all 100,000 rows | 4.7 ms | 2.6 ms | **1.8x** |
+| Read your own writes (10 inserts + lookups in one txn) | 156 µs | 50 µs | **3.2x** |
+| `DeletePrefix` of 100 rows | 544 µs | 160 µs | **3.4x** |
+| Track 1,000 changes and call `Changes()` | 11.7 ms | 4.4 ms | **2.6x** |
+| Watch a row, update it, observe the notification | 31.2 µs | 9.5 µs | **3.3x** |
+| Parallel readers on 8 procs, with a writer | 157 ns | 79 ns | **2.0x** |
 | Upstream's own `BenchmarkWatch` (1024 channels, expired timeout) | 106 µs | 21 ns | |
 | Heap bytes per row (3 / 11 indexes) | 2.4 / 6.5 kB | 1.1 / 3.0 kB | **-54%** |
 | Heap objects per row (3 / 11 indexes) | 32 / 86 | 12 / 32 | **-64%** |
@@ -50,7 +50,8 @@ the absolute times.
 Every number comes from the *same benchmark source file* built twice: once
 against `github.com/hashicorp/go-memdb` (`-tags upstream`) and once against this
 package, via a file of type aliases, so there is no adapter in the measured
-path. Runs are interleaved (A/B/A/B) and compared with `benchstat`.
+path. Runs are interleaved (A/B/A/B), every round with differently laid out
+binaries and after a discarded warm-up pass, and compared with `benchstat`.
 `make bench-gate` then enforces the claim: it fails if **any** benchmark is
 slower (statistically significant and beyond a 2% noise tolerance), allocates
 more often, or uses more memory than upstream. Method, environment and the full
@@ -193,6 +194,8 @@ make check          # lint, headers, upstream-suite checksums, tests, -race, saf
 make fuzz           # tree fuzzer + differential fuzzer against upstream
 make bench-compare  # interleaved A/B run against upstream, then benchstat
 make bench-gate     # fail unless universally faster
+make bench-self BASE=origin/main && make bench-self-gate
+                    # the same, against an older revision of this package
 ```
 
 The `benchmarks/` directory is a separate Go module, so that the original

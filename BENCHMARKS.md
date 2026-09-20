@@ -131,22 +131,22 @@ orphaned `benchmarks.test` process from an interrupted earlier run.
 
 ## Results
 
-Measured on 2026-09-19 with `make bench-compare ROUNDS=3 COUNT=2 BENCHTIME=0.4s`
-(six samples per benchmark and implementation) on a desktop machine carrying
-its ordinary background load -- which is why the runs are interleaved, and why
-absolute times are on the slow side; the ratios are what to read.
+Measured on 2026-09-20 on an Apple M1 Max (macOS, Go 1.27.1): three rounds of
+two samples per benchmark and implementation, 0.5 s windows, one discarded
+warm-up pass per process, a different function layout every round. The machine
+was a desktop carrying its ordinary background load -- which is why the runs
+are interleaved, and why absolute times are on the slow side; the ratios are
+what to read. (The library was built through the script's `BASE` mode, and the
+run interleaved a third side, a development version of this package, which is
+not part of this report.)
 
-The published files are that run plus targeted re-runs, each interleaved the
-same way and spliced in by benchmark name:
-
-- `WatchSet*`: the code changed in response to the gate (see DESIGN.md).
-- `Parallel*`, `Snapshot`, `LongestPrefix`: the gate and the summary exposed
-  mistakes in the *benchmarks* -- setup on the clock; a 32-byte-allocation
-  benchmark that was measuring the two fixtures' heap sizes; key formatting
-  inside the timed loop.
-- The seven write benchmarks on the 11-index schema at 100,000 rows: a 0.4 s
-  window right after building such a database mostly measures the heap warming
-  up (intervals of +/-40%); they were re-measured with 2 s windows.
+The run is published unedited: no benchmark was re-measured and spliced in.
+The first published run of this suite, made before the script discarded a
+warm-up pass, had to splice in re-measurements with 2 s windows for the seven
+write benchmarks of the 11-index schema, and 51 of its 190 benchmarks had a
+`benchstat` interval wider than 15% on one side or the other, against 24 now.
+Those numbers were not wrong in direction -- the artefact penalised this
+package more than upstream -- but they were noisier than the code deserves.
 
 Numbers from a quiet machine, from Linux and from x86-64 are welcome.
 
@@ -158,13 +158,13 @@ goarch: arm64
 cpu: Apple M1 Max
 go:     go version go1.27.1 darwin/arm64
 upstream: github.com/hashicorp/go-memdb v1.3.5, github.com/hashicorp/go-immutable-radix v1.3.1
-samples:  6-12 per benchmark and implementation
+samples:  6 per benchmark and implementation
 ```
 
 ### The gate
 
 ```
-benchgate: 190 benchmarks compared: 181 faster, 9 statistically equal, geomean speed-up 2.65x
+benchgate: 190 benchmarks compared: 182 faster, 8 statistically equal, geomean speed-up 2.58x
 benchgate: PASS -- no benchmark is slower, allocates more often, or uses more memory than upstream
 ```
 
@@ -175,44 +175,44 @@ allocs/op and B/op are the change in the family's total.
 
 | Benchmark family | cases | speed-up (geomean) | worst case | best case | allocs/op | B/op |
 |---|---:|---:|---:|---:|---:|---:|
-| BulkLoad | 4 | **3.42x** | 3.29x | 3.73x | -81% | -71% |
-| Changes | 4 | **3.26x** | 2.42x | 4.39x | -83% | -68% |
-| CommitNotify | 2 | **3.48x** | 3.20x | 3.78x | -83% | -72% |
-| DeleteAbort | 4 | **2.82x** | 2.28x | 3.43x | -88% | -65% |
-| DeleteAllAbort | 4 | **3.45x** | 2.45x | 4.64x | -90% | -73% |
-| DeletePrefixAbort | 2 | **3.80x** | 3.54x | 4.08x | -93% | -79% |
-| FilterIterator | 1 | **1.80x** | 1.80x | 1.80x | -75% | -42% |
-| First | 20 | **2.18x** | 1.48x | 4.57x | -71% | -81% |
-| FirstIndex | 12 | **2.32x** | 1.45x | 13.49x | -90% | -95% |
-| FirstWatch | 2 | **1.83x** | 1.38x | 2.42x | -80% | -89% |
-| GetOne | 2 | **1.85x** | 1.82x | 1.88x | -78% | -27% |
-| GetWatchCh | 2 | **1.61x** | 1.45x | 1.78x | -73% | -27% |
-| Indexer | 23 | **1.89x** | 1.00x | 3.39x | -62% | -52% |
-| InsertAbort | 16 | **2.75x** | 1.25x | 4.04x | -79% | -64% |
-| InsertDeleteCommit | 12 | **2.80x** | 1.53x | 4.34x | -88% | -68% |
-| InsertDeleteCommitManyTables | 1 | **3.24x** | 3.24x | 3.24x | -88% | -63% |
-| Iterate | 14 | **2.12x** | 1.14x | 4.60x | -82% | -59% |
-| IterateInWriteTxn | 2 | **2.87x** | 2.73x | 3.02x | -82% | -63% |
-| Last | 4 | **4.53x** | 1.64x | 23.04x | -94% | -98% |
-| LongestPrefix | 2 | **1.22x** | 1.21x | 1.24x | -25% | -38% |
-| LowerBound | 5 | **2.09x** | 1.76x | 2.52x | -85% | -65% |
-| NewMemDB | 3 | **2.17x** | 1.13x | 3.42x | -83% | -72% |
-| ParallelTxnFirst | 2 | **2.10x** | 1.86x | 2.37x | -71% | -68% |
-| ParallelTxnFirstWithWriter | 1 | **2.17x** | 2.17x | 2.17x | -71% | -69% |
-| ReadYourWrites | 2 | **3.12x** | 2.75x | 3.53x | -82% | -67% |
-| Snapshot | 1 | **0.98x** | 0.98x | 0.98x | +0% | +0% |
-| SnapshotWrite | 1 | **2.92x** | 2.92x | 2.92x | -85% | -64% |
-| Txn | 4 | **1.70x** | 1.56x | 1.91x | -50% | -39% |
-| TxnFirst | 2 | **2.19x** | 2.00x | 2.40x | -71% | -68% |
-| TxnSnapshot | 1 | **2.36x** | 2.36x | 2.36x | -86% | -64% |
-| UpdateCommit | 12 | **2.90x** | 1.67x | 4.64x | -88% | -68% |
-| WatchCycle | 2 | **3.17x** | 2.43x | 4.13x | -87% | -70% |
-| WatchSetAdd | 1 | **1.10x** | 1.10x | 1.10x | +0% | +0% |
-| WatchSetBlockThenFire | 2 | **1.01x** | 1.00x | 1.03x | -4% | -3% |
-| WatchSetWatchCtxCancelled | 6 | **13.66x** | 1.00x | 2375.37x | -100% | -100% |
-| WatchSetWatchCtxFired | 6 | **1.31x** | 0.99x | 2.14x | -15% | -12% |
-| WatchSetWatchExpired | 6 | **26.64x** | 1.79x | 3319.73x | -100% | -100% |
-| **all** | 190 | **2.65x** | | | | |
+| BulkLoad | 4 | **3.51x** | 3.32x | 3.91x | -81% | -71% |
+| Changes | 4 | **2.94x** | 2.64x | 3.27x | -83% | -68% |
+| CommitNotify | 2 | **3.43x** | 3.12x | 3.78x | -83% | -72% |
+| DeleteAbort | 4 | **2.89x** | 2.55x | 3.29x | -88% | -65% |
+| DeleteAllAbort | 4 | **2.77x** | 1.32x | 4.12x | -90% | -73% |
+| DeletePrefixAbort | 2 | **3.76x** | 3.41x | 4.15x | -93% | -79% |
+| FilterIterator | 1 | **1.73x** | 1.73x | 1.73x | -75% | -42% |
+| First | 20 | **2.19x** | 1.52x | 3.68x | -71% | -81% |
+| FirstIndex | 12 | **2.51x** | 1.55x | 12.95x | -90% | -95% |
+| FirstWatch | 2 | **1.89x** | 1.49x | 2.40x | -80% | -91% |
+| GetOne | 2 | **1.80x** | 1.70x | 1.91x | -78% | -27% |
+| GetWatchCh | 2 | **1.78x** | 1.77x | 1.80x | -73% | -27% |
+| Indexer | 23 | **1.90x** | 1.00x | 3.44x | -62% | -52% |
+| InsertAbort | 16 | **2.44x** | 1.05x | 4.05x | -79% | -64% |
+| InsertDeleteCommit | 12 | **2.42x** | 1.37x | 4.31x | -88% | -68% |
+| InsertDeleteCommitManyTables | 1 | **3.20x** | 3.20x | 3.20x | -88% | -63% |
+| Iterate | 14 | **1.99x** | 1.19x | 3.74x | -82% | -59% |
+| IterateInWriteTxn | 2 | **2.69x** | 2.44x | 2.98x | -82% | -63% |
+| Last | 4 | **5.18x** | 1.59x | 24.09x | -94% | -98% |
+| LongestPrefix | 2 | **1.24x** | 1.22x | 1.26x | -25% | -38% |
+| LowerBound | 5 | **1.75x** | 1.11x | 2.43x | -85% | -65% |
+| NewMemDB | 3 | **2.13x** | 1.11x | 3.39x | -83% | -72% |
+| ParallelTxnFirst | 2 | **2.15x** | 1.98x | 2.33x | -71% | -68% |
+| ParallelTxnFirstWithWriter | 1 | **1.99x** | 1.99x | 1.99x | -71% | -68% |
+| ReadYourWrites | 2 | **3.31x** | 3.16x | 3.47x | -82% | -67% |
+| Snapshot | 1 | **1.00x** | 1.00x | 1.00x | +0% | +0% |
+| SnapshotWrite | 1 | **2.69x** | 2.69x | 2.69x | -85% | -64% |
+| Txn | 4 | **1.82x** | 1.55x | 2.28x | -50% | -39% |
+| TxnFirst | 2 | **2.19x** | 2.08x | 2.29x | -71% | -68% |
+| TxnSnapshot | 1 | **2.72x** | 2.72x | 2.72x | -86% | -64% |
+| UpdateCommit | 12 | **2.67x** | 1.12x | 4.22x | -88% | -67% |
+| WatchCycle | 2 | **3.63x** | 3.30x | 3.99x | -87% | -70% |
+| WatchSetAdd | 1 | **1.11x** | 1.11x | 1.11x | +0% | +0% |
+| WatchSetBlockThenFire | 2 | **1.02x** | 1.00x | 1.03x | -4% | -3% |
+| WatchSetWatchCtxCancelled | 6 | **13.56x** | 1.00x | 2354.45x | -100% | -100% |
+| WatchSetWatchCtxFired | 6 | **1.31x** | 1.01x | 2.10x | -15% | -12% |
+| WatchSetWatchExpired | 6 | **25.78x** | 1.75x | 3231.58x | -100% | -100% |
+| **all** | 190 | **2.58x** | | | | |
 
 ### Memory
 
@@ -223,14 +223,14 @@ collection with only that database live.
 |---|---|---:|---:|---:|
 | 3 indexes | heap bytes per row | 2,443 | 1,135 | **-54%** |
 | | heap objects per row | 32.2 | 11.7 | **-64%** |
-| | full GC cycle | 198 ms | 154 ms | -22% |
-| 11 indexes | heap bytes per row | 6,530 | 2,970 | **-55%** |
-| | heap objects per row | 86.5 | 31.5 | **-64%** |
-| | full GC cycle | 627 ms | 445 ms | -29% |
+| | full GC cycle | 202 ms | 163 ms | -19% |
+| 11 indexes | heap bytes per row | 6,529 | 2,970 | **-55%** |
+| | heap objects per row | 86.4 | 31.5 | **-64%** |
+| | full GC cycle | 636 ms | 434 ms | -32% |
 
 ### What "statistically equal" means here
 
-Nine of the 190 benchmarks show no significant difference. They are the ones
+Eight of the 190 benchmarks show no significant difference. They are the ones
 where both implementations run the same code or are bound by the same runtime
 machinery: `MemDB.Snapshot` (one 32-byte allocation in both), the boolean and
 conditional indexer methods (upstream's code, unchanged), and `WatchSet` waits
@@ -246,26 +246,26 @@ goos: darwin
 goarch: arm64
 pkg: memdb
 cpu: Apple M1 Max
-                                 │ results/inpkg-upstream.txt │        results/inpkg-new.txt        │
-                                 │           sec/op           │   sec/op     vs base                │
-UUIDFieldIndex_parseString-10                   116.25n ± 20%   79.89n ± 8%  -31.28% (p=0.000 n=10)
-CompoundMultiIndex_FromObject-10                 652.7n ±  1%   236.5n ± 0%  -63.76% (p=0.000 n=10)
-Watch-10                                     106123.00n ±  5%   20.66n ± 2%  -99.98% (p=0.000 n=10)
-geomean                                          2.004µ         73.09n       -96.35%
-                                 │ results/inpkg-upstream.txt │          results/inpkg-new.txt           │
-                                 │            B/op            │    B/op      vs base                     │
-UUIDFieldIndex_parseString-10                      48.00 ± 0%    16.00 ± 0%   -66.67% (p=0.000 n=10)
-CompoundMultiIndex_FromObject-10                   640.0 ± 0%    352.0 ± 0%   -45.00% (p=0.000 n=10)
-Watch-10                                         10.97Ki ± 0%   0.00Ki ± 0%  -100.00% (p=0.000 n=10)
-geomean                                            701.5                     ?                       ¹ ²
+                                 │ /private/tmp/claude-501/-Users-ville-git-go-maemmidb/0e12e609-c450-4b30-a6bb-d35fefbbb19b/scratchpad/commit/results-main/inpkg-upstream.txt │ /private/tmp/claude-501/-Users-ville-git-go-maemmidb/0e12e609-c450-4b30-a6bb-d35fefbbb19b/scratchpad/commit/results-main/inpkg-new.txt │
+                                 │                                                                   sec/op                                                                    │                                                     sec/op                                                      vs base                │
+UUIDFieldIndex_parseString-10                                                                                                                                    116.25n ± 20%                                                                                                      79.89n ± 8%  -31.28% (p=0.000 n=10)
+CompoundMultiIndex_FromObject-10                                                                                                                                  652.7n ±  1%                                                                                                      236.5n ± 0%  -63.76% (p=0.000 n=10)
+Watch-10                                                                                                                                                      106123.00n ±  5%                                                                                                      20.66n ± 2%  -99.98% (p=0.000 n=10)
+geomean                                                                                                                                                           2.004µ                                                                                                            73.09n       -96.35%
+                                 │ /private/tmp/claude-501/-Users-ville-git-go-maemmidb/0e12e609-c450-4b30-a6bb-d35fefbbb19b/scratchpad/commit/results-main/inpkg-upstream.txt │ /private/tmp/claude-501/-Users-ville-git-go-maemmidb/0e12e609-c450-4b30-a6bb-d35fefbbb19b/scratchpad/commit/results-main/inpkg-new.txt │
+                                 │                                                                    B/op                                                                     │                                                   B/op                                                     vs base                     │
+UUIDFieldIndex_parseString-10                                                                                                                                       48.00 ± 0%                                                                                                  16.00 ± 0%   -66.67% (p=0.000 n=10)
+CompoundMultiIndex_FromObject-10                                                                                                                                    640.0 ± 0%                                                                                                  352.0 ± 0%   -45.00% (p=0.000 n=10)
+Watch-10                                                                                                                                                          10.97Ki ± 0%                                                                                                 0.00Ki ± 0%  -100.00% (p=0.000 n=10)
+geomean                                                                                                                                                             701.5                                                                                                                   ?                       ¹ ²
 ¹ summaries must be >0 to compute geomean
 ² ratios must be >0 to compute geomean
-                                 │ results/inpkg-upstream.txt │          results/inpkg-new.txt          │
-                                 │         allocs/op          │ allocs/op   vs base                     │
-UUIDFieldIndex_parseString-10                      2.000 ± 0%   1.000 ± 0%   -50.00% (p=0.000 n=10)
-CompoundMultiIndex_FromObject-10                  28.000 ± 0%   5.000 ± 0%   -82.14% (p=0.000 n=10)
-Watch-10                                           79.00 ± 0%    0.00 ± 0%  -100.00% (p=0.000 n=10)
-geomean                                            16.42                    ?                       ¹ ²
+                                 │ /private/tmp/claude-501/-Users-ville-git-go-maemmidb/0e12e609-c450-4b30-a6bb-d35fefbbb19b/scratchpad/commit/results-main/inpkg-upstream.txt │ /private/tmp/claude-501/-Users-ville-git-go-maemmidb/0e12e609-c450-4b30-a6bb-d35fefbbb19b/scratchpad/commit/results-main/inpkg-new.txt │
+                                 │                                                                  allocs/op                                                                  │                                                 allocs/op                                                  vs base                     │
+UUIDFieldIndex_parseString-10                                                                                                                                       2.000 ± 0%                                                                                                  1.000 ± 0%   -50.00% (p=0.000 n=10)
+CompoundMultiIndex_FromObject-10                                                                                                                                   28.000 ± 0%                                                                                                  5.000 ± 0%   -82.14% (p=0.000 n=10)
+Watch-10                                                                                                                                                            79.00 ± 0%                                                                                                   0.00 ± 0%  -100.00% (p=0.000 n=10)
+geomean                                                                                                                                                             16.42                                                                                                                   ?                       ¹ ²
 ¹ summaries must be >0 to compute geomean
 ² ratios must be >0 to compute geomean
 ```
@@ -273,18 +273,18 @@ geomean                                            16.42                    ?   
 ### Parallel readers
 
 ```
-                               │            sec/op             │   sec/op     vs base               │
-ParallelTxnFirst/size=1000                        294.3n ±  2%   127.2n ± 1%  -56.78% (p=0.002 n=6)
-ParallelTxnFirst/size=1000-4                      93.22n ±  1%   39.54n ± 2%  -57.58% (p=0.002 n=6)
-ParallelTxnFirst/size=1000-8                      82.52n ±  4%   32.29n ± 8%  -60.86% (p=0.002 n=6)
-ParallelTxnFirst/size=100000                      879.2n ±  5%   443.2n ± 4%  -49.58% (p=0.002 n=6)
-ParallelTxnFirst/size=100000-4                    276.9n ± 23%   142.4n ± 4%  -48.58% (p=0.002 n=6)
-ParallelTxnFirst/size=100000-8                   149.65n ±  5%   76.98n ± 1%  -48.56% (p=0.002 n=6)
-ParallelTxnFirstWithWriter                        900.1n ±  4%   453.2n ± 5%  -49.65% (p=0.002 n=6)
-ParallelTxnFirstWithWriter-4                      274.8n ±  2%   140.8n ± 3%  -48.74% (p=0.002 n=6)
-ParallelTxnFirstWithWriter-8                     148.70n ±  3%   77.70n ± 1%  -47.75% (p=0.002 n=6)
-geomean                                           243.7n         116.4n       -52.25%
-                               │ results/parallel-upstream.txt │     results/parallel-new.txt      │
+                               │                                                                     sec/op                                                                     │                                                       sec/op                                                        vs base               │
+ParallelTxnFirst/size=1000                                                                                                                                          295.8n ± 6%                                                                                                         125.9n ±  3%  -57.45% (p=0.002 n=6)
+ParallelTxnFirst/size=1000-4                                                                                                                                        90.38n ± 3%                                                                                                         39.59n ±  5%  -56.19% (p=0.002 n=6)
+ParallelTxnFirst/size=1000-8                                                                                                                                        81.78n ± 2%                                                                                                         32.39n ±  8%  -60.39% (p=0.002 n=6)
+ParallelTxnFirst/size=100000                                                                                                                                        940.2n ± 5%                                                                                                         452.8n ± 11%  -51.85% (p=0.002 n=6)
+ParallelTxnFirst/size=100000-4                                                                                                                                      282.1n ± 3%                                                                                                         146.5n ±  3%  -48.06% (p=0.002 n=6)
+ParallelTxnFirst/size=100000-8                                                                                                                                     153.90n ± 3%                                                                                                         79.25n ±  3%  -48.50% (p=0.002 n=6)
+ParallelTxnFirstWithWriter                                                                                                                                          910.2n ± 3%                                                                                                         450.2n ± 14%  -50.55% (p=0.002 n=6)
+ParallelTxnFirstWithWriter-4                                                                                                                                        290.0n ± 5%                                                                                                         148.2n ±  7%  -48.91% (p=0.002 n=6)
+ParallelTxnFirstWithWriter-8                                                                                                                                       156.55n ± 3%                                                                                                         79.00n ±  2%  -49.54% (p=0.002 n=6)
+geomean                                                                                                                                                             249.1n                                                                                                              118.1n        -52.58%
+                               │ /private/tmp/claude-501/-Users-ville-git-go-maemmidb/0e12e609-c450-4b30-a6bb-d35fefbbb19b/scratchpad/commit/results-main/parallel-upstream.txt │ /private/tmp/claude-501/-Users-ville-git-go-maemmidb/0e12e609-c450-4b30-a6bb-d35fefbbb19b/scratchpad/commit/results-main/parallel-new.txt │
 ```
 
 ### Full results
