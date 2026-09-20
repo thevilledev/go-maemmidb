@@ -104,6 +104,13 @@ const (
 	extConditional
 	extCompound
 	extCompoundMulti
+
+	// The indexers of typed.go: a function supplies the value.
+	extTypedString
+	extTypedStrings
+	extTypedInt
+	extTypedUint
+	extTypedBool
 )
 
 // extractor is the compiled form of one Indexer.
@@ -119,6 +126,9 @@ type extractor struct {
 	// stack of every exported indexer method (index_fast.go), which zeroes it
 	// on every call, and eleven pointers of which ten are nil cost more there
 	// than an assertion does here.
+
+	// typed is the indexer of the extTyped kinds (typed.go).
+	typed typedIndexer
 
 	// subs are the compiled sub-indexers of a compound index. A throw-away
 	// extractor (see index_fast.go) has none and resolves them per call.
@@ -151,7 +161,7 @@ func (e *extractor) compoundMulti() *CompoundMultiIndex { return e.indexer.(*Com
 // is one of the built-in kinds.
 func (e *extractor) init(ix Indexer) bool {
 	e.indexer = ix
-	switch ix.(type) {
+	switch t := ix.(type) {
 	case *StringFieldIndex:
 		e.kind = extString
 	case *StringSliceFieldIndex:
@@ -174,6 +184,8 @@ func (e *extractor) init(ix Indexer) bool {
 		e.kind = extCompound
 	case *CompoundMultiIndex:
 		e.kind = extCompoundMulti
+	case typedIndexer:
+		e.kind, e.typed = t.typedKind(), t
 	default:
 		e.kind = extCustom
 		return false
@@ -242,7 +254,8 @@ func (e *extractor) subsCurrent() bool {
 // through appendScalar without running user code.
 func (e *extractor) scalar() bool {
 	switch e.kind {
-	case extString, extInt, extUint, extBool, extUUID, extFieldSet:
+	case extString, extInt, extUint, extBool, extUUID, extFieldSet,
+		extTypedString, extTypedInt, extTypedUint, extTypedBool:
 		return true
 	}
 	return false
@@ -560,6 +573,38 @@ func (e *extractor) appendScalar(dst []byte, obj interface{}) (out []byte, ok bo
 		}
 		return append(dst, 0), true, true
 
+	case extTypedString:
+		val, handled := e.typed.stringOf(obj)
+		if !handled {
+			return dst, false, false
+		}
+		if val == "" {
+			return dst, false, true
+		}
+		dst = appendString(dst, val, e.typed.lower())
+		return append(dst, 0), true, true
+
+	case extTypedInt:
+		val, handled := e.typed.intOf(obj)
+		if !handled {
+			return dst, false, false
+		}
+		return appendInt(dst, val, e.typed.width()), true, true
+
+	case extTypedUint:
+		val, handled := e.typed.uintOf(obj)
+		if !handled {
+			return dst, false, false
+		}
+		return appendUint(dst, val, e.typed.width()), true, true
+
+	case extTypedBool:
+		val, handled := e.typed.intOf(obj)
+		if !handled {
+			return dst, false, false
+		}
+		return append(dst, byte(val)), true, true
+
 	case extCompound:
 		if !e.subsCurrent() {
 			return dst, false, false
@@ -621,7 +666,7 @@ func (e *extractor) appendKeys(kl, tmp *keyList, obj interface{}, suffix []byte)
 					tmp.buf = out
 					tmp.end()
 				}
-			case sub.kind == extStringSlice || sub.kind == extStringMap:
+			case sub.kind == extStringSlice || sub.kind == extStringMap || sub.kind == extTypedStrings:
 				subOK, subHandled, _ = sub.appendKeys(tmp, nil, obj, nil)
 			}
 			if !subHandled {
@@ -727,6 +772,31 @@ func (e *extractor) appendKeys(kl, tmp *keyList, obj interface{}, suffix []byte)
 		}
 		return ok, true, nil
 
+	case extTypedStrings:
+		vals, handled := e.typed.stringsOf(obj)
+		if !handled {
+			return false, false, nil
+		}
+		lowercase := e.typed.lower()
+		size, keys := 0, 0
+		for _, val := range vals {
+			if val != "" {
+				size += len(val) + 1 + len(suffix)
+				keys++
+			}
+		}
+		kl.reserve(size, keys)
+		for _, val := range vals {
+			if val == "" {
+				continue
+			}
+			kl.buf = appendString(kl.buf, val, lowercase)
+			kl.buf = append(append(kl.buf, 0), suffix...)
+			kl.end()
+			ok = true
+		}
+		return ok, true, nil
+
 	case extStringMap:
 		fi := e.fieldOf(obj, e.strMap().Field)
 		if !fi.usable || !fi.exact || fi.kind != reflect.Map || isNilObject(obj) {
@@ -777,7 +847,7 @@ func (e *extractor) appendKeys(kl, tmp *keyList, obj interface{}, suffix []byte)
 // methods, which also own every error message.
 func (e *extractor) appendArgs(dst []byte, args []interface{}, prefix bool) ([]byte, bool) {
 	switch e.kind {
-	case extString, extStringSlice:
+	case extString, extStringSlice, extTypedString, extTypedStrings:
 		if len(args) != 1 {
 			return dst, false
 		}
@@ -785,14 +855,46 @@ func (e *extractor) appendArgs(dst []byte, args []interface{}, prefix bool) ([]b
 		if !ok {
 			return dst, false
 		}
-		lowercase := e.kind == extString && e.str().Lowercase ||
-			e.kind == extStringSlice && e.strSlice().Lowercase
+		// (Spelled out rather than left to appendStringArg: this is the path
+		// of nearly every query, and the call is not inlined.)
+		var lowercase bool
+		switch e.kind {
+		case extString:
+			lowercase = e.str().Lowercase
+		case extStringSlice:
+			lowercase = e.strSlice().Lowercase
+		default:
+			lowercase = e.typed.lower()
+		}
 		dst = appendString(dst, arg, lowercase)
 		if prefix {
 			// PrefixFromArgs strips the terminator again.
 			return dst, true
 		}
 		return append(dst, 0), true
+
+	case extTypedInt:
+		if prefix || len(args) != 1 {
+			return dst, false
+		}
+		// Any signed integer type, at the width of the index.
+		val, ok := signedArg(args[0])
+		size := e.typed.width()
+		if !ok || (size < 8 && (val < -1<<(8*size-1) || val > 1<<(8*size-1)-1)) {
+			return dst, false
+		}
+		return appendInt(dst, val, size), true
+
+	case extTypedUint:
+		if prefix || len(args) != 1 {
+			return dst, false
+		}
+		val, ok := unsignedArg(args[0])
+		size := e.typed.width()
+		if !ok || (size < 8 && val > 1<<(8*size)-1) {
+			return dst, false
+		}
+		return appendUint(dst, val, size), true
 
 	case extStringMap:
 		if prefix || len(args) == 0 || len(args) > 2 {
@@ -845,7 +947,7 @@ func (e *extractor) appendArgs(dst []byte, args []interface{}, prefix bool) ([]b
 		}
 		return dst, false
 
-	case extBool, extFieldSet, extConditional:
+	case extBool, extFieldSet, extConditional, extTypedBool:
 		if prefix || len(args) != 1 {
 			return dst, false
 		}
@@ -892,7 +994,8 @@ func (e *extractor) appendArgs(dst []byte, args []interface{}, prefix bool) ([]b
 				return dst[:start], false
 			}
 			last := prefix && i+1 == len(args)
-			if last && sub.kind != extString && sub.kind != extStringSlice && sub.kind != extUUID {
+			if last && sub.kind != extString && sub.kind != extStringSlice && sub.kind != extUUID &&
+				sub.kind != extTypedString && sub.kind != extTypedStrings {
 				// Not a PrefixIndexer: upstream reports an error.
 				return dst[:start], false
 			}
@@ -905,4 +1008,29 @@ func (e *extractor) appendArgs(dst []byte, args []interface{}, prefix bool) ([]b
 		return dst, true
 	}
 	return dst, false
+}
+
+// appendStringArg is appendArgs for the one argument shape that typed keys
+// (typed.go) have: a single string. It handles the index kinds whose argument
+// is a string.
+func (e *extractor) appendStringArg(dst []byte, arg string, prefix bool) ([]byte, bool) {
+	var lowercase bool
+	switch e.kind {
+	case extString:
+		lowercase = e.str().Lowercase
+	case extStringSlice:
+		lowercase = e.strSlice().Lowercase
+	case extTypedString, extTypedStrings:
+		lowercase = e.typed.lower()
+	case extUUID:
+		return appendUUID(dst, arg, !prefix)
+	default:
+		return dst, false
+	}
+	dst = appendString(dst, arg, lowercase)
+	if prefix {
+		// PrefixFromArgs strips the terminator again.
+		return dst, true
+	}
+	return append(dst, 0), true
 }
