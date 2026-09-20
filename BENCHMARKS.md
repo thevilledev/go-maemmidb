@@ -43,6 +43,29 @@ benchmark that had just released a large database. Those results were thrown
 away.) With one process per family, a family shares its heap with the databases
 it needs and with nothing else.
 
+**A different function layout every round.** Where the linker happens to put
+a hot loop or a runtime function relative to cache-line and page boundaries is
+worth tens of percent on small benchmarks, on some CPUs more than on others. One
+build of this suite measured 13.3 ns for `IntFieldIndex.FromArgs` on a Zen 5 --
+a function whose source had not changed since a build that measured 9.3 ns --
+and 164 ns instead of 108 ns for `LongestPrefix`; relinked with four other
+layouts, the same code measured 9.0-9.4 ns and 108 ns in all four. With one
+binary per side that luck is a bias nobody can see, in either direction. So the
+script links a set of binaries per round with `-ldflags=-randlayout=<round>`:
+layout becomes part of the spread that the statistics already account for.
+
+**A warm-up pass that is thrown away.** `go test -count N` runs a whole family
+N times in sequence, so the first sample of every benchmark is taken while the
+process is still building its databases, one before each benchmark: the heap
+grows by hundreds of megabytes between two measurements and the collector runs
+back to back. That has nothing to do with the code being measured, and it is
+not the same for both sides (the databases differ in size). On the 100,000-row
+write benchmarks it made the first sample of a process up to four times slower
+than every later one -- 11.4 µs, then 2.8 µs, reproducibly -- which the first
+published run of this suite shows as confidence intervals of ±60% and as a
+handful of 2-4x wins reported as "statistically equal". The script now runs
+`COUNT+WARMUP` passes and drops the first `WARMUP` (default 1).
+
 **Deterministic data** from a seeded PCG generator. Three key shapes: random
 UUID strings (uniform fan-out), sequential ids (deep shared prefix) and
 hierarchical paths (long shared prefixes). Five schemas: one index; three
@@ -69,6 +92,15 @@ give every benchmark `ROUNDS x COUNT` samples per side; `benchstat` compares.
 - does not allocate more often (allocs/op, exact);
 - does not use more memory (B/op, heap bytes and heap objects per row).
 
+**The same gate against ourselves.** "Faster than upstream" says nothing about
+whether last week's change made anything slower. `make bench-self BASE=<rev>`
+builds the library of any git revision under *today's* benchmark sources and
+runs it interleaved with the working tree; `make bench-self-gate` applies the
+gate to the pair, with one concession: allocs/op may differ by 1%, because a
+write transaction's pooled scratch state is dropped by every garbage collection
+and the average moves by a fraction with the collector's timing. `SIDES=
+'upstream base new'` interleaves all three in one run.
+
 **What is covered.** Single-row and batched inserts, insert/delete cycles,
 updates with unchanged and with changed index keys, deletes, `DeleteAll`,
 `DeletePrefix`, bulk loads with heap footprint and full-GC time, `First`/`Last`
@@ -91,6 +123,7 @@ make bench-gate                    # enforce "universally faster" on that run
 make bench-inpkg UPSTREAM=../go-memdb
 make bench-parallel                # read scalability at 1, 4 and 8 procs
 make bench-compare BENCH='First|Iterate' ROUNDS=3   # a subset
+make bench-self BASE=origin/main && make bench-self-gate   # against our own history
 ```
 
 Before measuring, make sure nothing else is running -- in particular no

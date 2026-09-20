@@ -16,9 +16,13 @@
 //     benchmarks explicitly allowed to trade bytes, which must be justified in
 //     BENCHMARKS.md.
 //
+// The same check guards against regressions relative to our own history: give
+// it the results of an older revision as -old (see `make bench-self`).
+//
 // Usage:
 //
 //	go run ./cmd/benchgate -old results/upstream.txt -new results/new.txt
+//	go run ./cmd/benchgate -old results/self-base.txt -new results/self-new.txt -old-name origin/main
 package main
 
 import (
@@ -147,11 +151,13 @@ func median(vs []float64) float64 {
 }
 
 func main() {
-	oldPath := flag.String("old", "", "results of the upstream implementation")
+	oldPath := flag.String("old", "", "results of the baseline (the upstream implementation, or an older revision)")
+	oldName := flag.String("old-name", "upstream", "what to call the baseline in the verdict")
 	newPath := flag.String("new", "", "results of the new implementation")
 	tolerance := flag.Float64("tolerance", 2, "time/op slowdown, in percent, below which a difference is treated as noise")
 	alpha := flag.Float64("alpha", 0.05, "significance level")
 	allowBytes := flag.String("allow-bytes", "", "regexp of benchmarks allowed to use more B/op than upstream")
+	allocSlack := flag.Float64("allocs-slack", 0, "allocs/op increase, in percent, below which a difference is treated as noise")
 	verbose := flag.Bool("v", false, "list every benchmark, not just the failures")
 	summary := flag.Bool("summary", false, "print a Markdown summary per benchmark family instead of gating")
 	flag.Parse()
@@ -223,7 +229,18 @@ func main() {
 					fmt.Printf("%-72s %12.4g -> %-12.4g sec/op  %+7.1f%% (p=%.3f)\n", name, om, nm, delta, cmp.P)
 				}
 			case "allocs/op":
-				if nm > om {
+				// Exact by default. A write transaction takes its scratch
+				// state from a sync.Pool, which every collection empties, so
+				// the average allocs/op of a write benchmark moves by a
+				// fraction with the timing of the collector; comparing two
+				// builds of nearly the same code needs a little slack for it.
+				slack := om * *allocSlack / 100
+				if *allocSlack > 0 {
+					// (Half an allocation: what the median of integer samples
+					// moves by when the samples straddle two counts.)
+					slack += 0.5
+				}
+				if nm > om+slack {
 					failures = append(failures, fmt.Sprintf("ALLOCS  %-70s %12.4g -> %-12.4g allocs/op", name, om, nm))
 				}
 			default:
@@ -253,17 +270,17 @@ func main() {
 	fmt.Printf("benchgate: %d benchmarks compared: %d faster, %d statistically equal, geomean speed-up %.2fx\n",
 		len(names), faster, same, math.Exp(logSum/float64(max(len(names), 1))))
 	if len(onlyOld) > 0 {
-		failures = append(failures, "MISSING benchmarks present for upstream only: "+strings.Join(onlyOld, ", "))
+		failures = append(failures, "MISSING benchmarks present for "+*oldName+" only: "+strings.Join(onlyOld, ", "))
 	}
 	if len(onlyNew) > 0 {
 		fmt.Printf("benchgate: %d benchmarks exist only for the new implementation (extensions), not gated\n", len(onlyNew))
 	}
 	if len(failures) > 0 {
-		fmt.Printf("benchgate: FAIL -- %d violations of \"universally faster\":\n", len(failures))
+		fmt.Printf("benchgate: FAIL -- %d violations of \"never slower than %s\":\n", len(failures), *oldName)
 		for _, f := range failures {
 			fmt.Println("  " + f)
 		}
 		os.Exit(1)
 	}
-	fmt.Println("benchgate: PASS -- no benchmark is slower, allocates more often, or uses more memory than upstream")
+	fmt.Printf("benchgate: PASS -- no benchmark is slower, allocates more often, or uses more memory than %s\n", *oldName)
 }

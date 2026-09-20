@@ -24,9 +24,14 @@ func BenchmarkNewMemDB(b *testing.B) {
 	}
 }
 
-// BenchmarkTxn measures bare transaction overhead.
+// BenchmarkTxn measures bare transaction overhead. Like BenchmarkSnapshot, and
+// for the same reason, it runs against the small database: these operations do
+// nothing but allocate one small object, and with a 100,000-row database next
+// to them three quarters of their time was the collector marking that
+// database -- a cost that depends on how big each implementation's database is
+// and on what ran before in the process, not on the transaction code.
 func BenchmarkTxn(b *testing.B) {
-	f := getFixture(b, schemaS3, shapeUUID, 100_000, "")
+	f := getFixture(b, schemaS3, shapeUUID, 1_000, "")
 	b.Run("read", func(b *testing.B) {
 		b.ReportAllocs()
 		for b.Loop() {

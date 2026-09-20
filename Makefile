@@ -3,19 +3,23 @@
 
 SHELL := /bin/sh
 
-# Benchmark knobs: ROUNDS interleaved rounds of COUNT samples each, so every
-# benchmark ends up with ROUNDS*COUNT samples per implementation.
+# Benchmark knobs: ROUNDS interleaved rounds of COUNT samples each (after WARMUP
+# discarded passes per process), so every benchmark ends up with ROUNDS*COUNT
+# samples per implementation.
 BENCH     ?= .
 BENCHTIME ?= 0.5s
 ROUNDS    ?= 3
 COUNT     ?= 2
+WARMUP    ?= 1
 CPU       ?= 1
 RESULTS   ?= benchmarks/results
 UPSTREAM  ?= ../go-memdb
+# The revision bench-self compares the working tree against.
+BASE      ?= origin/main
 
 .PHONY: all test race test-safe lint headers verify-upstream-tests generate-check \
 	fuzz diff check bench-compare bench-aa bench-gate bench-summary bench-inpkg \
-	bench-parallel
+	bench-parallel bench-self bench-self-gate
 
 all: check
 
@@ -64,7 +68,7 @@ check: lint headers verify-upstream-tests test race test-safe diff
 # family, the two implementations interleaved per family, the order flipped
 # every round. See BENCHMARKS.md.
 
-BENCH_ENV = BENCH='$(BENCH)' BENCHTIME=$(BENCHTIME) ROUNDS=$(ROUNDS) COUNT=$(COUNT) CPU=$(CPU) RESULTS=results
+BENCH_ENV = BENCH='$(BENCH)' BENCHTIME=$(BENCHTIME) ROUNDS=$(ROUNDS) COUNT=$(COUNT) WARMUP=$(WARMUP) CPU=$(CPU) RESULTS=results
 
 # Interleaved A/B comparison against upstream, followed by the benchstat report.
 bench-compare:
@@ -73,7 +77,16 @@ bench-compare:
 # A/A run: upstream against itself. Its spread is the noise floor that
 # calibrates the gate's tolerance.
 bench-aa:
-	$(BENCH_ENV) SIDES='upstream upstream' OUT_A=results/aa-1.txt OUT_B=results/aa-2.txt sh scripts/bench-compare.sh
+	$(BENCH_ENV) SIDES='upstream upstream' OUT_A=results/aa-1.txt OUT_B=results/aa-2.txt OUT_STAT=results/aa-benchstat.txt sh scripts/bench-compare.sh
+
+# Regression check against our own history: the library of revision BASE and
+# the working tree, under today's benchmark sources. bench-self-gate fails if
+# any benchmark became slower or started allocating more.
+bench-self:
+	$(BENCH_ENV) BASE='$(BASE)' SIDES='base new' OUT_A=results/self-base.txt OUT_B=results/self-new.txt OUT_STAT=results/self-benchstat.txt sh scripts/bench-compare.sh
+
+bench-self-gate:
+	cd benchmarks && go run ./cmd/benchgate -old results/self-base.txt -new results/self-new.txt -old-name '$(BASE)' -allocs-slack 1
 
 # Enforces the "universally faster" claim on the last bench-compare result.
 bench-gate:
@@ -85,7 +98,7 @@ bench-summary:
 
 # Read scalability: the parallel benchmarks at 1, 4 and 8 procs.
 bench-parallel:
-	$(BENCH_ENV) BENCH='Parallel' CPU=1,4,8 OUT_A=results/parallel-upstream.txt OUT_B=results/parallel-new.txt sh scripts/bench-compare.sh
+	$(BENCH_ENV) BENCH='Parallel' CPU=1,4,8 OUT_A=results/parallel-upstream.txt OUT_B=results/parallel-new.txt OUT_STAT=results/parallel-benchstat.txt sh scripts/bench-compare.sh
 
 # The three benchmarks that ship inside upstream's own test files, run in both
 # checkouts (they exercise unexported code, so they cannot go through the shim).

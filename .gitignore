@@ -11,6 +11,11 @@
 # explicitly under testdata/fuzz.
 /benchmarks/results/tmp/
 
+# Scratch comparisons: the A/A noise floor and runs against our own history.
+/benchmarks/results/aa-*.txt
+/benchmarks/results/**/self-*.txt
+/benchmarks/results/self-*.txt
+
 # Editors
 .idea
 .vscode
