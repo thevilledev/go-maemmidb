@@ -5,9 +5,11 @@ package radix
 
 // frame is one level of an in-progress traversal: a node and the position of
 // the next child to visit. The meaning of i differs per direction, see below.
+// A node has at most 256 children, so the position fits 16 bits -- which keeps
+// an iterator, the one object every Get allocates, in a smaller size class.
 type frame struct {
 	n *node
-	i int
+	i int16
 }
 
 // inlineFrames is the traversal depth an iterator handles without allocating.
@@ -17,27 +19,32 @@ const inlineFrames = 8
 
 // stack is an explicit traversal stack with inline storage. It is addressed by
 // depth rather than by a slice into itself, so the enclosing iterator stays a
-// plain value that can be embedded and moved before first use.
+// plain value that can be embedded and moved before first use. The inline
+// frames are kept as two arrays: side by side, the padding after each 16-bit
+// position would cost as much as the node pointers.
 type stack struct {
-	depth  int
-	inline [inlineFrames]frame
-	spill  []frame
+	depth int
+	nodes [inlineFrames]*node
+	pos   [inlineFrames]int16
+	spill []frame
 }
 
 func (s *stack) push(n *node, i int) {
 	if s.depth < inlineFrames {
-		s.inline[s.depth] = frame{n, i}
+		s.nodes[s.depth], s.pos[s.depth] = n, int16(i)
 	} else {
-		s.spill = append(s.spill[:s.depth-inlineFrames], frame{n, i})
+		s.spill = append(s.spill[:s.depth-inlineFrames], frame{n, int16(i)})
 	}
 	s.depth++
 }
 
-func (s *stack) top() *frame {
+// top returns the node of the top frame and a pointer to its position.
+func (s *stack) top() (*node, *int16) {
 	if s.depth <= inlineFrames {
-		return &s.inline[s.depth-1]
+		return s.nodes[s.depth-1], &s.pos[s.depth-1]
 	}
-	return &s.spill[s.depth-1-inlineFrames]
+	f := &s.spill[s.depth-1-inlineFrames]
+	return f.n, &f.i
 }
 
 func (s *stack) reset() {
@@ -98,7 +105,7 @@ func (it *Iterator) SeekLowerBound(t Tree, key []byte) {
 		}
 		// Resume with the next sibling once the exact child is done.
 		it.s.push(n, idx+1)
-		n = n.kids[idx]
+		n = n.kid(idx)
 	}
 }
 
@@ -106,20 +113,20 @@ func (it *Iterator) SeekLowerBound(t Tree, key []byte) {
 func (it *Iterator) Next() (interface{}, bool) {
 	s := &it.s
 	for s.depth > 0 {
-		f := s.top()
-		if f.i < 0 {
-			f.i = 0
-			if f.n.leaf != nil {
-				return f.n.val, true
+		n, i := s.top()
+		if *i < 0 {
+			*i = 0
+			if n.leaf != nil {
+				return n.val, true
 			}
 		}
-		if f.i >= len(f.n.kids) {
+		if int(*i) >= n.kidCount() {
 			s.depth--
 			continue
 		}
-		c := f.n.kids[f.i]
-		f.i++
-		if len(c.kids) == 0 {
+		c := n.kid(int(*i))
+		*i++
+		if c.childless() {
 			// A childless node always carries a value; skip the frame.
 			return c.val, true
 		}
@@ -143,7 +150,7 @@ func (it *ReverseIterator) SeekPrefixWatch(t Tree, prefix []byte) Watch {
 	it.s.reset()
 	n, w := t.seekPrefix(prefix)
 	if n != nil {
-		it.s.push(n, len(n.kids)-1)
+		it.s.push(n, n.kidCount()-1)
 	}
 	return Watch{w}
 }
@@ -160,7 +167,7 @@ func (it *ReverseIterator) SeekReverseLowerBound(t Tree, key []byte) {
 			// Mirror image of SeekLowerBound: the subtree qualifies as a
 			// whole only if it is entirely smaller than the key.
 			if common < len(search) && n.prefix[common] < search[common] {
-				it.s.push(n, len(n.kids)-1)
+				it.s.push(n, n.kidCount()-1)
 			}
 			return
 		}
@@ -178,7 +185,7 @@ func (it *ReverseIterator) SeekReverseLowerBound(t Tree, key []byte) {
 		if !ok {
 			return
 		}
-		n = n.kids[idx]
+		n = n.kid(idx)
 	}
 }
 
@@ -186,21 +193,20 @@ func (it *ReverseIterator) SeekReverseLowerBound(t Tree, key []byte) {
 func (it *ReverseIterator) Previous() (interface{}, bool) {
 	s := &it.s
 	for s.depth > 0 {
-		f := s.top()
-		if f.i < 0 {
-			n := f.n
+		n, i := s.top()
+		if *i < 0 {
 			s.depth--
 			if n.leaf != nil {
 				return n.val, true
 			}
 			continue
 		}
-		c := f.n.kids[f.i]
-		f.i--
-		if len(c.kids) == 0 {
+		c := n.kid(int(*i))
+		*i--
+		if c.childless() {
 			return c.val, true
 		}
-		s.push(c, len(c.kids)-1)
+		s.push(c, c.kidCount()-1)
 	}
 	return nil, false
 }

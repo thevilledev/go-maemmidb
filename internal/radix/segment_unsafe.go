@@ -18,7 +18,8 @@ import "unsafe"
 // pointer into the node, it keeps nothing alive but the node itself.
 //
 // The array sizes make every class land exactly on an allocator size class
-// (112-byte header + 16, 32, 48 or 64).
+// (96-byte header + 32, 48 or 64). The smallest is 128 bytes on purpose, see
+// the size-classed nodes in node_unsafe.go: it starts on a cache line boundary.
 //
 // The rule that keeps this from pinning dead nodes in memory: an inline segment
 // is never shared with another node. Whoever copies a childless node, or takes
@@ -26,10 +27,6 @@ import "unsafe"
 // the split in Insert, mergeChild).
 
 type (
-	leaf16 struct {
-		node
-		seg [16]byte
-	}
 	leaf32 struct {
 		node
 		seg [32]byte
@@ -56,11 +53,6 @@ func newLeafNode(a, b string) *node {
 			return &node{prefix: oneByte[a[0]]}
 		}
 		return &node{prefix: oneByte[b[0]]}
-	case n <= 16:
-		x := &leaf16{}
-		copy(x.seg[copy(x.seg[:], a):], b)
-		x.prefix = unsafe.String(&x.seg[0], n)
-		return &x.node
 	case n <= 32:
 		x := &leaf32{}
 		copy(x.seg[copy(x.seg[:], a):], b)

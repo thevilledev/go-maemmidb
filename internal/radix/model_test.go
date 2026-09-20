@@ -89,19 +89,19 @@ func checkShape(t testing.TB, tr Tree) {
 			if n.prefix == "" {
 				t.Fatalf("non-root node with empty prefix")
 			}
-			if n.leaf == nil && len(n.kids) < 2 {
-				t.Fatalf("node %q: no leaf and %d kids (should have been merged/removed)", n.prefix, len(n.kids))
+			if n.leaf == nil && n.kidCount() < 2 {
+				t.Fatalf("node %q: no leaf and %d kids (should have been merged/removed)", n.prefix, n.kidCount())
 			}
 		}
 		pop := 0
 		for _, w := range n.bitmap {
 			pop += bits.OnesCount64(w)
 		}
-		if pop != len(n.kids) {
-			t.Fatalf("node %q: bitmap has %d bits, %d kids", n.prefix, pop, len(n.kids))
+		if pop != n.kidCount() || n.childless() != (pop == 0) {
+			t.Fatalf("node %q: bitmap has %d bits, %d kids", n.prefix, pop, n.kidCount())
 		}
 		prev := -1
-		for i, k := range n.kids {
+		for i, k := range n.kidList() {
 			label := k.prefix[0]
 			if int(label) <= prev {
 				t.Fatalf("node %q: kids out of order", n.prefix)
@@ -205,7 +205,7 @@ func reach(root *node) (map[*node]bool, map[*leaf]bool) {
 		if n.leaf != nil {
 			leaves[n.leaf] = true
 		}
-		for _, k := range n.kids {
+		for _, k := range n.kidList() {
 			walk(k)
 		}
 	}

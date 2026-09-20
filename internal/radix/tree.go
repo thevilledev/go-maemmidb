@@ -35,11 +35,17 @@ func (w Watch) Chan() <-chan struct{} {
 
 // Get returns the value stored under k.
 func (t Tree) Get(k []byte) (interface{}, bool) {
+	// (The loops below spell out child: rank and kid are inlined here, child
+	// as a whole is over the inlining budget and would cost a call per level.)
 	n := t.root
 	search := k
 	for len(search) > 0 {
-		n = n.child(search[0])
-		if n == nil || !n.hasPrefix(search) {
+		idx, ok := n.rank(search[0])
+		if !ok {
+			return nil, false
+		}
+		n = n.kid(idx)
+		if !n.hasPrefix(search) {
 			return nil, false
 		}
 		search = search[len(n.prefix):]
@@ -59,11 +65,11 @@ func (t Tree) GetWatch(k []byte) (Watch, interface{}, bool) {
 	w := &n.watch
 	search := k
 	for len(search) > 0 {
-		c := n.child(search[0])
-		if c == nil {
+		idx, ok := n.rank(search[0])
+		if !ok {
 			return Watch{w}, nil, false
 		}
-		n = c
+		n = n.kid(idx)
 		w = &n.watch
 		if !n.hasPrefix(search) {
 			return Watch{w}, nil, false
@@ -89,8 +95,12 @@ func (t Tree) LongestPrefix(k []byte) (interface{}, bool) {
 		if len(search) == 0 {
 			break
 		}
-		n = n.child(search[0])
-		if n == nil || !n.hasPrefix(search) {
+		idx, ok := n.rank(search[0])
+		if !ok {
+			break
+		}
+		n = n.kid(idx)
+		if !n.hasPrefix(search) {
 			break
 		}
 		search = search[len(n.prefix):]
@@ -109,11 +119,11 @@ func (t Tree) seekPrefix(prefix []byte) (*node, *slot) {
 	w := &n.watch
 	search := prefix
 	for len(search) > 0 {
-		c := n.child(search[0])
-		if c == nil {
+		idx, ok := n.rank(search[0])
+		if !ok {
 			return nil, w
 		}
-		n = c
+		n = n.kid(idx)
 		w = &n.watch
 		if n.hasPrefix(search) {
 			search = search[len(n.prefix):]
@@ -166,7 +176,7 @@ func countLeaves(n *node) int {
 	if n.leaf != nil {
 		c = 1
 	}
-	for _, k := range n.kids {
+	for _, k := range n.kidList() {
 		c += countLeaves(k)
 	}
 	return c

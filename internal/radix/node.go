@@ -16,9 +16,13 @@
 //     nil until somebody actually watches it. Writers never allocate channels;
 //     they record the objects they replace and seal them after commit.
 //   - Rank-indexed children. A node keeps a 256-bit label bitmap and a dense,
-//     label-ordered child slice; a child's position is the population count of
+//     label-ordered child array; a child's position is the population count of
 //     the bitmap below its label (the rank trick of Roaring bitmaps and HAMTs).
 //     Copies are exactly sized: 8 bytes per child.
+//
+// The node itself is declared twice, in node_unsafe.go and node_safe.go, with
+// the same fields in a different arrangement; everything else reaches a node's
+// children through the accessors the two files define.
 package radix
 
 import (
@@ -92,109 +96,6 @@ type leaf struct {
 // anyone else and need not be tracked for notification when replaced again.
 const leafOwnedBit = uint64(1) << 63
 
-// node is a radix tree node. Everything except the watch slot is immutable
-// once the node is visible to anyone but the transaction that owns it.
-//
-// The fields a lookup touches come first. A node is allocated together with
-// room for its children (see newNode), so descending one level costs one
-// object -- and one allocation when a writer copies the node.
-type node struct {
-	// prefix is the compressed path segment leading to this node, including
-	// the label byte its parent indexes it by. Empty only for the root.
-	prefix string
-	// kids holds the children in ascending label order; bitmap has one bit
-	// per present label and kids[rank(label)] is the child for label.
-	kids   []*node
-	bitmap [4]uint64
-	// val is the value of the key that ends exactly at this node; it is
-	// meaningful iff leaf is non-nil.
-	val   interface{}
-	leaf  *leaf
-	watch slot
-	// epoch is the ownership stamp (plus leafOwnedBit).
-	epoch uint64
-}
-
-// Size-classed nodes: a node header followed by an inline child array that
-// node.kids points into. A *node obtained from one of these points at the
-// start of the allocation, so the garbage collector keeps the array alive;
-// nothing ever needs to know which class a node came from. The capacities
-// line up with the allocator's size classes (112-byte header + 8 bytes/child).
-type (
-	node2 struct {
-		node
-		arr [2]*node
-	}
-	node4 struct {
-		node
-		arr [4]*node
-	}
-	node8 struct {
-		node
-		arr [8]*node
-	}
-	node16 struct {
-		node
-		arr [16]*node
-	}
-	node32 struct {
-		node
-		arr [32]*node
-	}
-	node64 struct {
-		node
-		arr [64]*node
-	}
-	node128 struct {
-		node
-		arr [128]*node
-	}
-	node256 struct {
-		node
-		arr [256]*node
-	}
-)
-
-// newNode returns a node with room for capacity children.
-func newNode(capacity int) *node {
-	switch {
-	case capacity <= 0:
-		return &node{}
-	case capacity <= 2:
-		x := &node2{}
-		x.kids = x.arr[:0]
-		return &x.node
-	case capacity <= 4:
-		x := &node4{}
-		x.kids = x.arr[:0]
-		return &x.node
-	case capacity <= 8:
-		x := &node8{}
-		x.kids = x.arr[:0]
-		return &x.node
-	case capacity <= 16:
-		x := &node16{}
-		x.kids = x.arr[:0]
-		return &x.node
-	case capacity <= 32:
-		x := &node32{}
-		x.kids = x.arr[:0]
-		return &x.node
-	case capacity <= 64:
-		x := &node64{}
-		x.kids = x.arr[:0]
-		return &x.node
-	case capacity <= 128:
-		x := &node128{}
-		x.kids = x.arr[:0]
-		return &x.node
-	default:
-		x := &node256{}
-		x.kids = x.arr[:0]
-		return &x.node
-	}
-}
-
 // oneByte holds every one-byte string, so that the (very common) one-byte
 // path segments need no allocation.
 var oneByte = func() (t [256]string) {
@@ -237,27 +138,31 @@ func (n *node) rank(label byte) (int, bool) {
 // child returns the child for label, or nil.
 func (n *node) child(label byte) *node {
 	if idx, ok := n.rank(label); ok {
-		return n.kids[idx]
+		return n.kid(idx)
 	}
 	return nil
 }
 
-// addKid inserts c at position idx. The node must be owned by the caller.
+// addKid inserts c at position idx. The node must be owned by the caller and
+// have room for one more child (see Txn.own).
 func (n *node) addKid(idx int, c *node) {
 	label := c.prefix[0]
-	n.kids = append(n.kids, nil)
-	copy(n.kids[idx+1:], n.kids[idx:])
-	n.kids[idx] = c
+	count := n.kidCount()
+	n.setKidCount(count + 1)
+	kids := n.kidList()
+	copy(kids[idx+1:], kids[idx:count])
+	kids[idx] = c
 	n.bitmap[label>>6] |= uint64(1) << (label & 63)
 }
 
 // delKid removes the child at position idx. The node must be owned.
 func (n *node) delKid(idx int) {
-	label := n.kids[idx].prefix[0]
-	last := len(n.kids) - 1
-	copy(n.kids[idx:], n.kids[idx+1:])
-	n.kids[last] = nil
-	n.kids = n.kids[:last]
+	kids := n.kidList()
+	label := kids[idx].prefix[0]
+	last := len(kids) - 1
+	copy(kids[idx:], kids[idx+1:])
+	kids[last] = nil
+	n.setKidCount(last)
 	n.bitmap[label>>6] &^= uint64(1) << (label & 63)
 }
 
@@ -293,17 +198,17 @@ func (n *node) minNode() *node {
 		if n.leaf != nil {
 			return n
 		}
-		if len(n.kids) == 0 {
+		if n.childless() {
 			return nil // only an empty root
 		}
-		n = n.kids[0]
+		n = n.kid(0)
 	}
 }
 
 // maxNode returns the node holding the greatest key at or below n, or nil.
 func (n *node) maxNode() *node {
-	for len(n.kids) > 0 {
-		n = n.kids[len(n.kids)-1]
+	for count := n.kidCount(); count > 0; count = n.kidCount() {
+		n = n.kid(count - 1)
 	}
 	if n.leaf == nil {
 		return nil // only an empty root

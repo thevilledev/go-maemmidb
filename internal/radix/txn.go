@@ -58,7 +58,7 @@ func sealSubtree(n *node) {
 	if n.leaf != nil {
 		n.leaf.watch.seal()
 	}
-	for _, k := range n.kids {
+	for _, k := range n.kidList() {
 		sealSubtree(k)
 	}
 }
@@ -145,20 +145,21 @@ func (t *Txn) dropSubtree(n *node) {
 // child slice is always a fresh array: an owned node grows its slice in place,
 // which must never be visible through the original.
 func (t *Txn) copyNode(n *node, extra int) *node {
-	if len(n.kids)+extra == 0 {
+	count := n.kidCount()
+	if count+extra == 0 {
 		// Childless stays childless: the copy gets its own inline segment.
 		c := newLeafNode(n.prefix, "")
 		c.epoch, c.val, c.leaf = t.epoch, n.val, n.leaf
 		return c
 	}
-	c := newNode(len(n.kids) + extra)
+	c := newNode(count + extra)
 	c.epoch, c.val, c.leaf, c.prefix, c.bitmap = t.epoch, n.val, n.leaf, n.prefix, n.bitmap
-	if cap(n.kids) == 0 {
+	if n.kidCap() == 0 {
 		// n may hold its segment inline; sharing it would keep n alive.
 		c.prefix = cloneSegment(n.prefix)
 	}
-	c.kids = c.kids[:len(n.kids)]
-	copy(c.kids, n.kids)
+	c.setKidCount(count)
+	copy(c.kidList(), n.kidList())
 	return c
 }
 
@@ -175,13 +176,13 @@ func (t *Txn) leafNode(prefix []byte, v interface{}) *node {
 func (t *Txn) own(parent *node, pidx int, n *node, extra int) *node {
 	var c *node
 	if t.owns(n) {
-		if len(n.kids)+extra <= cap(n.kids) {
+		if n.kidCount()+extra <= n.kidCap() {
 			return n
 		}
 		// An owned node that has outgrown its inline child array moves to
 		// a bigger size class (with headroom, so bulk loads amortise). It
 		// was never visible to anyone, so nothing needs to be recorded.
-		c = t.copyNode(n, len(n.kids)+extra)
+		c = t.copyNode(n, n.kidCount()+extra)
 		c.epoch = n.epoch
 	} else {
 		c = t.copyNode(n, extra)
@@ -190,7 +191,7 @@ func (t *Txn) own(parent *node, pidx int, n *node, extra int) *node {
 	if parent == nil {
 		t.root = c
 	} else {
-		parent.kids[pidx] = c
+		parent.setKid(pidx, c)
 	}
 	return c
 }
@@ -200,7 +201,7 @@ func (t *Txn) link(parent *node, pidx int, n *node) {
 	if parent == nil {
 		t.root = n
 	} else {
-		parent.kids[pidx] = n
+		parent.setKid(pidx, n)
 	}
 }
 
@@ -254,7 +255,7 @@ func (t *Txn) Insert(k []byte, v interface{}) (interface{}, bool) {
 			return nil, false
 		}
 
-		child := n.kids[idx]
+		child := n.kid(idx)
 		common := commonPrefixLen(search, child.prefix)
 		n = t.own(parent, pidx, n, 0)
 		if common == len(child.prefix) {
@@ -274,24 +275,28 @@ func (t *Txn) Insert(k []byte, v interface{}) (interface{}, bool) {
 		}
 		split := newNode(2)
 		split.epoch, split.prefix = t.epoch, child.prefix[:common]
-		if cap(child.kids) == 0 {
+		if child.kidCap() == 0 {
 			// The child may hold its segment inline: do not share it.
 			split.prefix = cloneSegment(split.prefix)
 		}
 		trimmed.prefix = trimmed.prefix[common:]
-		n.kids[idx] = split // same label as before: bitmap unchanged
+		n.setKid(idx, split) // same label as before: bitmap unchanged
 
 		rest := search[common:]
 		if len(rest) == 0 {
 			split.val, split.leaf = v, &leaf{}
 			split.epoch |= leafOwnedBit
-			split.kids = append(split.kids, trimmed)
+			split.setKidCount(1)
+			split.setKid(0, trimmed)
 		} else {
 			added := t.leafNode(rest, v)
+			split.setKidCount(2)
 			if added.prefix[0] < trimmed.prefix[0] {
-				split.kids = append(split.kids, added, trimmed)
+				split.setKid(0, added)
+				split.setKid(1, trimmed)
 			} else {
-				split.kids = append(split.kids, trimmed, added)
+				split.setKid(0, trimmed)
+				split.setKid(1, added)
 			}
 			split.bitmap[added.prefix[0]>>6] |= uint64(1) << (added.prefix[0] & 63)
 		}
@@ -323,7 +328,7 @@ func (t *Txn) unlink(path []pathEntry) {
 	last := len(path) - 1
 	parent := path[last].n
 	parent.delKid(path[last].idx)
-	if last > 0 && parent.leaf == nil && len(parent.kids) == 1 {
+	if last > 0 && parent.leaf == nil && parent.kidCount() == 1 {
 		t.mergeChild(path[last-1].n, path[last-1].idx, parent)
 	}
 }
@@ -341,7 +346,7 @@ func (t *Txn) Delete(k []byte) (interface{}, bool) {
 		if !ok {
 			return nil, false
 		}
-		c := n.kids[idx]
+		c := n.kid(idx)
 		if !c.hasPrefix(search) {
 			return nil, false
 		}
@@ -360,7 +365,7 @@ func (t *Txn) Delete(k []byte) (interface{}, bool) {
 	case len(path) == 0:
 		// The root is never removed or merged.
 		t.clearLeaf(t.own(nil, 0, n, 0))
-	case len(n.kids) == 0:
+	case n.childless():
 		// The node disappears altogether.
 		if !t.owns(n) {
 			t.dropNode(n)
@@ -373,7 +378,7 @@ func (t *Txn) Delete(k []byte) (interface{}, bool) {
 		parent, pidx := path[len(path)-1].n, path[len(path)-1].idx
 		n = t.own(parent, pidx, n, 0)
 		t.clearLeaf(n)
-		if len(n.kids) == 1 {
+		if n.kidCount() == 1 {
 			t.mergeChild(parent, pidx, n)
 		}
 	}
@@ -386,10 +391,10 @@ func (t *Txn) Delete(k []byte) (interface{}, bool) {
 // that key are not disturbed; the child node itself is replaced (and its
 // watchers notified) unless this transaction owns it.
 func (t *Txn) mergeChild(parent *node, pidx int, n *node) {
-	c := n.kids[0]
+	c := n.kid(0)
 	var m *node
 	switch {
-	case len(c.kids) == 0:
+	case c.childless():
 		// A childless result gets the joined segment inline.
 		m = newLeafNode(n.prefix, c.prefix)
 		m.val, m.leaf = c.val, c.leaf
@@ -407,7 +412,7 @@ func (t *Txn) mergeChild(parent *node, pidx int, n *node) {
 	if !t.owns(c) {
 		t.dropNode(c)
 	}
-	parent.kids[pidx] = m // same label as n: the parent's bitmap is unchanged
+	parent.setKid(pidx, m) // same label as n: the parent's bitmap is unchanged
 }
 
 // DeletePrefix removes every key starting with prefix in one subtree cut and
@@ -422,7 +427,7 @@ func (t *Txn) DeletePrefix(prefix []byte) bool {
 		if !ok {
 			return false
 		}
-		c := n.kids[idx]
+		c := n.kid(idx)
 		switch {
 		case c.hasPrefix(search):
 			search = search[len(c.prefix):]
