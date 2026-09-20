@@ -106,6 +106,30 @@ and covered by the differential tests:
    context first, so they win deterministically -- the usual Go convention for
    a context that is already done.
 
+## Extensions
+
+The following exported identifiers do not exist in go-memdb. None of them
+changes the behaviour of anything that does:
+
+- `BitmapIndex`, `RowSet`, `Txn.Where`, `Txn.WhereWatch`, `Txn.AllRows` (bitmap
+  indexes and set queries);
+- `Table`, `NewTable`, `Rows`, `StringKey`, `IntKey`, `IntKeyOf`, `UintKey`,
+  `UintKeyOf`, `StringIndex`, `StringSliceIndex`, `IntIndex`, `UintIndex`,
+  `BoolIndex` (the typed API);
+- `All`, `AllOf` (`iter.Seq` adapters).
+
+Two things about them are worth knowing when coming from go-memdb:
+
+- `NewMemDB` can fail for a schema that `DBSchema.Validate` accepts, if the
+  schema misuses a `BitmapIndex` (a unique one, a nested one, one that wraps
+  nothing). `Validate` itself is go-memdb's and knows nothing about it.
+- `IntIndex` and `UintIndex` accept a query argument of any integer type of the
+  right signedness and encode it at the width of the indexed type, reporting an
+  error if it does not fit. `IntFieldIndex` and `UintFieldIndex` keep
+  go-memdb's rule -- the key is as wide as the *argument's* type, so a query
+  for `5` on an `int32` field silently matches nothing -- because changing it
+  would change keys that existing callers may depend on.
+
 ## Build tags
 
 `-tags memdb_safe` (or `purego`) builds without `package unsafe`: struct fields

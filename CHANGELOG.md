@@ -21,6 +21,42 @@ First version: a drop-in reimplementation of
   differential fuzzers against go-memdb and go-immutable-radix, an API lock,
   and `benchgate`, which enforces that no benchmark is slower than upstream.
 
+### Added beyond go-memdb's API
+
+- Bitmap indexes: `BitmapIndex` turns an index into a map from value to a
+  persistent, Roaring-style compressed set of row ids (`internal/bitmap`,
+  `internal/pvec`), queried with `Txn.Where`, `Txn.WhereWatch` and
+  `Txn.AllRows` and combined with `RowSet.And`, `Or`, `AndNot` and `Len`.
+- A typed API: `Table[T]`; `StringKey`, `IntKey` and `UintKey`, whose lookups
+  neither box their argument nor resolve names; and the accessor-based indexers
+  `StringIndex`, `StringSliceIndex`, `IntIndex`, `UintIndex` and `BoolIndex`,
+  which produce the keys of their `*FieldIndex` twins without reflection.
+- `All` and `AllOf`: `iter.Seq` adapters for any `ResultIterator`.
+
+### Faster since the first cut
+
+- Table and index names are resolved through a length-bucketed table instead of
+  two map lookups.
+- A read transaction is a 32-byte object (was 80); a write transaction is
+  unchanged.
+- Tree nodes find their children at a fixed offset instead of through a slice:
+  16 bytes less per node, and the segment, the label bitmap and the value share
+  the first cache line. The iterator object behind `Get` shrank from 176 to 128
+  bytes.
+- `WatchSet`: the helper goroutines of a large watch set call their 32-way
+  select directly. On x86-64 the extra frame made a 1024-channel watch 6%
+  slower than upstream's (found on a Zen 5; an M1 does not show it).
+- The exported string indexer methods build their key in place instead of in a
+  scratch buffer, and the extractor they share with transactions is half the
+  size.
+- `NewMemDB` allocates less than before (a 50-table schema: 808 allocations,
+  was 860).
+- The benchmark harness discards a warm-up pass per process, and
+  `make bench-self` / `bench-self-gate` hold a change to "never slower than an
+  older revision of this package". `BenchmarkTxn` runs against the small
+  database, like `BenchmarkSnapshot`: with 100,000 rows next to it, three
+  quarters of an empty transaction's time was the collector marking them.
+
 ### Fixed (relative to upstream; see COMPATIBILITY.md)
 
 - `CompoundMultiIndex` with `AllowMissing` and three or more sub-indexers

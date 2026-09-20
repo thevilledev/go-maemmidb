@@ -31,40 +31,59 @@ exactly.
 ### Nodes
 
 ```go
-type node struct {
-    prefix string      // compressed path segment, incl. the label byte
-    kids   []*node     // children, ascending by label
-    bitmap [4]uint64   // one bit per present label
-    val    interface{} // value of the key ending here (valid iff leaf != nil)
-    leaf   *leaf       // identity of that value, for watchers
-    watch  slot        // lazily created watch channel
-    epoch  uint64      // ownership stamp
+type node struct {         // 96 bytes, then the child array
+    prefix string          // compressed path segment, incl. the label byte
+    val    interface{}     // value of the key ending here (valid iff leaf != nil)
+    bitmap [4]uint64       // one bit per present label
+                           // ---- end of the first cache line ----
+    leaf   *leaf           // identity of that value, for watchers
+    watch  slot            // lazily created watch channel
+    epoch  uint64          // ownership stamp
+    nkids, ckids uint16    // length and capacity of the child array
 }
 
 type leaf struct{ watch slot }
 ```
 
-- **Rank-indexed children.** `kids[popcount(bitmap below label)]` is the child
-  for a label -- the rank trick of Roaring bitmaps and HAMTs. Lookup is
+- **Rank-indexed children.** Child number `popcount(bitmap below label)` is the
+  child for a label -- the rank trick of Roaring bitmaps and HAMTs. Lookup is
   branch-light and needs no search; ordered iteration is a walk over a dense
-  slice; lower-bound seeks find the next label with bit operations.
-- **One allocation per node.** Nodes come in size classes (`node2` ... `node256`)
-  that embed the child array right behind the header; `kids` is a slice into
-  the node's own allocation. Copying a node on write is a single allocation of
-  exactly the needed size (8 B per child; go-immutable-radix: 16 B per edge in
-  a second allocation), and descending a level touches one object. No `unsafe`
-  is involved: the slice header is an ordinary interior pointer.
+  array; lower-bound seeks find the next label with bit operations.
+- **One allocation per node.** Nodes come in size classes (`node4` ... `node256`)
+  that embed the child array right behind the header. Copying a node on write
+  is a single allocation of the needed size (8 B per child; go-immutable-radix:
+  16 B per edge in a second allocation), and descending a level touches one
+  object.
+- **No slice for the children.** The array's address is the node's plus a
+  constant and its length is a 16-bit field, so the header needs no slice
+  header. That is 16 bytes less to allocate and copy for every node on every
+  written path, and it is what lets the three things a lookup or an iteration
+  step reads -- the segment, the bitmap that locates the next child, and the
+  value -- share the header's first cache line (the count is only read where
+  the line after it is needed anyway; `Last` and reverse iteration count the
+  bitmap instead). Reaching a child slot by address takes `unsafe`, confined to
+  five accessors in `node_unsafe.go`; the `memdb_safe` build declares the node
+  with an ordinary slice (`node_safe.go`), and every other line of the engine
+  is shared. `go test -race` runs the accessors under the runtime's pointer
+  checks.
+- **Small nodes are 128 bytes, not 112.** A 96-byte header would put the most
+  common nodes -- two children, or a short inline segment -- into the 112-byte
+  size class, whose objects do not start on cache line boundaries: the header's
+  first line would straddle two, and point lookups on small tables measured 3-6%
+  slower for it. So there is no class below 128 bytes, which is what those nodes
+  cost before the slice header was removed, with room for four children instead
+  of two.
 - **Immutable strings for path segments.** Substrings on split cost nothing,
   one-byte segments come from a static table, and a one-byte segment is never
   even read during lookup (the bitmap already matched its only byte).
 - **Childless nodes hold their segment inline.** One node per stored key has no
   children, and its segment -- the tail of the key -- is the last thing a
   lookup compares. Those nodes are allocated in classes with a trailing byte
-  array (16/32/48/64 bytes, each landing exactly on an allocator size class)
+  array (32/48/64 bytes, each landing exactly on an allocator size class)
   and their `prefix` string points into it. That removes an allocation per
   inserted key and a cache miss per point lookup: measured in isolation, 10-13%
   off `First` hits and 30% fewer heap objects, at no cost in heap bytes. Building
-  that string is the engine's only use of `unsafe` (the `memdb_safe` build uses
+  that string is the engine's other use of `unsafe` (the `memdb_safe` build uses
   ordinary strings). The rule that keeps it from pinning dead nodes: an inline
   segment is never shared with another node -- copying a childless node, or
   giving part of its segment to a different node, copies the bytes.
@@ -135,9 +154,21 @@ objects reachable from the old root and not from the new one are sealed.
   indexers to their interfaces once, fixes a deterministic index order (`id`
   first) and precomputes name resolution for both `name` and `name_prefix`.
   The database root is an immutable `[]radix.Tree` behind an atomic pointer.
+- **Names are resolved by length.** Every query starts by resolving a table
+  name and an index name, and on a small table two map lookups cost as much as
+  the tree descent. A schema has few names and they rarely share a length, so
+  they are kept in one array sorted by length and a lookup compares its
+  argument with the few names that are exactly as long -- and callers nearly
+  always pass the very constant the schema was built from, which compares equal
+  by address. A length that many names share (fifty tables called `table-NN`)
+  is bisected. The array is filled by a counting sort, two allocations and no
+  comparisons, which keeps `NewMemDB` cheaper than building the maps was; the
+  benchmark gate caught the first version, which was not.
 - **Read transactions** are a pointer to a root: no tree transaction, no
   scratch state, safe to share between goroutines like upstream's. Queries
-  build their key in a stack buffer.
+  build their key in a stack buffer. A read `Txn` is 32 bytes; what only a
+  write transaction needs (its state, its deferred functions, its change list)
+  is a second struct allocated in the same 80-byte object as the write `Txn`.
 - **Write transactions** draw their bookkeeping (tree transactions, key
   buffers, the list of replaced objects) from a pool; `Txn` objects themselves
   are never pooled, since `Changes()` and repeated `Commit`/`Abort` must keep
@@ -154,7 +185,10 @@ objects reachable from the old root and not from the new one are sealed.
   arguments. Anything else is declined and handled by the original exported
   method, which therefore still owns every error message, quirk and panic.
   The exported methods themselves use the same machinery through a
-  process-wide field cache and return a single exact allocation.
+  process-wide field cache and return a single exact allocation. They run a
+  throw-away extractor on their stack, so the extractor is kept small: it
+  reaches the user's indexer through one interface field and a type assertion
+  per use, not through a typed pointer per kind of indexer.
 - **`Changes()`** looks for repeated objects pairwise (few changes) or with a
   set of 64-bit hashes (many) before falling back to upstream's string-keyed
   map.
@@ -166,7 +200,13 @@ objects reachable from the old root and not from the new one are sealed.
   without the timeout arm. (Chunks of 64 and 128, one slice for the whole set,
   and polling every channel up front were all measured and lost: select set-up
   is n log n, a pointer slice over 512 bytes pays for a malloc header and
-  size-class slack, and the poll taxes the common blocking case.)
+  size-class slack, and the poll taxes the common blocking case.) A helper
+  goroutine calls its 32-way select *directly*, not through the function that
+  picks a select by size: on a new goroutine's small stack that one extra frame
+  moved the first stack growth to the entry of the big select function, where
+  the runtime walks the function's long stack table to size the new stack --
+  12 µs per 1024-channel watch on a Zen 5, invisible on an M1, found by
+  profiling the one benchmark family that was slower than upstream there.
 
 ## Where Roaring bitmaps fit, and where they do not
 
@@ -180,10 +220,65 @@ single-row transaction copies more than a radix path does.
 
 What the ordered, versioned hot path does take from Roaring is its core trick:
 a bitmap plus a population count as the index into a dense array, used here
-for every node's children. Roaring proper belongs in an opt-in extension:
-bitmap indexes over dense per-table row ids with `And`/`Or`/`Not`/`Count`
-queries, for which filtering scans are the only option today. That is planned
-as a separate layer that never touches the default write path.
+for every node's children. Roaring proper is an opt-in extension, below.
+
+## Bitmap indexes (extension)
+
+An index declared as `&BitmapIndex{Indexer: ...}` maps an index value to the
+*set* of rows that have it, for the two questions an ordered index answers
+badly: counting and combining. `Txn.Where` returns a `RowSet`; sets combine
+with `And`, `Or` and `AndNot` and know their `Len`. A table without such an
+index runs none of this: the write path tests one integer per row write, and
+the database root carries one nil pointer.
+
+- **Row ids.** A table with a bitmap index numbers its rows with small dense
+  integers. A row keeps its id across updates; the id of a deleted row is
+  reused, lowest first, so the id space stays as dense as the table. Three
+  persistent structures do the bookkeeping, versioned with the index trees and
+  published by the same atomic root swap: a radix tree from primary key to id,
+  a vector from id to row object (`internal/pvec`, a 32-ary trie with 16-value
+  leaves), and the sets of used and free ids.
+- **The sets** (`internal/bitmap`) follow Roaring's layout -- a sparse
+  directory of chunks addressed by the high bits of the id, children located by
+  population count -- with different proportions, because the cost model is
+  different. A Roaring container covers 2^16 ids and may be 8 KB, which is
+  right for a mutable bitmap and wrong for a persistent one, where every
+  single-row transaction would copy it. Here a chunk is 256 ids and the
+  directory a 64-ary trie over the chunks, only as tall as the largest id
+  needs: a write copies an 80-byte chunk and two or three small nodes. A set is
+  a one-pointer value stored directly as the value of the index's radix tree,
+  keyed by the index value alone. Writers own nodes by epoch, exactly like the
+  radix tree, so a bulk load mutates in place.
+- **Set algebra shares structure.** A result subtree that comes out equal to an
+  operand's *is* that operand's; only chunks where the operands really differ
+  are allocated. Intersecting three sets over 100,000 rows takes microseconds.
+- **Updates that move nothing cost nothing.** An ordinary index stores the row
+  object, so replacing a row rewrites its entry in every index. A bitmap index
+  stores the row's id: if the row keeps its value, the index is not touched,
+  and its watchers are not woken.
+- **Watches** come from the radix tree the sets live in: `WhereWatch` fires when
+  a row enters or leaves the set of that value.
+- **What it gives up.** Results come in row id order, not index order; there are
+  no range scans; `First`, `Get` and the other ordered queries refuse a bitmap
+  index. A sparse set costs a chunk per 256-id range it touches, so a column
+  with nearly as many values as rows belongs in an ordinary index.
+
+## The typed API (extension)
+
+- **Indexers from accessor functions** (`StringIndex[T]`, `IntIndex[T, N]`, ...)
+  produce the keys of their `*FieldIndex` twins byte for byte, so an index can
+  be switched from one to the other without anyone noticing. Transactions do
+  not call their exported methods: the extractor asks the indexer for the
+  *value* (one interface call, one call of the user's function) and encodes it
+  into its own buffer. The value, not a destination buffer, crosses the
+  interface on purpose -- a buffer passed to an interface method escapes, and
+  the stack buffer every query builds its key in would move to the heap.
+- **Typed keys** (`StringKey[T]`, `IntKey[T, N]`, `UintKey[T, N]`) take the key
+  as a Go value. The untyped API cannot avoid boxing its arguments: the slow
+  path hands them to the user's `FromArgs`, so they escape, and a string costs
+  an allocation per query. A typed key also resolves its table and index once
+  per schema (one atomic load and a pointer comparison afterwards). Whatever it
+  cannot encode itself goes through the untyped path, errors included.
 
 ## What is deliberately not done
 
