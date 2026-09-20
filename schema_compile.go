@@ -36,6 +36,9 @@ type compiledIndex struct {
 
 	unique       bool
 	allowMissing bool
+	// bitmap marks a bitmap index (see bitmap_index.go): its tree maps an
+	// index value to the set of row ids that have it, not value+id to a row.
+	bitmap bool
 }
 
 // indexRef is what an index name given to a query resolves to.
@@ -47,11 +50,29 @@ type indexRef struct {
 // compiledTable is a TableSchema resolved for the hot paths.
 type compiledTable struct {
 	name string
-	// indexes is in a fixed order: "id" first, the rest sorted by name. Every
-	// write walks it in this order, so writes are deterministic.
+	// ord is the table's position among the tables of the schema.
+	ord int
+	// indexes is in a fixed order: "id" first, then the other ordinary indexes
+	// sorted by name, then the bitmap indexes sorted by name. Every write walks
+	// it in this order, so writes are deterministic.
 	indexes []compiledIndex
+	// classic is the number of ordinary indexes: indexes[:classic]. A table
+	// without bitmap indexes -- every table of a go-memdb schema -- has
+	// classic == len(indexes), and none of the bitmap machinery runs for it.
+	classic int
 	// byName resolves the index names accepted by queries, see resolveNames.
 	byName nameIndex[indexRef]
+	// bitmapByName does the same for the bitmap indexes, which only Where and
+	// WhereWatch accept. It is nil for a table without any.
+	bitmapByName *nameIndex[indexRef]
+}
+
+// bitmapIndex resolves the name of a bitmap index.
+func (t *compiledTable) bitmapIndex(name string) (indexRef, bool) {
+	if t.bitmapByName == nil {
+		return indexRef{}, false
+	}
+	return t.bitmapByName.get(name)
 }
 
 // nameIndex resolves the names of a schema: the tables of a database, or the
@@ -236,8 +257,9 @@ func (t *compiledTable) primaryKey(dst []byte, obj interface{}) ([]byte, error) 
 }
 
 // compileSchema resolves a validated schema. It returns the tables by name and
-// the total number of index slots.
-func compileSchema(schema *DBSchema) (nameIndex[*compiledTable], int) {
+// the total number of index slots. The only errors are misuses of extensions
+// that DBSchema.Validate, which is go-memdb's, knows nothing about.
+func compileSchema(schema *DBSchema) (nameIndex[*compiledTable], int, error) {
 	tableNames := make([]string, 0, len(schema.Tables))
 	total := 0
 	for name, ts := range schema.Tables {
@@ -259,17 +281,24 @@ func compileSchema(schema *DBSchema) (nameIndex[*compiledTable], int) {
 	}
 	tables.counted()
 
-	for _, tname := range tableNames {
+	for tableOrd, tname := range tableNames {
 		ts := schema.Tables[tname]
-		// "id", then the other indexes by name: one exactly sized slice.
+		// "id", then the ordinary indexes, then the bitmap indexes: one
+		// exactly sized slice.
 		names := make([]string, 1, len(ts.Indexes)+1)
 		names[0] = id
-		for iname := range ts.Indexes {
-			if iname != id {
+		var bitmapNames []string
+		for iname, is := range ts.Indexes {
+			if _, isBitmap := is.Indexer.(*BitmapIndex); isBitmap {
+				bitmapNames = append(bitmapNames, iname)
+			} else if iname != id {
 				names = append(names, iname)
 			}
 		}
 		slices.Sort(names[1:])
+		slices.Sort(bitmapNames)
+		classic := len(names)
+		names = append(names, bitmapNames...)
 
 		start := len(all)
 		for ord, iname := range names {
@@ -282,25 +311,34 @@ func compileSchema(schema *DBSchema) (nameIndex[*compiledTable], int) {
 				unique:       is.Unique,
 				allowMissing: is.AllowMissing,
 			}
-			switch indexer := is.Indexer.(type) {
+			indexer := is.Indexer
+			if ord >= classic {
+				// A bitmap index is compiled from the indexer it wraps.
+				indexer = is.Indexer.(*BitmapIndex).Indexer
+				if err := validateBitmapIndex(tname, is, indexer); err != nil {
+					return nameIndex[*compiledTable]{}, 0, err
+				}
+				ci.bitmap = true
+			}
+			switch indexer := indexer.(type) {
 			case SingleIndexer:
 				ci.single = indexer
 			case MultiIndexer:
 				ci.multi = indexer
 			}
-			ci.prefix, _ = is.Indexer.(PrefixIndexer)
-			ci.ext = compileExtractor(is.Indexer)
+			ci.prefix, _ = indexer.(PrefixIndexer)
+			ci.ext = compileExtractor(indexer)
 			all = append(all, ci)
 		}
 
-		ct := &compiledTable{name: tname, indexes: all[start:len(all):len(all)]}
+		ct := &compiledTable{name: tname, ord: tableOrd, indexes: all[start:len(all):len(all)], classic: classic}
 		for i := range ct.indexes {
 			ct.indexes[i].table = ct
 		}
 		ct.resolveNames()
 		tables.place(tname, ct)
 	}
-	return tables.done(), total
+	return tables.done(), total, nil
 }
 
 // resolveNames precomputes index-name resolution so that queries need one map
@@ -310,7 +348,11 @@ func compileSchema(schema *DBSchema) (nameIndex[*compiledTable], int) {
 // named "x_prefix" cannot be addressed by that name (it resolves to a prefix
 // scan of index "x", if that exists) but only as "x_prefix_prefix".
 func (t *compiledTable) resolveNames() {
-	t.byName = indexNames(t.indexes)
+	t.byName = indexNames(t.indexes[:t.classic])
+	if t.classic < len(t.indexes) {
+		names := indexNames(t.indexes[t.classic:])
+		t.bitmapByName = &names
+	}
 }
 
 func indexNames(indexes []compiledIndex) nameIndex[indexRef] {

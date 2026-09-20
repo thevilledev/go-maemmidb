@@ -53,6 +53,7 @@ generate-check:
 
 fuzz:
 	go test ./internal/radix -run '^$$' -fuzz FuzzTreeOps -fuzztime 60s
+	go test ./internal/bitmap -run '^$$' -fuzz FuzzBitmap -fuzztime 60s
 	cd benchmarks && go test ./differential -run '^$$' -fuzz FuzzOps -fuzztime 60s
 
 # Differential tests against the original implementations.

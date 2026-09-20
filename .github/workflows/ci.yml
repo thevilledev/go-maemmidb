@@ -73,10 +73,10 @@ jobs:
         run: |
           GOARCH=386 go build ./...
           GOARCH=386 go build -tags memdb_safe ./...
-      - name: Test the storage engine (GOARCH=386)
+      - name: Test the storage engines (GOARCH=386)
         run: |
-          GOARCH=386 go test -count=1 ./internal/radix
-          GOARCH=386 go test -count=1 -tags memdb_safe ./internal/radix
+          GOARCH=386 go test -count=1 ./internal/...
+          GOARCH=386 go test -count=1 -tags memdb_safe ./internal/...
 
   differential:
     # The nested module compares against the original implementations.
@@ -93,6 +93,7 @@ jobs:
       - name: Fuzz smoke
         run: |
           go test ./internal/radix -run '^$' -fuzz FuzzTreeOps -fuzztime 30s
+          go test ./internal/bitmap -run '^$' -fuzz FuzzBitmap -fuzztime 30s
           cd benchmarks
           go test ./differential -run '^$' -fuzz FuzzOps -fuzztime 30s
           go test ./radixdiff -run '^$' -fuzz FuzzDifferential -fuzztime 30s

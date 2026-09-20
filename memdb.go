@@ -48,14 +48,17 @@ type compiled struct {
 }
 
 // inlineTrees is the number of index trees a dbRoot holds without a second
-// allocation.
+// allocation. With its other fields that makes a dbRoot exactly 128 bytes.
 const inlineTrees = 12
 
 // dbRoot is one immutable version of the whole database: the tree of every
 // index, addressed by compiledIndex.slot. A commit publishes a new dbRoot with
 // a single atomic pointer store.
 type dbRoot struct {
-	trees  []radix.Tree
+	trees []radix.Tree
+	// ext is the row bookkeeping of the tables that have bitmap indexes; nil
+	// in a database that has none (see bitmap_index.go).
+	ext    *rootExt
 	inline [inlineTrees]radix.Tree
 }
 
@@ -77,7 +80,10 @@ func NewMemDB(schema *DBSchema) (*MemDB, error) {
 	}
 
 	// Create the MemDB
-	tables, slots := compileSchema(schema)
+	tables, slots, err := compileSchema(schema)
+	if err != nil {
+		return nil, err
+	}
 
 	// Every index starts as its own empty tree. The roots must be distinct
 	// objects: watching "the whole index" watches its root node.
@@ -85,6 +91,7 @@ func NewMemDB(schema *DBSchema) (*MemDB, error) {
 	for i := range root.trees {
 		root.trees[i] = radix.New()
 	}
+	root.ext = newRootExt(tables)
 	return newMemDB(&compiled{schema: schema, tables: tables}, root, true), nil
 }
 

@@ -15,6 +15,8 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/thevilledev/go-maemmidb/internal/bitmap"
+	"github.com/thevilledev/go-maemmidb/internal/pvec"
 	"github.com/thevilledev/go-maemmidb/internal/radix"
 )
 
@@ -87,6 +89,14 @@ type writeState struct {
 	oldKeys keyList
 	tmp     keyList // intermediate values of compound multi-indexes
 	ranges  []keyRange
+
+	// The same for the bitmap indexes of the row's table, plus the writers
+	// of their persistent structures (see bitmap_index.go).
+	bmNew    keyList
+	bmOld    keyList
+	bmRanges []keyRange
+	bmW      bitmap.Writer
+	vecW     pvec.Writer
 }
 
 // keyRange locates one index's keys inside writeState.newKeys and oldKeys.
@@ -101,6 +111,9 @@ type keyRange struct {
 type tableTxn struct {
 	table *compiledTable
 	idx   []radix.Txn
+	// rows is the table's row bookkeeping, if it has bitmap indexes and has
+	// been written.
+	rows *rowsTxn
 }
 
 var writeStatePool = sync.Pool{New: func() interface{} { return new(writeState) }}
@@ -116,9 +129,11 @@ func (w *writeState) release() {
 	for i := range w.tables {
 		tt := &w.tables[i]
 		clear(tt.idx)
-		tt.table = nil
+		tt.table, tt.rows = nil, nil
 	}
 	w.tables = w.tables[:0]
+	w.bmW.Freeze()
+	w.vecW.Freeze()
 	if cap(w.newKeys.buf) > maxPooledScratch || cap(w.oldKeys.buf) > maxPooledScratch || cap(w.id) > maxPooledScratch {
 		w.newKeys, w.oldKeys, w.id = keyList{}, keyList{}, nil
 	}
@@ -161,7 +176,7 @@ func (txn *Txn) tableTxn(ct *compiledTable) *tableTxn {
 		w.tables = append(w.tables, tableTxn{})
 	}
 	tt := &w.tables[n]
-	tt.table = ct
+	tt.table, tt.rows = ct, nil
 	if cap(tt.idx) >= len(ct.indexes) {
 		tt.idx = tt.idx[:len(ct.indexes)]
 	} else {
@@ -265,6 +280,8 @@ func (txn *Txn) Commit() {
 			}
 		}
 
+		next.ext = txn.withRows(w)
+
 		// Update the root of the DB
 		txn.db.root.store(next)
 
@@ -331,7 +348,7 @@ func (txn *Txn) Insert(table string, obj interface{}) error {
 	w.newKeys.reset()
 	w.oldKeys.reset()
 	w.ranges = w.ranges[:0]
-	for i := 1; i < len(ct.indexes); i++ {
+	for i := 1; i < ct.classic; i++ {
 		ci := &ct.indexes[i]
 		r := keyRange{newFrom: w.newKeys.len(), oldFrom: w.oldKeys.len()}
 
@@ -361,6 +378,17 @@ func (txn *Txn) Insert(table string, obj interface{}) error {
 		r.newTo, r.oldTo = w.newKeys.len(), w.oldKeys.len()
 		w.ranges = append(w.ranges, r)
 	}
+	if ct.classic < len(ct.indexes) {
+		if err := txn.bitmapKeys(ct, obj, existing); err != nil {
+			// Undo the primary index write.
+			if update {
+				idTxn.Insert(idVal, existing)
+			} else {
+				idTxn.Delete(idVal)
+			}
+			return err
+		}
+	}
 
 	for i, r := range w.ranges {
 		indexTxn := txn.writableIndex(tt, &ct.indexes[i+1])
@@ -384,6 +412,9 @@ func (txn *Txn) Insert(table string, obj interface{}) error {
 			indexTxn.Insert(w.newKeys.key(k), obj)
 		}
 	}
+	if ct.classic < len(ct.indexes) {
+		txn.applyBitmaps(tt, obj, existing, idVal)
+	}
 	if txn.changes != nil {
 		txn.changes = append(txn.changes, Change{
 			Table:      table,
@@ -401,7 +432,7 @@ func (txn *Txn) deleteFromIndexes(tt *tableTxn, obj interface{}, idVal []byte, s
 	ct, w := tt.table, txn.w
 	w.oldKeys.reset()
 	w.ranges = w.ranges[:0]
-	for i := 1; i < len(ct.indexes); i++ {
+	for i := 1; i < ct.classic; i++ {
 		ci := &ct.indexes[i]
 		r := keyRange{oldFrom: w.oldKeys.len()}
 		if ci != skip {
@@ -412,6 +443,11 @@ func (txn *Txn) deleteFromIndexes(tt *tableTxn, obj interface{}, idVal []byte, s
 		r.oldTo = w.oldKeys.len()
 		w.ranges = append(w.ranges, r)
 	}
+	if ct.classic < len(ct.indexes) {
+		if err := txn.bitmapKeys(ct, nil, obj); err != nil {
+			return err
+		}
+	}
 	for i, r := range w.ranges {
 		if r.oldFrom == r.oldTo {
 			continue
@@ -420,6 +456,9 @@ func (txn *Txn) deleteFromIndexes(tt *tableTxn, obj interface{}, idVal []byte, s
 		for k := r.oldFrom; k < r.oldTo; k++ {
 			indexTxn.Delete(w.oldKeys.key(k))
 		}
+	}
+	if ct.classic < len(ct.indexes) {
+		txn.applyBitmaps(tt, nil, obj, idVal)
 	}
 	return nil
 }
@@ -739,6 +778,9 @@ func (txn *Txn) getIndexValue(scratch []byte, table, index string, args []interf
 	// Get the index schema; a "_prefix" suffix selects a prefix scan
 	ref, ok := ct.byName.get(index)
 	if !ok {
+		if _, isBitmap := ct.bitmapIndex(index); isBitmap {
+			return indexRef{}, nil, fmt.Errorf("index '%s' is a bitmap index: query it with Where", strings.TrimSuffix(index, prefixSuffix))
+		}
 		return indexRef{}, nil, fmt.Errorf("invalid index '%s'", strings.TrimSuffix(index, prefixSuffix))
 	}
 
@@ -1096,6 +1138,8 @@ func (txn *Txn) Snapshot() *Txn {
 	// write transaction copies instead of mutating what the snapshot sees.
 	snapshot.root = newDBRoot(len(txn.root.trees))
 	copy(snapshot.root.trees, txn.root.trees)
+	txn.w.freezeRows()
+	snapshot.root.ext = txn.withRows(txn.w)
 	for i := range txn.w.tables {
 		tt := &txn.w.tables[i]
 		for ord := range tt.idx {
