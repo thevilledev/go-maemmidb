@@ -87,6 +87,20 @@ The handful of deliberate differences -- two upstream defects that are fixed
 rather than reproduced, and a few places where upstream's behaviour is random --
 are listed in [COMPATIBILITY.md](COMPATIBILITY.md).
 
+## Migrating from go-memdb
+
+The migration is the import path, and nothing else. The package is still named
+`memdb`, so every call site -- `memdb.NewMemDB`, `memdb.StringFieldIndex`,
+`*memdb.Txn` -- keeps its spelling, and even an unaliased import still binds to
+the name `memdb`:
+
+```bash
+go get github.com/thevilledev/go-maemmidb@v0.1.0
+grep -rl 'github.com/hashicorp/go-memdb' --include='*.go' . \
+  | xargs sed -i '' 's|"github.com/hashicorp/go-memdb"|"github.com/thevilledev/go-maemmidb"|g'
+go mod tidy && go build ./... && go test ./...
+```
+
 ## Example
 
 Unchanged from go-memdb:

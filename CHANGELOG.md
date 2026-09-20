@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v0.1.0 - 2026-09-20
 
 First version: a drop-in reimplementation of
 [hashicorp/go-memdb](https://github.com/hashicorp/go-memdb) at commit `7d3fdd5`
