@@ -30,8 +30,7 @@ var (
 // Txn is a transaction against a MemDB.
 // This can be a read or write transaction.
 type Txn struct {
-	db    *MemDB
-	write bool
+	db *MemDB
 
 	// root is the database version this transaction reads. A write
 	// transaction sets it to nil when it is committed or aborted.
@@ -40,14 +39,34 @@ type Txn struct {
 	// mutated: like upstream's, it may be used from several goroutines.
 	root *dbRoot
 
-	after []func()
+	// txnExtra is what only a write transaction uses. It is allocated together
+	// with the transaction (see MemDB.Txn) and nil in a read transaction, which
+	// is what most transactions are and which is less than half the size for it.
+	*txnExtra
+
+	write bool
+}
+
+// txnExtra is the write half of a transaction.
+type txnExtra struct {
+	// w is the state of a write transaction, allocated on the first write.
+	w *writeState
+
+	// The deferred functions. Nearly every transaction that defers anything
+	// defers one function, which needs no slice; the rest are behind a
+	// pointer so that a write transaction stays within its size class.
+	after     func()
+	afterMore *[]func()
 
 	// changes is used to track the changes performed during the transaction. If
 	// it is nil at transaction start then changes are not tracked.
 	changes Changes
+}
 
-	// w is the state of a write transaction, allocated on the first write.
-	w *writeState
+// writeTxn is the single allocation behind a write transaction.
+type writeTxn struct {
+	Txn
+	extra txnExtra
 }
 
 // writeState holds the uncommitted index trees of a write transaction plus
@@ -113,6 +132,9 @@ func (w *writeState) release() {
 // different goroutine than the one making mutations or committing the
 // transaction.
 func (txn *Txn) TrackChanges() {
+	if txn.txnExtra == nil {
+		txn.txnExtra = &txnExtra{} // a read transaction; harmless, as upstream
+	}
 	if txn.changes == nil {
 		txn.changes = make(Changes, 0, 1)
 	}
@@ -173,9 +195,9 @@ func (txn *Txn) writableIndex(tt *tableTxn, ci *compiledIndex) *radix.Txn {
 // that later writes of this transaction copy instead of mutating what the
 // caller still observes.
 func (txn *Txn) readableIndex(ci *compiledIndex, escapes bool) radix.Tree {
-	if txn.w != nil {
-		for i := range txn.w.tables {
-			if tt := &txn.w.tables[i]; tt.table == ci.table {
+	if x := txn.txnExtra; x != nil && x.w != nil {
+		for i := range x.w.tables {
+			if tt := &x.w.tables[i]; tt.table == ci.table {
 				if it := &tt.idx[ci.ord]; it.Started() {
 					if escapes {
 						it.Freeze()
@@ -205,11 +227,12 @@ func (txn *Txn) Abort() {
 
 	// Clear the txn
 	txn.root = nil
-	if txn.w != nil {
-		txn.w.release()
-		txn.w = nil
+	x := txn.txnExtra
+	if x.w != nil {
+		x.w.release()
+		x.w = nil
 	}
-	txn.changes = nil
+	x.changes = nil
 
 	// Release the writer lock since this is invalid
 	txn.db.writer.Unlock()
@@ -250,19 +273,26 @@ func (txn *Txn) Commit() {
 		// see the new state.
 		w.nf.Notify()
 		w.release()
+		txn.w = nil
 	}
 
 	// Clear the txn
 	txn.root = nil
-	txn.w = nil
 
 	// Release the writer lock since this is invalid
 	txn.db.writer.Unlock()
 
 	// Run the deferred functions, if any
-	for i := len(txn.after); i > 0; i-- {
-		fn := txn.after[i-1]
-		fn()
+	x := txn.txnExtra
+	if x.afterMore != nil {
+		more := *x.afterMore
+		for i := len(more); i > 0; i-- {
+			fn := more[i-1]
+			fn()
+		}
+	}
+	if x.after != nil {
+		x.after()
 	}
 }
 
@@ -897,7 +927,7 @@ type mutInfo struct {
 // history, but it is complete in that the net effect is preserved (Y got a new
 // value, X got removed).
 func (txn *Txn) Changes() Changes {
-	if txn.changes == nil {
+	if txn.txnExtra == nil || txn.changes == nil {
 		return nil
 	}
 
@@ -1003,7 +1033,17 @@ func hasDuplicateChanges(changes Changes) bool {
 // functions are called in LIFO order, and only invoked at the end of
 // write transactions.
 func (txn *Txn) Defer(fn func()) {
-	txn.after = append(txn.after, fn)
+	switch {
+	case txn.txnExtra == nil:
+		// A read transaction never runs deferred functions.
+	case txn.after == nil && txn.afterMore == nil && fn != nil:
+		txn.after = fn
+	default:
+		if txn.afterMore == nil {
+			txn.afterMore = new([]func())
+		}
+		*txn.afterMore = append(*txn.afterMore, fn)
+	}
 }
 
 // radixIterator adapts a forward tree iterator to ResultIterator. The tree
@@ -1048,7 +1088,7 @@ func (txn *Txn) Snapshot() *Txn {
 		db:   txn.db,
 		root: txn.root,
 	}
-	if txn.w == nil {
+	if txn.txnExtra == nil || txn.w == nil {
 		return snapshot
 	}
 

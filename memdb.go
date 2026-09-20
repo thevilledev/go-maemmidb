@@ -99,15 +99,13 @@ func (db *MemDB) DBSchema() *DBSchema {
 // Txn is used to start a new transaction in either read or write mode.
 // There can only be a single concurrent writer, but any number of readers.
 func (db *MemDB) Txn(write bool) *Txn {
-	if write {
-		db.writer.Lock()
+	if !write {
+		return &Txn{db: db, root: db.root.load()}
 	}
-	txn := &Txn{
-		db:    db,
-		write: write,
-		root:  db.root.load(),
-	}
-	return txn
+	db.writer.Lock()
+	wt := &writeTxn{Txn: Txn{db: db, root: db.root.load(), write: true}}
+	wt.txnExtra = &wt.extra
+	return &wt.Txn
 }
 
 // Snapshot is used to capture a point-in-time snapshot  of the database that
