@@ -5,7 +5,7 @@ package memdb
 
 import (
 	"fmt"
-	"sort"
+	"slices"
 	"strings"
 )
 
@@ -51,7 +51,127 @@ type compiledTable struct {
 	// write walks it in this order, so writes are deterministic.
 	indexes []compiledIndex
 	// byName resolves the index names accepted by queries, see resolveNames.
-	byName map[string]indexRef
+	byName nameIndex[indexRef]
+}
+
+// nameIndex resolves the names of a schema: the tables of a database, or the
+// index names a table's queries accept. Every query starts with two of these
+// lookups, and on a small table they used to cost as much as the tree descent
+// itself.
+//
+// A schema has few names and they rarely share a length, so the names are kept
+// sorted by length: a lookup compares its argument with the handful of names
+// that are exactly as long, and callers almost always pass the very string
+// constant the schema was built from, which compares equal by address without
+// looking at a single byte. A length that many names share (fifty tables called
+// "table-NN") is searched by bisection. There is no map: two small arrays are
+// also cheaper to build than one, which NewMemDB's callers notice.
+type nameIndex[V any] struct {
+	// entries is sorted by length of name, then by name; the names of length
+	// l are entries[off[l]:off[l+1]].
+	entries []nameEntry[V]
+	off     []uint32
+}
+
+type nameEntry[V any] struct {
+	name string
+	val  V
+}
+
+// crowdedLength is the number of names of one length beyond which comparing
+// them one by one stops being faster than bisecting.
+const crowdedLength = 4
+
+// nameIndexBuilder places names by length in linear time and two allocations
+// (a counting sort). NewMemDB is called often enough, in test suites above
+// all, for a map or a comparison sort per table to show. Usage: start; count
+// every name; counted; place every name; done.
+type nameIndexBuilder[V any] struct {
+	x nameIndex[V]
+}
+
+func (b *nameIndexBuilder[V]) start(names, longest int) {
+	if names > 0 {
+		b.x = nameIndex[V]{entries: make([]nameEntry[V], names), off: make([]uint32, longest+2)}
+	}
+}
+
+// count announces a name of length l. off[l+1] is the number of such names
+// until counted turns it into the position where they start.
+func (b *nameIndexBuilder[V]) count(l int) { b.x.off[l+1]++ }
+
+func (b *nameIndexBuilder[V]) counted() {
+	for l := 1; l < len(b.x.off); l++ {
+		b.x.off[l] += b.x.off[l-1]
+	}
+}
+
+// place stores a name at the cursor of its length and advances the cursor.
+func (b *nameIndexBuilder[V]) place(name string, val V) {
+	l := len(name)
+	b.x.entries[b.x.off[l]] = nameEntry[V]{name, val}
+	b.x.off[l]++
+}
+
+func (b *nameIndexBuilder[V]) done() nameIndex[V] {
+	x := b.x
+	if len(x.off) == 0 {
+		return x
+	}
+	// Every cursor now stands at the end of its length, which is the start
+	// of the next one: shift them back.
+	copy(x.off[1:], x.off)
+	x.off[0] = 0
+	// Only a length that enough names share to be bisected needs an order.
+	for l := 0; l+1 < len(x.off); l++ {
+		if bucket := x.entries[x.off[l]:x.off[l+1]]; len(bucket) > crowdedLength {
+			slices.SortFunc(bucket, func(a, b nameEntry[V]) int { return strings.Compare(a.name, b.name) })
+		}
+	}
+	return x
+}
+
+// newNameIndex builds the index of the given names.
+func newNameIndex[V any](names []nameEntry[V]) nameIndex[V] {
+	longest := 0
+	for i := range names {
+		longest = max(longest, len(names[i].name))
+	}
+	var b nameIndexBuilder[V]
+	b.start(len(names), longest)
+	for i := range names {
+		b.count(len(names[i].name))
+	}
+	b.counted()
+	for i := range names {
+		b.place(names[i].name, names[i].val)
+	}
+	return b.done()
+}
+
+func (x *nameIndex[V]) get(name string) (V, bool) {
+	if l := len(name); l+1 < len(x.off) {
+		bucket := x.entries[x.off[l]:x.off[l+1]]
+		if len(bucket) > crowdedLength {
+			lo, hi := 0, len(bucket)
+			for lo < hi {
+				mid := int(uint(lo+hi) >> 1)
+				if bucket[mid].name < name {
+					lo = mid + 1
+				} else {
+					hi = mid
+				}
+			}
+			bucket = bucket[lo:min(lo+1, len(bucket))]
+		}
+		for i := range bucket {
+			if bucket[i].name == name {
+				return bucket[i].val, true
+			}
+		}
+	}
+	var zero V
+	return zero, false
 }
 
 func (t *compiledTable) id() *compiledIndex { return &t.indexes[0] }
@@ -117,29 +237,39 @@ func (t *compiledTable) primaryKey(dst []byte, obj interface{}) ([]byte, error) 
 
 // compileSchema resolves a validated schema. It returns the tables by name and
 // the total number of index slots.
-func compileSchema(schema *DBSchema) (map[string]*compiledTable, int) {
+func compileSchema(schema *DBSchema) (nameIndex[*compiledTable], int) {
 	tableNames := make([]string, 0, len(schema.Tables))
 	total := 0
 	for name, ts := range schema.Tables {
 		tableNames = append(tableNames, name)
 		total += len(ts.Indexes)
 	}
-	sort.Strings(tableNames)
+	slices.Sort(tableNames)
 
 	// One backing array for every index of every table.
 	all := make([]compiledIndex, 0, total)
-	tables := make(map[string]*compiledTable, len(tableNames))
+	var tables nameIndexBuilder[*compiledTable]
+	longest := 0
+	for _, tname := range tableNames {
+		longest = max(longest, len(tname))
+	}
+	tables.start(len(tableNames), longest)
+	for _, tname := range tableNames {
+		tables.count(len(tname))
+	}
+	tables.counted()
 
 	for _, tname := range tableNames {
 		ts := schema.Tables[tname]
-		names := make([]string, 0, len(ts.Indexes))
+		// "id", then the other indexes by name: one exactly sized slice.
+		names := make([]string, 1, len(ts.Indexes)+1)
+		names[0] = id
 		for iname := range ts.Indexes {
 			if iname != id {
 				names = append(names, iname)
 			}
 		}
-		sort.Strings(names)
-		names = append([]string{id}, names...)
+		slices.Sort(names[1:])
 
 		start := len(all)
 		for ord, iname := range names {
@@ -168,9 +298,9 @@ func compileSchema(schema *DBSchema) (map[string]*compiledTable, int) {
 			ct.indexes[i].table = ct
 		}
 		ct.resolveNames()
-		tables[tname] = ct
+		tables.place(tname, ct)
 	}
-	return tables, total
+	return tables.done(), total
 }
 
 // resolveNames precomputes index-name resolution so that queries need one map
@@ -180,12 +310,35 @@ func compileSchema(schema *DBSchema) (map[string]*compiledTable, int) {
 // named "x_prefix" cannot be addressed by that name (it resolves to a prefix
 // scan of index "x", if that exists) but only as "x_prefix_prefix".
 func (t *compiledTable) resolveNames() {
-	t.byName = make(map[string]indexRef, 2*len(t.indexes))
-	for i := range t.indexes {
-		ci := &t.indexes[i]
+	t.byName = indexNames(t.indexes)
+}
+
+func indexNames(indexes []compiledIndex) nameIndex[indexRef] {
+	names, longest := 0, 0
+	for i := range indexes {
+		ci := &indexes[i]
 		if !strings.HasSuffix(ci.name, prefixSuffix) {
-			t.byName[ci.name] = indexRef{index: ci}
+			names++
 		}
-		t.byName[ci.name+prefixSuffix] = indexRef{index: ci, prefixScan: true}
+		names++
+		longest = max(longest, len(ci.name)+len(prefixSuffix))
 	}
+	var b nameIndexBuilder[indexRef]
+	b.start(names, longest)
+	for i := range indexes {
+		ci := &indexes[i]
+		if !strings.HasSuffix(ci.name, prefixSuffix) {
+			b.count(len(ci.name))
+		}
+		b.count(len(ci.name) + len(prefixSuffix))
+	}
+	b.counted()
+	for i := range indexes {
+		ci := &indexes[i]
+		if !strings.HasSuffix(ci.name, prefixSuffix) {
+			b.place(ci.name, indexRef{index: ci})
+		}
+		b.place(ci.name+prefixSuffix, indexRef{index: ci, prefixScan: true})
+	}
+	return b.done()
 }

@@ -44,7 +44,7 @@ type MemDB struct {
 // compiled is a schema together with its compiled form.
 type compiled struct {
 	schema *DBSchema
-	tables map[string]*compiledTable
+	tables nameIndex[*compiledTable]
 }
 
 // inlineTrees is the number of index trees a dbRoot holds without a second

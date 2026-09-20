@@ -277,7 +277,7 @@ func (txn *Txn) Insert(table string, obj interface{}) error {
 	}
 
 	// Get the table schema
-	ct, ok := txn.db.tables[table]
+	ct, ok := txn.db.tables.get(table)
 	if !ok {
 		return fmt.Errorf("invalid table '%s'", table)
 	}
@@ -402,7 +402,7 @@ func (txn *Txn) Delete(table string, obj interface{}) error {
 	}
 
 	// Get the table schema
-	ct, ok := txn.db.tables[table]
+	ct, ok := txn.db.tables.get(table)
 	if !ok {
 		return fmt.Errorf("invalid table '%s'", table)
 	}
@@ -460,8 +460,9 @@ func (txn *Txn) DeletePrefix(table string, prefix_index string, prefix string) (
 	}
 	// Get succeeded, so the table and the index (prefix_index minus its
 	// "_prefix" suffix) both resolve.
-	ct := txn.db.tables[table]
-	target := ct.byName[prefix_index].index
+	ct, _ := txn.db.tables.get(table)
+	ref, _ := ct.byName.get(prefix_index)
+	target := ref.index
 
 	foundAny := false
 	for entry := entries.Next(); entry != nil; entry = entries.Next() {
@@ -700,13 +701,13 @@ func (txn *Txn) LongestPrefix(table, index string, args ...interface{}) (interfa
 // mutable state (they may be used from several goroutines, like upstream's).
 func (txn *Txn) getIndexValue(scratch []byte, table, index string, args []interface{}) (indexRef, []byte, error) {
 	// Get the table schema
-	ct, ok := txn.db.tables[table]
+	ct, ok := txn.db.tables.get(table)
 	if !ok {
 		return indexRef{}, nil, fmt.Errorf("invalid table '%s'", table)
 	}
 
 	// Get the index schema; a "_prefix" suffix selects a prefix scan
-	ref, ok := ct.byName[index]
+	ref, ok := ct.byName.get(index)
 	if !ok {
 		return indexRef{}, nil, fmt.Errorf("invalid index '%s'", strings.TrimSuffix(index, prefixSuffix))
 	}
