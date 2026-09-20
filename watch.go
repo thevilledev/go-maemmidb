@@ -149,7 +149,7 @@ func (w WatchSet) watchMany(done <-chan struct{}, timeoutCh <-chan time.Time) in
 	defer close(stopCh)
 	triggerCh := make(chan struct{}, 1)
 	watcher := func(chunk []<-chan struct{}) {
-		if watchFewDone(fanoutChunk, stopCh, chunk) == watchFired {
+		if watchChunk(stopCh, chunk) == watchFired {
 			select {
 			case triggerCh <- struct{}{}:
 			default:

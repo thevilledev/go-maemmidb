@@ -25,6 +25,18 @@ const maxFew = 128
 // waits on.
 const fanoutChunk = 32
 
+// watchChunk is what a helper goroutine runs: the select over exactly
+// fanoutChunk channels, called directly. Going through watchFewDone would put
+// its frame between the goroutine and the select, and on a new goroutine's
+// small stack that is enough to move the first stack growth from somewhere
+// inside the runtime to the entry of the big select function -- where growing
+// is expensive, because the runtime walks that function's long stack table to
+// size the new stack. Measured on x86-64, it made a watch on 1024 channels 6%
+// slower than upstream's.
+func watchChunk(done <-chan struct{}, ch []<-chan struct{}) int {
+	return watchFewDone32(done, ch)
+}
+
 // What ended a wait.
 const (
 	watchFired   = iota // one of the watch channels
