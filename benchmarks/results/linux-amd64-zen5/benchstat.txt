@@ -1,0 +1,730 @@
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+                                                      │ upstream.txt │ new.txt │
+                                                      │                       sec/op                        │         sec/op           vs base               │
+NewMemDB/schema=s1                                                                             571.6n ±  2%             494.1n ±   2%  -13.56% (p=0.002 n=6)
+NewMemDB/schema=wide                                                                           7.131µ ±  3%             2.267µ ±   1%  -68.21% (p=0.002 n=6)
+NewMemDB/schema=s50                                                                           139.18µ ±  4%             34.34µ ±   1%  -75.32% (p=0.002 n=6)
+Txn/read                                                                                       49.66n ±  2%             18.05n ±   0%  -63.66% (p=0.002 n=6)
+Txn/write-commit-empty                                                                         77.79n ±  0%             34.38n ±   1%  -55.81% (p=0.002 n=6)
+Txn/write-abort-empty                                                                          53.98n ±  2%             34.80n ±   0%  -35.53% (p=0.002 n=6)
+Txn/write-commit-defer                                                                        102.65n ±  3%             44.84n ±   1%  -56.32% (p=0.002 n=6)
+Snapshot                                                                                       18.04n ±  1%             16.70n ±   0%   -7.40% (p=0.002 n=6)
+SnapshotWrite                                                                                 27.833µ ±  7%             8.851µ ±   3%  -68.20% (p=0.002 n=6)
+Indexer/FromObject/StringFieldIndex                                                            56.69n ±  1%             20.42n ±   0%  -63.98% (p=0.002 n=6)
+Indexer/FromObject/StringFieldIndex-lowercase                                                 101.05n ±  4%             29.04n ±   1%  -71.26% (p=0.002 n=6)
+Indexer/FromObject/StringFieldIndex-pointer                                                    57.80n ±  1%             35.89n ±   1%  -37.91% (p=0.002 n=6)
+Indexer/FromObject/IntFieldIndex                                                               42.05n ±  0%             15.04n ±   2%  -64.23% (p=0.002 n=6)
+Indexer/FromObject/UintFieldIndex                                                              44.27n ±  0%             15.36n ±   4%  -65.30% (p=0.002 n=6)
+Indexer/FromObject/BoolFieldIndex                                                              42.47n ±  0%             14.10n ±   1%  -66.80% (p=0.002 n=6)
+Indexer/FromObject/UUIDFieldIndex                                                             103.80n ±  0%             50.98n ±  16%  -50.89% (p=0.002 n=6)
+Indexer/FromObject/FieldSetIndex                                                               50.48n ±  0%             14.39n ±   3%  -71.50% (p=0.002 n=6)
+Indexer/FromObject/ConditionalIndex                                                            6.050n ±  5%             6.258n ±   6%        ~ (p=1.000 n=6)
+Indexer/FromObject/CompoundIndex                                                              210.90n ±  1%             52.66n ±   2%  -75.03% (p=0.002 n=6)
+Indexer/FromObject/StringSliceFieldIndex                                                      129.50n ±  3%             73.08n ±   2%  -43.57% (p=0.002 n=6)
+Indexer/FromObject/StringMapFieldIndex                                                         250.8n ±  5%             149.7n ±   8%  -40.33% (p=0.002 n=6)
+Indexer/FromObject/CompoundMultiIndex                                                          528.8n ±  2%             197.2n ±   6%  -62.72% (p=0.002 n=6)
+Indexer/FromArgs/StringFieldIndex                                                              32.87n ±  5%             15.11n ±   0%  -54.02% (p=0.002 n=6)
+Indexer/FromArgs/StringFieldIndex-lowercase                                                    73.08n ±  3%             23.21n ±   1%  -68.25% (p=0.002 n=6)
+Indexer/FromArgs/IntFieldIndex                                                                 9.525n ±  7%             9.261n ±   1%   -2.77% (p=0.002 n=6)
+Indexer/FromArgs/UintFieldIndex                                                               10.370n ±  3%             9.266n ±   1%  -10.65% (p=0.002 n=6)
+Indexer/FromArgs/BoolFieldIndex                                                                6.299n ±  4%             6.447n ±   3%        ~ (p=0.567 n=6)
+Indexer/FromArgs/UUIDFieldIndex-string                                                         66.08n ±  3%             46.59n ±  22%  -29.49% (p=0.002 n=6)
+Indexer/FromArgs/StringMapFieldIndex                                                           47.26n ±  3%             17.58n ±   2%  -62.80% (p=0.002 n=6)
+Indexer/FromArgs/CompoundIndex                                                                145.55n ±  1%             39.62n ±   1%  -72.78% (p=0.002 n=6)
+Indexer/FromArgs/CompoundMultiIndex                                                            157.9n ±  2%             117.7n ±   1%  -25.49% (p=0.002 n=6)
+Indexer/PrefixFromArgs/UUIDFieldIndex                                                          52.41n ±  5%             32.81n ±   7%  -37.41% (p=0.002 n=6)
+First/schema=s3/keys=uuid/size=1000/hit                                                       185.55n ±  5%             56.78n ±   0%  -69.40% (p=0.002 n=6)
+First/schema=s3/keys=uuid/size=1000/miss                                                      174.00n ±  8%             48.84n ±   0%  -71.93% (p=0.002 n=6)
+First/schema=s3/keys=uuid/size=100000/hit                                                      741.3n ±  1%             450.7n ±   1%  -39.21% (p=0.002 n=6)
+First/schema=s3/keys=uuid/size=100000/miss                                                    368.70n ±  8%             73.92n ±   0%  -79.95% (p=0.002 n=6)
+First/schema=s3/keys=seq/size=1000/hit                                                        264.00n ±  5%             56.67n ±   3%  -78.53% (p=0.002 n=6)
+First/schema=s3/keys=seq/size=1000/miss                                                       167.90n ±  2%             38.80n ±   2%  -76.89% (p=0.002 n=6)
+First/schema=s3/keys=seq/size=100000/hit                                                       586.8n ±  5%             326.8n ±   1%  -44.30% (p=0.002 n=6)
+First/schema=s3/keys=seq/size=100000/miss                                                     187.20n ±  2%             30.54n ±   2%  -83.68% (p=0.002 n=6)
+First/schema=s3/keys=path/size=1000/hit                                                       177.70n ±  1%             53.22n ±   2%  -70.05% (p=0.002 n=6)
+First/schema=s3/keys=path/size=1000/miss                                                      244.15n ±  5%             38.06n ±   1%  -84.41% (p=0.002 n=6)
+First/schema=s3/keys=path/size=100000/hit                                                      666.2n ±  6%             284.9n ±   1%  -57.25% (p=0.002 n=6)
+First/schema=s3/keys=path/size=100000/miss                                                    124.55n ±  5%             38.08n ±   1%  -69.43% (p=0.002 n=6)
+First/schema=wide/keys=uuid/size=1000/hit                                                     148.85n ±  9%             52.25n ±   2%  -64.90% (p=0.002 n=6)
+First/schema=wide/keys=uuid/size=1000/miss                                                    142.40n ± 11%             43.88n ±   1%  -69.19% (p=0.002 n=6)
+First/schema=wide/keys=uuid/size=100000/hit                                                    842.6n ±  2%             459.3n ±   2%  -45.49% (p=0.002 n=6)
+First/schema=wide/keys=uuid/size=100000/miss                                                  232.90n ±  6%             78.55n ±   1%  -66.27% (p=0.002 n=6)
+First/schema=func/keys=uuid/size=1000/hit                                                     135.00n ± 13%             72.94n ±   1%  -45.97% (p=0.002 n=6)
+First/schema=func/keys=uuid/size=1000/miss                                                    123.55n ± 20%             68.57n ±   2%  -44.50% (p=0.002 n=6)
+First/schema=func/keys=uuid/size=100000/hit                                                    793.7n ±  2%             516.0n ±   1%  -34.99% (p=0.002 n=6)
+First/schema=func/keys=uuid/size=100000/miss                                                   194.6n ± 10%             103.0n ±   2%  -47.10% (p=0.002 n=6)
+TxnFirst/size=1000                                                                            246.45n ±  2%             72.99n ±   4%  -70.38% (p=0.002 n=6)
+TxnFirst/size=100000                                                                           925.2n ±  2%             466.1n ±   1%  -49.62% (p=0.002 n=6)
+FirstIndex/nonunique-string                                                                    397.7n ±  3%             186.0n ±   1%  -53.22% (p=0.002 n=6)
+FirstIndex/unique-lowercase                                                                    723.5n ±  2%             298.6n ±   2%  -58.73% (p=0.002 n=6)
+FirstIndex/id-prefix                                                                           856.4n ±  1%             391.7n ±   2%  -54.26% (p=0.002 n=6)
+FirstIndex/string-slice                                                                        540.5n ±  2%             349.6n ±   1%  -35.32% (p=0.002 n=6)
+FirstIndex/string-map                                                                          641.0n ±  2%             447.5n ±   0%  -30.18% (p=0.002 n=6)
+FirstIndex/int                                                                                 301.8n ±  2%             107.7n ±   4%  -64.31% (p=0.002 n=6)
+FirstIndex/uint                                                                                662.4n ±  1%             269.4n ±   6%  -59.33% (p=0.002 n=6)
+FirstIndex/bool                                                                               281.65n ±  4%             98.77n ±   2%  -64.93% (p=0.002 n=6)
+FirstIndex/uuid                                                                                763.4n ±  1%             518.4n ±   3%  -32.09% (p=0.002 n=6)
+FirstIndex/compound                                                                            495.5n ±  2%             215.2n ±  10%  -56.58% (p=0.002 n=6)
+FirstIndex/compound-prefix                                                                     446.6n ±  7%             185.9n ±   1%  -58.37% (p=0.002 n=6)
+FirstIndex/no-args                                                                            417.90n ±  4%             16.12n ±   1%  -96.14% (p=0.002 n=6)
+Last/unique                                                                                    774.9n ±  1%             439.6n ±   0%  -43.27% (p=0.002 n=6)
+Last/nonunique-string                                                                          561.0n ±  6%             184.8n ±   3%  -67.05% (p=0.002 n=6)
+Last/int                                                                                       906.0n ± 17%             107.5n ±  10%  -88.13% (p=0.002 n=6)
+Last/no-args                                                                                  968.70n ±  7%             14.91n ±   5%  -98.46% (p=0.002 n=6)
+GetOne/size=1000                                                                              256.25n ±  4%             96.20n ±   3%  -62.46% (p=0.002 n=6)
+GetOne/size=100000                                                                             893.7n ±  1%             561.9n ±   1%  -37.13% (p=0.002 n=6)
+Iterate/scan=all/keys=uuid/size=1000                                                           5.675µ ±  1%             4.529µ ±   4%  -20.20% (p=0.002 n=6)
+Iterate/scan=all/keys=seq/size=1000                                                            3.990µ ±  0%             3.132µ ±   1%  -21.52% (p=0.002 n=6)
+Iterate/scan=all/keys=path/size=1000                                                           4.578µ ±  0%             3.581µ ±   2%  -21.79% (p=0.002 n=6)
+Iterate/scan=group/size=1000                                                                  1062.5n ±  3%             617.0n ±   2%  -41.93% (p=0.002 n=6)
+Iterate/scan=group-reverse/size=1000                                                          2207.0n ±  7%             602.5n ±   3%  -72.70% (p=0.002 n=6)
+Iterate/scan=tags/size=1000                                                                    793.2n ± 11%             497.1n ±   6%  -37.33% (p=0.002 n=6)
+Iterate/scan=all-reverse/size=1000                                                            16.893µ ±  4%             4.159µ ±   0%  -75.38% (p=0.002 n=6)
+Iterate/scan=all/keys=uuid/size=100000                                                         8.512m ±  6%             5.370m ±   2%  -36.91% (p=0.002 n=6)
+Iterate/scan=all/keys=seq/size=100000                                                          5.742m ±  2%             2.818m ±   0%  -50.92% (p=0.002 n=6)
+Iterate/scan=all/keys=path/size=100000                                                         7.849m ±  2%             2.671m ±   1%  -65.97% (p=0.002 n=6)
+Iterate/scan=group/size=100000                                                                 9.040µ ±  3%             4.941µ ±   1%  -45.35% (p=0.002 n=6)
+Iterate/scan=group-reverse/size=100000                                                        16.883µ ±  3%             4.864µ ±   2%  -71.19% (p=0.002 n=6)
+Iterate/scan=tags/size=100000                                                                  599.5µ ±  2%             387.3µ ±   1%  -35.40% (p=0.002 n=6)
+Iterate/scan=all-reverse/size=100000                                                          18.478m ±  6%             5.033m ±   1%  -72.76% (p=0.002 n=6)
+LowerBound/int                                                                                 669.2n ± 21%             297.0n ±   6%  -55.62% (p=0.002 n=6)
+LowerBound/int-reverse                                                                         756.4n ± 20%             285.5n ±   4%  -62.26% (p=0.002 n=6)
+LowerBound/uint                                                                                940.4n ±  7%             390.2n ±   3%  -58.50% (p=0.002 n=6)
+LowerBound/string                                                                             1863.0n ±  2%             888.3n ±   2%  -52.32% (p=0.002 n=6)
+LowerBound/string-reverse                                                                     2663.0n ±  2%             862.0n ±   1%  -67.63% (p=0.002 n=6)
+LongestPrefix/size=1000                                                                        176.4n ±  7%             109.7n ±   4%  -37.81% (p=0.002 n=6)
+LongestPrefix/size=100000                                                                      343.7n ±  4%             166.2n ±   3%  -51.64% (p=0.002 n=6)
+FilterIterator                                                                                 16.42µ ±  1%             10.29µ ±   1%  -37.35% (p=0.002 n=6)
+ParallelTxnFirst/size=1000                                                                    244.20n ±  4%             71.70n ±   2%  -70.64% (p=0.002 n=6)
+ParallelTxnFirst/size=100000                                                                   935.7n ±  1%             468.4n ±   0%  -49.94% (p=0.002 n=6)
+ParallelTxnFirstWithWriter                                                                     929.5n ±  1%             463.2n ±   3%  -50.17% (p=0.002 n=6)
+FirstWatch/size=1000                                                                          185.15n ±  6%             57.20n ±   1%  -69.11% (p=0.002 n=6)
+FirstWatch/size=100000                                                                         746.5n ±  1%             507.5n ±   1%  -32.01% (p=0.002 n=6)
+GetWatchCh/size=1000                                                                           344.4n ±  5%             140.3n ±   3%  -59.25% (p=0.002 n=6)
+GetWatchCh/size=100000                                                                         589.4n ± 11%             295.4n ±   8%  -49.87% (p=0.002 n=6)
+WatchCycle/size=1000                                                                          16.012µ ±  6%             3.132µ ±   1%  -80.44% (p=0.002 n=6)
+WatchCycle/size=100000                                                                         33.01µ ±  2%             11.85µ ±   4%  -64.11% (p=0.002 n=6)
+CommitNotify/size=1000/rows=100                                                                701.2µ ±  1%             139.0µ ±   2%  -80.18% (p=0.002 n=6)
+CommitNotify/size=100000/rows=100                                                             1686.9µ ±  3%             526.0µ ±   4%  -68.82% (p=0.002 n=6)
+WatchSetAdd                                                                                    1.367µ ±  2%             1.287µ ±   0%   -5.85% (p=0.002 n=6)
+WatchSetWatchExpired/n=1                                                                      527.10n ±  1%             55.94n ±   7%  -89.39% (p=0.002 n=6)
+WatchSetWatchExpired/n=8                                                                       803.7n ±  1%             244.4n ±   1%  -69.60% (p=0.002 n=6)
+WatchSetWatchExpired/n=32                                                                      2.345µ ±  0%             1.294µ ±   1%  -44.83% (p=0.002 n=6)
+WatchSetWatchExpired/n=33                                                                      3.525µ ±  2%             1.395µ ±   1%  -60.43% (p=0.002 n=6)
+WatchSetWatchExpired/n=256                                                                  16380.00n ±  2%             19.56n ±   0%  -99.88% (p=0.002 n=6)
+WatchSetWatchExpired/n=1024                                                                 61509.50n ±  1%             19.57n ±   0%  -99.97% (p=0.002 n=6)
+WatchSetWatchCtxCancelled/n=1                                                                  91.79n ±  1%             71.36n ±   3%  -22.26% (p=0.002 n=6)
+WatchSetWatchCtxCancelled/n=8                                                                  274.9n ±  0%             257.6n ±   2%   -6.28% (p=0.002 n=6)
+WatchSetWatchCtxCancelled/n=32                                                                 1.310µ ±  1%             1.310µ ±   2%        ~ (p=0.851 n=6)
+WatchSetWatchCtxCancelled/n=33                                                                 4.755µ ±  2%             1.408µ ±   1%  -70.40% (p=0.002 n=6)
+WatchSetWatchCtxCancelled/n=256                                                             23118.50n ±  4%             34.36n ±   0%  -99.85% (p=0.002 n=6)
+WatchSetWatchCtxCancelled/n=1024                                                            93482.50n ±  4%             34.37n ±   0%  -99.96% (p=0.002 n=6)
+WatchSetWatchCtxFired/n=1                                                                      64.33n ±  6%             41.29n ±   2%  -35.81% (p=0.002 n=6)
+WatchSetWatchCtxFired/n=8                                                                      235.5n ±  1%             216.1n ±   2%   -8.22% (p=0.002 n=6)
+WatchSetWatchCtxFired/n=32                                                                     1.243µ ±  2%             1.253µ ±   1%        ~ (p=0.251 n=6)
+WatchSetWatchCtxFired/n=33                                                                     3.061µ ±  2%             1.348µ ±   1%  -55.96% (p=0.002 n=6)
+WatchSetWatchCtxFired/n=256                                                                    18.57µ ±  1%             17.79µ ±   1%   -4.21% (p=0.002 n=6)
+WatchSetWatchCtxFired/n=1024                                                                   77.63µ ±  1%             73.99µ ±   0%   -4.69% (p=0.002 n=6)
+WatchSetBlockThenFire/n=8                                                                      649.8n ±  3%             628.8n ±   1%   -3.24% (p=0.004 n=6)
+WatchSetBlockThenFire/n=1024                                                                   76.75µ ±  2%             74.70µ ±   1%   -2.67% (p=0.002 n=6)
+InsertAbort/schema=s1/size=1000/batch=1                                                       1740.0n ±  2%             450.9n ±   4%  -74.09% (p=0.002 n=6)
+InsertAbort/schema=s1/size=1000/batch=100                                                     110.37µ ±  1%             21.25µ ±   3%  -80.74% (p=0.002 n=6)
+InsertAbort/schema=s1/size=100000/batch=1                                                      4.182µ ±  4%             1.168µ ±   3%  -72.08% (p=0.002 n=6)
+InsertAbort/schema=s1/size=100000/batch=100                                                   289.77µ ±  2%             74.13µ ±   5%  -74.42% (p=0.002 n=6)
+InsertAbort/schema=s3/size=1000/batch=1                                                       14.508µ ±  4%             3.587µ ±   3%  -75.28% (p=0.002 n=6)
+InsertAbort/schema=s3/size=1000/batch=100                                                      770.7µ ±  1%             159.4µ ±   3%  -79.32% (p=0.002 n=6)
+InsertAbort/schema=s3/size=100000/batch=1                                                     25.137µ ±  4%             8.315µ ±   5%  -66.92% (p=0.002 n=6)
+InsertAbort/schema=s3/size=100000/batch=100                                                   1879.7µ ±  5%             533.4µ ±   4%  -71.62% (p=0.002 n=6)
+InsertAbort/schema=wide/size=1000/batch=1                                                      64.39µ ±  3%             20.29µ ±   2%  -68.49% (p=0.002 n=6)
+InsertAbort/schema=wide/size=1000/batch=100                                                   3201.7µ ±  4%             630.9µ ±   2%  -80.29% (p=0.002 n=6)
+InsertAbort/schema=wide/size=100000/batch=1                                                    43.71µ ± 10%             33.91µ ±   3%  -22.44% (p=0.002 n=6)
+InsertAbort/schema=wide/size=100000/batch=100                                                  3.286m ±  2%             2.758m ±   3%  -16.06% (p=0.002 n=6)
+InsertAbort/schema=func/size=1000/batch=1                                                      5.599µ ±  6%             3.357µ ±   3%  -40.05% (p=0.002 n=6)
+InsertAbort/schema=func/size=1000/batch=100                                                    300.1µ ±  3%             197.0µ ±  10%  -34.35% (p=0.002 n=6)
+InsertAbort/schema=func/size=100000/batch=1                                                    8.016µ ±  5%             7.428µ ±   3%   -7.34% (p=0.002 n=6)
+InsertAbort/schema=func/size=100000/batch=100                                                  624.5µ ±  4%             238.8µ ±  61%  -61.77% (p=0.002 n=6)
+InsertDeleteCommit/schema=s1/keys=uuid/size=1000                                               5.178µ ±  1%             1.084µ ±   1%  -79.07% (p=0.002 n=6)
+InsertDeleteCommit/schema=s1/keys=uuid/size=100000                                            10.959µ ±  4%             2.719µ ±   3%  -75.19% (p=0.002 n=6)
+InsertDeleteCommit/schema=s3/keys=uuid/size=1000                                              34.372µ ±  1%             7.597µ ±   3%  -77.90% (p=0.002 n=6)
+InsertDeleteCommit/schema=s3/keys=uuid/size=100000                                             62.62µ ±  7%             15.97µ ±   4%  -74.49% (p=0.002 n=6)
+InsertDeleteCommit/schema=wide/keys=uuid/size=1000                                            169.13µ ±  9%             34.56µ ±   7%  -79.56% (p=0.002 n=6)
+InsertDeleteCommit/schema=wide/keys=uuid/size=100000                                          103.37µ ±  6%             62.49µ ±   3%  -39.55% (p=0.002 n=6)
+InsertDeleteCommit/schema=func/keys=uuid/size=1000                                            14.270µ ±  2%             6.839µ ±   2%  -52.07% (p=0.002 n=6)
+InsertDeleteCommit/schema=func/keys=uuid/size=100000                                           19.96µ ±  8%             13.54µ ±   4%  -32.18% (p=0.002 n=6)
+InsertDeleteCommit/schema=s3/keys=seq/size=1000                                               15.488µ ±  1%             9.995µ ±   3%  -35.47% (p=0.002 n=6)
+InsertDeleteCommit/schema=s3/keys=seq/size=100000                                             15.654µ ± 12%             9.611µ ±   9%  -38.61% (p=0.002 n=6)
+InsertDeleteCommit/schema=s3/keys=path/size=1000                                               18.60µ ±  3%             11.17µ ±   8%  -39.94% (p=0.002 n=6)
+InsertDeleteCommit/schema=s3/keys=path/size=100000                                            20.601µ ± 15%             6.403µ ±   2%  -68.92% (p=0.002 n=6)
+InsertDeleteCommitManyTables                                                                  26.279µ ±  1%             6.610µ ±   1%  -74.85% (p=0.002 n=6)
+UpdateCommit/schema=s3/size=1000/keys=same                                                    15.548µ ±  1%             2.891µ ±   1%  -81.41% (p=0.002 n=6)
+UpdateCommit/schema=s3/size=1000/keys=moved                                                   21.828µ ±  2%             3.775µ ±   1%  -82.71% (p=0.002 n=6)
+UpdateCommit/schema=s3/size=100000/keys=same                                                   33.65µ ±  3%             10.80µ ±   4%  -67.89% (p=0.002 n=6)
+UpdateCommit/schema=s3/size=100000/keys=moved                                                 35.753µ ±  7%             9.847µ ±   2%  -72.46% (p=0.002 n=6)
+UpdateCommit/schema=wide/size=1000/keys=same                                                   51.89µ ± 14%             27.61µ ±   4%  -46.80% (p=0.002 n=6)
+UpdateCommit/schema=wide/size=1000/keys=moved                                                  61.03µ ±  5%             32.13µ ±   4%  -47.36% (p=0.002 n=6)
+UpdateCommit/schema=wide/size=100000/keys=same                                                 68.65µ ±  6%             56.28µ ±   2%  -18.02% (p=0.002 n=6)
+UpdateCommit/schema=wide/size=100000/keys=moved                                                74.73µ ±  1%             24.14µ ±  24%  -67.69% (p=0.002 n=6)
+UpdateCommit/schema=func/size=1000/keys=same                                                   9.764µ ±  2%             1.893µ ± 107%  -80.61% (p=0.002 n=6)
+UpdateCommit/schema=func/size=1000/keys=moved                                                 11.744µ ±  1%             4.814µ ±  56%  -59.01% (p=0.002 n=6)
+UpdateCommit/schema=func/size=100000/keys=same                                                15.014µ ±  4%             3.554µ ±   1%  -76.33% (p=0.002 n=6)
+UpdateCommit/schema=func/size=100000/keys=moved                                               15.082µ ±  4%             3.964µ ±   3%  -73.72% (p=0.002 n=6)
+DeleteAbort/schema=s3/size=1000                                                               10.344µ ±  1%             2.363µ ±   1%  -77.16% (p=0.002 n=6)
+DeleteAbort/schema=s3/size=100000                                                             25.367µ ±  5%             9.516µ ±   7%  -62.49% (p=0.002 n=6)
+DeleteAbort/schema=wide/size=1000                                                              80.64µ ±  4%             20.38µ ±   9%  -74.73% (p=0.002 n=6)
+DeleteAbort/schema=wide/size=100000                                                            53.01µ ±  7%             34.44µ ±   4%  -35.04% (p=0.002 n=6)
+DeleteAllAbort/schema=s3/size=1000                                                             545.9µ ±  1%             105.6µ ±   1%  -80.66% (p=0.002 n=6)
+DeleteAllAbort/schema=s3/size=100000                                                          1752.8µ ±  4%             542.2µ ±   4%  -69.07% (p=0.002 n=6)
+DeleteAllAbort/schema=wide/size=1000                                                          3144.5µ ±  2%             526.8µ ±   7%  -83.25% (p=0.002 n=6)
+DeleteAllAbort/schema=wide/size=100000                                                         3.256m ±  2%             2.408m ±   4%  -26.04% (p=0.002 n=6)
+DeletePrefixAbort/schema=s3/size=1000                                                         310.06µ ±  1%             57.91µ ±   1%  -81.32% (p=0.002 n=6)
+DeletePrefixAbort/schema=s3/size=100000                                                        636.4µ ±  2%             140.3µ ±   2%  -77.95% (p=0.002 n=6)
+Changes/n=10/dup=false                                                                        160.90µ ±  7%             54.50µ ±  39%  -66.13% (p=0.002 n=6)
+Changes/n=10/dup=true                                                                         259.63µ ±  3%             80.11µ ±   9%  -69.15% (p=0.002 n=6)
+Changes/n=1000/dup=false                                                                      16.174m ±  2%             4.581m ±  10%  -71.68% (p=0.002 n=6)
+Changes/n=1000/dup=true                                                                       27.821m ±  2%             5.260m ±   4%  -81.09% (p=0.002 n=6)
+ReadYourWrites/size=1000                                                                       69.54µ ±  1%             14.84µ ±   2%  -78.66% (p=0.002 n=6)
+ReadYourWrites/size=100000                                                                    164.55µ ±  4%             53.33µ ±   9%  -67.59% (p=0.002 n=6)
+IterateInWriteTxn/size=1000                                                                   18.192µ ±  0%             4.723µ ±   2%  -74.04% (p=0.002 n=6)
+IterateInWriteTxn/size=100000                                                                  59.34µ ±  7%             21.62µ ±   5%  -63.56% (p=0.002 n=6)
+TxnSnapshot                                                                                    82.40µ ± 19%             41.30µ ±   3%  -49.88% (p=0.002 n=6)
+BulkLoad/schema=s3/size=1000                                                                  3966.3µ ±  2%             788.5µ ±   1%  -80.12% (p=0.002 n=6)
+BulkLoad/schema=s3/size=100000                                                                 895.4m ±  1%             276.9m ±   1%  -69.08% (p=0.002 n=6)
+BulkLoad/schema=wide/size=1000                                                                14.387m ±  2%             2.950m ±   1%  -79.49% (p=0.002 n=6)
+BulkLoad/schema=wide/size=100000                                                              3190.0m ±  1%             644.1m ±   1%  -79.81% (p=0.002 n=6)
+ExtCount/size=1000/impl=scan                                                                                            21.36µ ±   1%
+ExtCount/size=1000/impl=bitmap                                                                                          338.1n ±   3%
+ExtCount/size=100000/impl=scan                                                                                          163.8µ ±   5%
+ExtCount/size=100000/impl=bitmap                                                                                        19.32µ ±   6%
+ExtCountOne/size=1000/impl=scan                                                                                         878.2n ±   1%
+ExtCountOne/size=1000/impl=bitmap                                                                                       24.92n ±   2%
+ExtCountOne/size=100000/impl=scan                                                                                       166.2µ ±   2%
+ExtCountOne/size=100000/impl=bitmap                                                                                     24.97n ±   2%
+ExtIterate/size=1000/impl=scan                                                                                          916.1n ±   1%
+ExtIterate/size=1000/impl=bitmap                                                                                        1.072µ ±   3%
+ExtIterate/size=100000/impl=scan                                                                                        726.7µ ±   3%
+ExtIterate/size=100000/impl=bitmap                                                                                      214.5µ ±   2%
+ExtWrite/op=insert-delete/size=1000/impl=classic                                                                        6.752µ ±   2%
+ExtWrite/op=update-same-keys/size=1000/impl=classic                                                                     3.597µ ±   1%
+ExtWrite/op=insert-delete/size=1000/impl=bitmap                                                                         7.892µ ±   1%
+ExtWrite/op=update-same-keys/size=1000/impl=bitmap                                                                      1.562µ ±   3%
+ExtWrite/op=insert-delete/size=100000/impl=classic                                                                      32.68µ ±   5%
+ExtWrite/op=update-same-keys/size=100000/impl=classic                                                                   13.91µ ±  10%
+ExtWrite/op=insert-delete/size=100000/impl=bitmap                                                                       32.05µ ±  14%
+ExtWrite/op=update-same-keys/size=100000/impl=bitmap                                                                    7.217µ ±   6%
+ExtFootprint/size=1000/impl=classic                                                                                    0.5171n ±   2%
+ExtFootprint/size=1000/impl=bitmap                                                                                     0.5187n ±   2%
+ExtFootprint/size=100000/impl=classic                                                                                  0.5215n ±  13%
+ExtFootprint/size=100000/impl=bitmap                                                                                   0.5200n ±   2%
+ExtTypedFirst/size=1000/impl=untyped                                                                                    55.95n ±   1%
+ExtTypedFirst/size=1000/impl=table                                                                                      56.91n ±   1%
+ExtTypedFirst/size=1000/impl=key                                                                                        32.30n ±   1%
+ExtTypedFirst/size=100000/impl=untyped                                                                                  240.5n ±  17%
+ExtTypedFirst/size=100000/impl=table                                                                                    238.5n ±  18%
+ExtTypedFirst/size=100000/impl=key                                                                                      197.2n ±   1%
+ExtTypedInsert/impl=field                                                                                               32.14µ ±   4%
+ExtTypedInsert/impl=func                                                                                                32.00µ ±   3%
+geomean                                                                                        4.654µ                   1.480µ         -66.01%
+
+                                                      │ upstream.txt │ new.txt │
+                                                      │                        B/op                         │        B/op         vs base                    │
+NewMemDB/schema=s1                                                                            1384.0 ± 0%             808.0 ± 0%   -41.62% (p=0.002 n=6)
+NewMemDB/schema=wide                                                                        18.143Ki ± 0%           4.977Ki ± 0%   -72.57% (p=0.002 n=6)
+NewMemDB/schema=s50                                                                         312.41Ki ± 0%           72.01Ki ± 0%   -76.95% (p=0.002 n=6)
+Txn/read                                                                                      128.00 ± 0%             32.00 ± 0%   -75.00% (p=0.002 n=6)
+Txn/write-commit-empty                                                                        144.00 ± 0%             80.00 ± 0%   -44.44% (p=0.002 n=6)
+Txn/write-abort-empty                                                                         128.00 ± 0%             80.00 ± 0%   -37.50% (p=0.002 n=6)
+Txn/write-commit-defer                                                                        168.00 ± 0%             96.00 ± 0%   -42.86% (p=0.002 n=6)
+Snapshot                                                                                       32.00 ± 0%             32.00 ± 0%         ~ (p=1.000 n=6) ¹
+SnapshotWrite                                                                               19.431Ki ± 0%           6.450Ki ± 0%   -66.80% (p=0.002 n=6)
+Indexer/FromObject/StringFieldIndex                                                            96.00 ± 0%             48.00 ± 0%   -50.00% (p=0.002 n=6)
+Indexer/FromObject/StringFieldIndex-lowercase                                                  59.00 ± 0%             21.00 ± 0%   -64.41% (p=0.002 n=6)
+Indexer/FromObject/StringFieldIndex-pointer                                                   16.000 ± 0%             8.000 ± 0%   -50.00% (p=0.002 n=6)
+Indexer/FromObject/IntFieldIndex                                                               8.000 ± 0%             8.000 ± 0%         ~ (p=1.000 n=6) ¹
+Indexer/FromObject/UintFieldIndex                                                              8.000 ± 0%             8.000 ± 0%         ~ (p=1.000 n=6) ¹
+Indexer/FromObject/BoolFieldIndex                                                              1.000 ± 0%             1.000 ± 0%         ~ (p=1.000 n=6) ¹
+Indexer/FromObject/UUIDFieldIndex                                                              48.00 ± 0%             16.00 ± 0%   -66.67% (p=0.002 n=6)
+Indexer/FromObject/FieldSetIndex                                                               1.000 ± 0%             1.000 ± 0%         ~ (p=1.000 n=6) ¹
+Indexer/FromObject/ConditionalIndex                                                            1.000 ± 0%             1.000 ± 0%         ~ (p=1.000 n=6) ¹
+Indexer/FromObject/CompoundIndex                                                              196.00 ± 0%             48.00 ± 0%   -75.51% (p=0.002 n=6)
+Indexer/FromObject/StringSliceFieldIndex                                                       128.0 ± 0%             128.0 ± 0%         ~ (p=1.000 n=6) ¹
+Indexer/FromObject/StringMapFieldIndex                                                        224.00 ± 0%             96.00 ± 0%   -57.14% (p=0.002 n=6)
+Indexer/FromObject/CompoundMultiIndex                                                          828.0 ± 0%             376.0 ± 0%   -54.59% (p=0.002 n=6)
+Indexer/FromArgs/StringFieldIndex                                                              96.00 ± 0%             48.00 ± 0%   -50.00% (p=0.002 n=6)
+Indexer/FromArgs/StringFieldIndex-lowercase                                                    59.00 ± 0%             21.00 ± 0%   -64.41% (p=0.002 n=6)
+Indexer/FromArgs/IntFieldIndex                                                                 8.000 ± 0%             8.000 ± 0%         ~ (p=1.000 n=6) ¹
+Indexer/FromArgs/UintFieldIndex                                                                8.000 ± 0%             8.000 ± 0%         ~ (p=1.000 n=6) ¹
+Indexer/FromArgs/BoolFieldIndex                                                                1.000 ± 0%             1.000 ± 0%         ~ (p=1.000 n=6) ¹
+Indexer/FromArgs/UUIDFieldIndex-string                                                         48.00 ± 0%             16.00 ± 0%   -66.67% (p=0.002 n=6)
+Indexer/FromArgs/StringMapFieldIndex                                                           40.00 ± 0%             16.00 ± 0%   -60.00% (p=0.002 n=6)
+Indexer/FromArgs/CompoundIndex                                                                244.00 ± 0%             48.00 ± 0%   -80.33% (p=0.002 n=6)
+Indexer/FromArgs/CompoundMultiIndex                                                            252.0 ± 0%             206.0 ± 0%   -18.25% (p=0.002 n=6)
+Indexer/PrefixFromArgs/UUIDFieldIndex                                                          40.00 ± 0%             24.00 ± 0%   -40.00% (p=0.002 n=6)
+First/schema=s3/keys=uuid/size=1000/hit                                                       176.00 ± 0%             16.00 ± 0%   -90.91% (p=0.002 n=6)
+First/schema=s3/keys=uuid/size=1000/miss                                                      176.00 ± 0%             16.00 ± 0%   -90.91% (p=0.002 n=6)
+First/schema=s3/keys=uuid/size=100000/hit                                                     176.00 ± 0%             16.00 ± 0%   -90.91% (p=0.002 n=6)
+First/schema=s3/keys=uuid/size=100000/miss                                                    176.00 ± 0%             16.00 ± 0%   -90.91% (p=0.002 n=6)
+First/schema=s3/keys=seq/size=1000/hit                                                        112.00 ± 0%             16.00 ± 0%   -85.71% (p=0.002 n=6)
+First/schema=s3/keys=seq/size=1000/miss                                                       112.00 ± 0%             16.00 ± 0%   -85.71% (p=0.002 n=6)
+First/schema=s3/keys=seq/size=100000/hit                                                      112.00 ± 0%             16.00 ± 0%   -85.71% (p=0.002 n=6)
+First/schema=s3/keys=seq/size=100000/miss                                                     112.00 ± 0%             16.00 ± 0%   -85.71% (p=0.002 n=6)
+First/schema=s3/keys=path/size=1000/hit                                                       152.00 ± 1%             16.00 ± 0%   -89.47% (p=0.002 n=6)
+First/schema=s3/keys=path/size=1000/miss                                                      151.00 ± 1%             16.00 ± 0%   -89.40% (p=0.002 n=6)
+First/schema=s3/keys=path/size=100000/hit                                                     152.00 ± 0%             16.00 ± 0%   -89.47% (p=0.002 n=6)
+First/schema=s3/keys=path/size=100000/miss                                                    151.00 ± 1%             16.00 ± 0%   -89.40% (p=0.002 n=6)
+First/schema=wide/keys=uuid/size=1000/hit                                                     176.00 ± 0%             16.00 ± 0%   -90.91% (p=0.002 n=6)
+First/schema=wide/keys=uuid/size=1000/miss                                                    176.00 ± 0%             16.00 ± 0%   -90.91% (p=0.002 n=6)
+First/schema=wide/keys=uuid/size=100000/hit                                                   176.00 ± 0%             16.00 ± 0%   -90.91% (p=0.002 n=6)
+First/schema=wide/keys=uuid/size=100000/miss                                                  176.00 ± 0%             16.00 ± 0%   -90.91% (p=0.002 n=6)
+First/schema=func/keys=uuid/size=1000/hit                                                     128.00 ± 0%             80.00 ± 0%   -37.50% (p=0.002 n=6)
+First/schema=func/keys=uuid/size=1000/miss                                                    128.00 ± 0%             80.00 ± 0%   -37.50% (p=0.002 n=6)
+First/schema=func/keys=uuid/size=100000/hit                                                   128.00 ± 0%             80.00 ± 0%   -37.50% (p=0.002 n=6)
+First/schema=func/keys=uuid/size=100000/miss                                                  128.00 ± 0%             80.00 ± 0%   -37.50% (p=0.002 n=6)
+TxnFirst/size=1000                                                                            304.00 ± 0%             48.00 ± 0%   -84.21% (p=0.002 n=6)
+TxnFirst/size=100000                                                                          304.00 ± 0%             48.00 ± 0%   -84.21% (p=0.002 n=6)
+FirstIndex/nonunique-string                                                                   217.00 ± 0%             16.00 ± 0%   -92.63% (p=0.002 n=6)
+FirstIndex/unique-lowercase                                                                   151.00 ± 0%             16.00 ± 0%   -89.40% (p=0.002 n=6)
+FirstIndex/id-prefix                                                                          152.00 ± 0%             16.00 ± 0%   -89.47% (p=0.002 n=6)
+FirstIndex/string-slice                                                                       280.00 ± 0%             16.00 ± 0%   -94.29% (p=0.002 n=6)
+FirstIndex/string-map                                                                         358.00 ± 0%             16.00 ± 0%   -95.53% (p=0.002 n=6)
+FirstIndex/int                                                                                 249.0 ± 0%               0.0 ± 0%  -100.00% (p=0.002 n=6)
+FirstIndex/uint                                                                              120.000 ± 0%             8.000 ± 0%   -93.33% (p=0.002 n=6)
+FirstIndex/bool                                                                                249.0 ± 0%               0.0 ± 0%  -100.00% (p=0.002 n=6)
+FirstIndex/uuid                                                                               128.00 ± 0%             16.00 ± 0%   -87.50% (p=0.002 n=6)
+FirstIndex/compound                                                                           321.00 ± 0%             16.00 ± 0%   -95.02% (p=0.002 n=6)
+FirstIndex/compound-prefix                                                                    249.00 ± 0%             16.00 ± 0%   -93.57% (p=0.002 n=6)
+FirstIndex/no-args                                                                             232.0 ± 0%               0.0 ± 0%  -100.00% (p=0.002 n=6)
+Last/unique                                                                                   176.00 ± 0%             16.00 ± 0%   -90.91% (p=0.002 n=6)
+Last/nonunique-string                                                                         488.00 ± 0%             16.00 ± 0%   -96.72% (p=0.002 n=6)
+Last/int                                                                                       463.0 ± 0%               0.0 ± 0%  -100.00% (p=0.002 n=6)
+Last/no-args                                                                                   616.0 ± 0%               0.0 ± 0%  -100.00% (p=0.002 n=6)
+GetOne/size=1000                                                                               264.0 ± 0%             144.0 ± 0%   -45.45% (p=0.002 n=6)
+GetOne/size=100000                                                                             264.0 ± 0%             144.0 ± 0%   -45.45% (p=0.002 n=6)
+Iterate/scan=all/keys=uuid/size=1000                                                           280.0 ± 0%             128.0 ± 0%   -54.29% (p=0.002 n=6)
+Iterate/scan=all/keys=seq/size=1000                                                            280.0 ± 0%             128.0 ± 0%   -54.29% (p=0.002 n=6)
+Iterate/scan=all/keys=path/size=1000                                                           280.0 ± 0%             128.0 ± 0%   -54.29% (p=0.002 n=6)
+Iterate/scan=group/size=1000                                                                   360.0 ± 0%             160.0 ± 0%   -55.56% (p=0.002 n=6)
+Iterate/scan=group-reverse/size=1000                                                           625.0 ± 0%             160.0 ± 0%   -74.40% (p=0.002 n=6)
+Iterate/scan=tags/size=1000                                                                    286.0 ± 0%             152.0 ± 0%   -46.85% (p=0.002 n=6)
+Iterate/scan=all-reverse/size=1000                                                             680.0 ± 0%             128.0 ± 0%   -81.18% (p=0.002 n=6)
+Iterate/scan=all/keys=uuid/size=100000                                                         472.0 ± 0%             128.0 ± 0%   -72.88% (p=0.002 n=6)
+Iterate/scan=all/keys=seq/size=100000                                                          472.0 ± 0%             128.0 ± 0%   -72.88% (p=0.002 n=6)
+Iterate/scan=all/keys=path/size=100000                                                         472.0 ± 0%             128.0 ± 0%   -72.88% (p=0.002 n=6)
+Iterate/scan=group/size=100000                                                                 365.0 ± 0%             165.0 ± 0%   -54.79% (p=0.002 n=6)
+Iterate/scan=group-reverse/size=100000                                                         637.0 ± 0%             165.0 ± 0%   -74.10% (p=0.002 n=6)
+Iterate/scan=tags/size=100000                                                                  528.0 ± 0%             152.0 ± 0%   -71.21% (p=0.002 n=6)
+Iterate/scan=all-reverse/size=100000                                                           680.0 ± 0%             128.0 ± 0%   -81.18% (p=0.002 n=6)
+LowerBound/int                                                                                 486.0 ± 0%             128.0 ± 0%   -73.66% (p=0.002 n=6)
+LowerBound/int-reverse                                                                         608.0 ± 0%             128.0 ± 0%   -78.95% (p=0.002 n=6)
+LowerBound/uint                                                                                307.0 ± 0%             136.0 ± 0%   -55.70% (p=0.002 n=6)
+LowerBound/string                                                                              505.0 ± 0%             144.0 ± 0%   -71.49% (p=0.002 n=6)
+LowerBound/string-reverse                                                                      690.0 ± 0%             144.0 ± 0%   -79.13% (p=0.002 n=6)
+LongestPrefix/size=1000                                                                       128.00 ± 0%             80.00 ± 0%   -37.50% (p=0.002 n=6)
+LongestPrefix/size=100000                                                                     128.00 ± 0%             80.00 ± 0%   -37.50% (p=0.002 n=6)
+FilterIterator                                                                                 365.0 ± 0%             165.0 ± 0%   -54.79% (p=0.002 n=6)
+ParallelTxnFirst/size=1000                                                                    304.00 ± 0%             48.00 ± 0%   -84.21% (p=0.002 n=6)
+ParallelTxnFirst/size=100000                                                                  304.00 ± 0%             48.00 ± 0%   -84.21% (p=0.002 n=6)
+ParallelTxnFirstWithWriter                                                                    305.00 ± 0%             48.00 ± 0%   -84.26% (p=0.002 n=6)
+FirstWatch/size=1000                                                                          176.00 ± 0%             16.00 ± 0%   -90.91% (p=0.002 n=6)
+FirstWatch/size=100000                                                                        176.00 ± 0%             16.00 ± 0%   -90.91% (p=0.002 n=6)
+GetWatchCh/size=1000                                                                           292.0 ± 0%             160.0 ± 0%   -45.21% (p=0.002 n=6)
+GetWatchCh/size=100000                                                                         287.0 ± 0%             165.0 ± 0%   -42.51% (p=0.002 n=6)
+WatchCycle/size=1000                                                                        17.116Ki ± 0%           4.507Ki ± 0%   -73.67% (p=0.002 n=6)
+WatchCycle/size=100000                                                                      21.508Ki ± 0%           6.324Ki ± 0%   -70.60% (p=0.002 n=6)
+CommitNotify/size=1000/rows=100                                                              680.6Ki ± 0%           167.7Ki ± 0%   -75.35% (p=0.002 n=6)
+CommitNotify/size=100000/rows=100                                                           1158.4Ki ± 0%           318.5Ki ± 0%   -72.50% (p=0.002 n=6)
+WatchSetAdd                                                                                  2.070Ki ± 0%           2.070Ki ± 0%         ~ (p=1.000 n=6) ¹
+WatchSetWatchExpired/n=1                                                                       256.0 ± 0%               0.0 ± 0%  -100.00% (p=0.002 n=6)
+WatchSetWatchExpired/n=8                                                                       256.0 ± 0%               0.0 ± 0%  -100.00% (p=0.002 n=6)
+WatchSetWatchExpired/n=32                                                                      256.0 ± 0%               0.0 ± 0%  -100.00% (p=0.002 n=6)
+WatchSetWatchExpired/n=33                                                                    1.437Ki ± 0%           0.000Ki ± 0%  -100.00% (p=0.002 n=6)
+WatchSetWatchExpired/n=256                                                                   3.468Ki ± 0%           0.000Ki ± 0%  -100.00% (p=0.002 n=6)
+WatchSetWatchExpired/n=1024                                                                  10.59Ki ± 0%            0.00Ki ± 0%  -100.00% (p=0.002 n=6)
+WatchSetWatchCtxCancelled/n=1                                                                  0.000 ± 0%             0.000 ± 0%         ~ (p=1.000 n=6) ¹
+WatchSetWatchCtxCancelled/n=8                                                                  0.000 ± 0%             0.000 ± 0%         ~ (p=1.000 n=6) ¹
+WatchSetWatchCtxCancelled/n=32                                                                 0.000 ± 0%             0.000 ± 0%         ~ (p=1.000 n=6) ¹
+WatchSetWatchCtxCancelled/n=33                                                                 848.0 ± 0%               0.0 ± 0%  -100.00% (p=0.002 n=6)
+WatchSetWatchCtxCancelled/n=256                                                              2.859Ki ± 0%           0.000Ki ± 0%  -100.00% (p=0.002 n=6)
+WatchSetWatchCtxCancelled/n=1024                                                             9.984Ki ± 0%           0.000Ki ± 0%  -100.00% (p=0.002 n=6)
+WatchSetWatchCtxFired/n=1                                                                      0.000 ± 0%             0.000 ± 0%         ~ (p=1.000 n=6) ¹
+WatchSetWatchCtxFired/n=8                                                                      0.000 ± 0%             0.000 ± 0%         ~ (p=1.000 n=6) ¹
+WatchSetWatchCtxFired/n=32                                                                     0.000 ± 0%             0.000 ± 0%         ~ (p=1.000 n=6) ¹
+WatchSetWatchCtxFired/n=33                                                                     960.0 ± 0%               0.0 ± 0%  -100.00% (p=0.002 n=6)
+WatchSetWatchCtxFired/n=256                                                                  2.976Ki ± 0%           2.624Ki ± 0%   -11.83% (p=0.002 n=6)
+WatchSetWatchCtxFired/n=1024                                                                10.251Ki ± 0%           9.878Ki ± 0%    -3.64% (p=0.002 n=6)
+WatchSetBlockThenFire/n=8                                                                      112.0 ± 0%             112.0 ± 0%         ~ (p=1.000 n=6) ¹
+WatchSetBlockThenFire/n=1024                                                                 10.39Ki ± 0%           10.01Ki ± 0%    -3.58% (p=0.002 n=6)
+InsertAbort/schema=s1/size=1000/batch=1                                                       3176.0 ± 0%             885.0 ± 0%   -72.13% (p=0.002 n=6)
+InsertAbort/schema=s1/size=1000/batch=100                                                   127.87Ki ± 0%           36.98Ki ± 0%   -71.08% (p=0.002 n=6)
+InsertAbort/schema=s1/size=100000/batch=1                                                    3.992Ki ± 0%           1.266Ki ± 0%   -68.30% (p=0.002 n=6)
+InsertAbort/schema=s1/size=100000/batch=100                                                 236.42Ki ± 0%           74.86Ki ± 0%   -68.33% (p=0.002 n=6)
+InsertAbort/schema=s3/size=1000/batch=1                                                     13.089Ki ± 0%           4.350Ki ± 0%   -66.77% (p=0.002 n=6)
+InsertAbort/schema=s3/size=1000/batch=100                                                    556.8Ki ± 0%           175.2Ki ± 0%   -68.55% (p=0.002 n=6)
+InsertAbort/schema=s3/size=100000/batch=1                                                   18.568Ki ± 0%           6.294Ki ± 0%   -66.10% (p=0.002 n=6)
+InsertAbort/schema=s3/size=100000/batch=100                                                  997.4Ki ± 0%           329.4Ki ± 0%   -66.97% (p=0.002 n=6)
+InsertAbort/schema=wide/size=1000/batch=1                                                    44.89Ki ± 0%           16.31Ki ± 0%   -63.68% (p=0.002 n=6)
+InsertAbort/schema=wide/size=1000/batch=100                                                 1604.9Ki ± 0%           505.6Ki ± 0%   -68.50% (p=0.002 n=6)
+InsertAbort/schema=wide/size=100000/batch=1                                                  66.57Ki ± 0%           25.03Ki ± 0%   -62.40% (p=0.002 n=6)
+InsertAbort/schema=wide/size=100000/batch=100                                                3.419Mi ± 0%           1.202Mi ± 0%   -64.85% (p=0.002 n=6)
+InsertAbort/schema=func/size=1000/batch=1                                                    8.447Ki ± 0%           2.792Ki ± 0%   -66.95% (p=0.002 n=6)
+InsertAbort/schema=func/size=1000/batch=100                                                  348.9Ki ± 0%           118.8Ki ± 0%   -65.95% (p=0.002 n=6)
+InsertAbort/schema=func/size=100000/batch=1                                                 11.026Ki ± 0%           4.028Ki ± 0%   -63.47% (p=0.002 n=6)
+InsertAbort/schema=func/size=100000/batch=100                                                646.6Ki ± 0%           219.1Ki ± 0%   -66.11% (p=0.002 n=6)
+InsertDeleteCommit/schema=s1/keys=uuid/size=1000                                             8.148Ki ± 0%           1.830Ki ± 0%   -77.54% (p=0.002 n=6)
+InsertDeleteCommit/schema=s1/keys=uuid/size=100000                                           9.903Ki ± 0%           2.636Ki ± 0%   -73.39% (p=0.002 n=6)
+InsertDeleteCommit/schema=s3/keys=uuid/size=1000                                            30.583Ki ± 0%           8.215Ki ± 0%   -73.14% (p=0.002 n=6)
+InsertDeleteCommit/schema=s3/keys=uuid/size=100000                                           40.85Ki ± 0%           12.10Ki ± 0%   -70.36% (p=0.002 n=6)
+InsertDeleteCommit/schema=wide/keys=uuid/size=1000                                          101.51Ki ± 0%           30.90Ki ± 0%   -69.56% (p=0.002 n=6)
+InsertDeleteCommit/schema=wide/keys=uuid/size=100000                                        142.81Ki ± 0%           48.36Ki ± 0%   -66.14% (p=0.002 n=6)
+InsertDeleteCommit/schema=func/keys=uuid/size=1000                                          20.854Ki ± 0%           5.405Ki ± 0%   -74.08% (p=0.002 n=6)
+InsertDeleteCommit/schema=func/keys=uuid/size=100000                                        26.181Ki ± 0%           7.879Ki ± 0%   -69.91% (p=0.002 n=6)
+InsertDeleteCommit/schema=s3/keys=seq/size=1000                                             24.365Ki ± 0%           7.129Ki ± 0%   -70.74% (p=0.002 n=6)
+InsertDeleteCommit/schema=s3/keys=seq/size=100000                                           25.990Ki ± 0%           8.012Ki ± 0%   -69.17% (p=0.002 n=6)
+InsertDeleteCommit/schema=s3/keys=path/size=1000                                            30.355Ki ± 0%           8.808Ki ± 0%   -70.98% (p=0.002 n=6)
+InsertDeleteCommit/schema=s3/keys=path/size=100000                                           33.25Ki ± 0%           10.25Ki ± 0%   -69.18% (p=0.002 n=6)
+InsertDeleteCommitManyTables                                                                 30.62Ki ± 0%           10.72Ki ± 0%   -65.00% (p=0.002 n=6)
+UpdateCommit/schema=s3/size=1000/keys=same                                                  16.819Ki ± 0%           4.343Ki ± 0%   -74.18% (p=0.002 n=6)
+UpdateCommit/schema=s3/size=1000/keys=moved                                                 18.317Ki ± 0%           4.838Ki ± 0%   -73.59% (p=0.002 n=6)
+UpdateCommit/schema=s3/size=100000/keys=same                                                21.211Ki ± 0%           6.160Ki ± 0%   -70.96% (p=0.002 n=6)
+UpdateCommit/schema=s3/size=100000/keys=moved                                               21.927Ki ± 3%           6.317Ki ± 1%   -71.19% (p=0.002 n=6)
+UpdateCommit/schema=wide/size=1000/keys=same                                                 53.35Ki ± 0%           15.95Ki ± 0%   -70.10% (p=0.002 n=6)
+UpdateCommit/schema=wide/size=1000/keys=moved                                                57.73Ki ± 0%           17.41Ki ± 0%   -69.84% (p=0.002 n=6)
+UpdateCommit/schema=wide/size=100000/keys=same                                               72.59Ki ± 0%           24.55Ki ± 0%   -66.18% (p=0.002 n=6)
+UpdateCommit/schema=wide/size=100000/keys=moved                                              72.61Ki ± 0%           25.55Ki ± 3%   -64.82% (p=0.002 n=6)
+UpdateCommit/schema=func/size=1000/keys=same                                                10.736Ki ± 0%           2.837Ki ± 0%   -73.58% (p=0.002 n=6)
+UpdateCommit/schema=func/size=1000/keys=moved                                               12.460Ki ± 0%           3.397Ki ± 0%   -72.73% (p=0.002 n=6)
+UpdateCommit/schema=func/size=100000/keys=same                                              13.353Ki ± 0%           4.044Ki ± 0%   -69.71% (p=0.002 n=6)
+UpdateCommit/schema=func/size=100000/keys=moved                                             13.379Ki ± 0%           4.359Ki ± 1%   -67.42% (p=0.002 n=6)
+DeleteAbort/schema=s3/size=1000                                                             13.430Ki ± 0%           3.700Ki ± 0%   -72.45% (p=0.002 n=6)
+DeleteAbort/schema=s3/size=100000                                                           17.856Ki ± 0%           5.571Ki ± 0%   -68.80% (p=0.002 n=6)
+DeleteAbort/schema=wide/size=1000                                                            43.60Ki ± 0%           14.40Ki ± 0%   -66.98% (p=0.002 n=6)
+DeleteAbort/schema=wide/size=100000                                                          63.03Ki ± 0%           23.08Ki ± 0%   -63.38% (p=0.002 n=6)
+DeleteAllAbort/schema=s3/size=1000                                                          528.71Ki ± 0%           90.62Ki ± 0%   -82.86% (p=0.002 n=6)
+DeleteAllAbort/schema=s3/size=100000                                                         900.7Ki ± 0%           225.7Ki ± 0%   -74.94% (p=0.002 n=6)
+DeleteAllAbort/schema=wide/size=1000                                                        1314.0Ki ± 0%           224.0Ki ± 0%   -82.95% (p=0.002 n=6)
+DeleteAllAbort/schema=wide/size=100000                                                      2805.7Ki ± 0%           891.9Ki ± 0%   -68.21% (p=0.002 n=6)
+DeletePrefixAbort/schema=s3/size=1000                                                       253.98Ki ± 0%           37.98Ki ± 0%   -85.05% (p=0.002 n=6)
+DeletePrefixAbort/schema=s3/size=100000                                                      432.6Ki ± 0%           100.9Ki ± 0%   -76.67% (p=0.002 n=6)
+Changes/n=10/dup=false                                                                      119.68Ki ± 0%           41.49Ki ± 0%   -65.34% (p=0.002 n=6)
+Changes/n=10/dup=true                                                                       177.17Ki ± 0%           48.53Ki ± 0%   -72.61% (p=0.002 n=6)
+Changes/n=1000/dup=false                                                                     8.471Mi ± 0%           2.860Mi ± 0%   -66.24% (p=0.002 n=6)
+Changes/n=1000/dup=true                                                                     13.794Mi ± 0%           3.725Mi ± 0%   -73.00% (p=0.002 n=6)
+ReadYourWrites/size=1000                                                                     91.17Ki ± 0%           27.06Ki ± 0%   -70.32% (p=0.002 n=6)
+ReadYourWrites/size=100000                                                                  122.84Ki ± 0%           38.48Ki ± 0%   -68.68% (p=0.002 n=6)
+IterateInWriteTxn/size=1000                                                                 22.021Ki ± 0%           7.292Ki ± 0%   -66.89% (p=0.002 n=6)
+IterateInWriteTxn/size=100000                                                                31.39Ki ± 0%           11.16Ki ± 0%   -64.45% (p=0.002 n=6)
+TxnSnapshot                                                                                  73.29Ki ± 0%           25.19Ki ± 0%   -65.63% (p=0.002 n=6)
+BulkLoad/schema=s3/size=1000                                                                 3.696Mi ± 0%           1.015Mi ± 0%   -72.54% (p=0.002 n=6)
+BulkLoad/schema=s3/size=100000                                                               423.9Mi ± 0%           100.2Mi ± 0%   -76.36% (p=0.002 n=6)
+BulkLoad/schema=wide/size=1000                                                               9.699Mi ± 0%           2.713Mi ± 0%   -72.03% (p=0.002 n=6)
+BulkLoad/schema=wide/size=100000                                                            1066.3Mi ± 0%           269.4Mi ± 0%   -74.74% (p=0.002 n=6)
+ExtCount/size=1000/impl=scan                                                                                          128.0 ± 0%
+ExtCount/size=1000/impl=bitmap                                                                                        656.0 ± 0%
+ExtCount/size=100000/impl=scan                                                                                        128.0 ± 0%
+ExtCount/size=100000/impl=bitmap                                                                                    12.78Ki ± 0%
+ExtCountOne/size=1000/impl=scan                                                                                       128.0 ± 0%
+ExtCountOne/size=1000/impl=bitmap                                                                                     0.000 ± 0%
+ExtCountOne/size=100000/impl=scan                                                                                     128.0 ± 0%
+ExtCountOne/size=100000/impl=bitmap                                                                                   0.000 ± 0%
+ExtIterate/size=1000/impl=scan                                                                                        128.0 ± 0%
+ExtIterate/size=1000/impl=bitmap                                                                                      544.0 ± 0%
+ExtIterate/size=100000/impl=scan                                                                                      128.0 ± 0%
+ExtIterate/size=100000/impl=bitmap                                                                                  40.42Ki ± 0%
+ExtWrite/op=insert-delete/size=1000/impl=classic                                                                    9.762Ki ± 0%
+ExtWrite/op=update-same-keys/size=1000/impl=classic                                                                 5.137Ki ± 0%
+ExtWrite/op=insert-delete/size=1000/impl=bitmap                                                                     11.41Ki ± 0%
+ExtWrite/op=update-same-keys/size=1000/impl=bitmap                                                                  2.029Ki ± 0%
+ExtWrite/op=insert-delete/size=100000/impl=classic                                                                  14.15Ki ± 0%
+ExtWrite/op=update-same-keys/size=100000/impl=classic                                                               7.214Ki ± 0%
+ExtWrite/op=insert-delete/size=100000/impl=bitmap                                                                   15.79Ki ± 0%
+ExtWrite/op=update-same-keys/size=100000/impl=bitmap                                                                2.723Ki ± 0%
+ExtTypedFirst/size=1000/impl=untyped                                                                                  16.00 ± 0%
+ExtTypedFirst/size=1000/impl=table                                                                                    16.00 ± 0%
+ExtTypedFirst/size=1000/impl=key                                                                                      0.000 ± 0%
+ExtTypedFirst/size=100000/impl=untyped                                                                                16.00 ± 0%
+ExtTypedFirst/size=100000/impl=table                                                                                  16.00 ± 0%
+ExtTypedFirst/size=100000/impl=key                                                                                    0.000 ± 0%
+ExtTypedInsert/impl=field                                                                                           60.66Ki ± 0%
+ExtTypedInsert/impl=func                                                                                            60.66Ki ± 0%
+geomean                                                                                                   ²                       ?                      ² ³
+¹ all samples are equal
+² summaries must be >0 to compute geomean
+³ ratios must be >0 to compute geomean
+
+                                                      │ upstream.txt │ new.txt │
+                                                      │                      allocs/op                      │     allocs/op       vs base                    │
+NewMemDB/schema=s1                                                                             22.00 ± 0%             13.00 ± 0%   -40.91% (p=0.002 n=6)
+NewMemDB/schema=wide                                                                          287.00 ± 0%             59.00 ± 0%   -79.44% (p=0.002 n=6)
+NewMemDB/schema=s50                                                                           5216.5 ± 0%             808.0 ± 0%   -84.51% (p=0.002 n=6)
+Txn/read                                                                                       2.000 ± 0%             1.000 ± 0%   -50.00% (p=0.002 n=6)
+Txn/write-commit-empty                                                                         3.000 ± 0%             1.000 ± 0%   -66.67% (p=0.002 n=6)
+Txn/write-abort-empty                                                                          2.000 ± 0%             1.000 ± 0%   -50.00% (p=0.002 n=6)
+Txn/write-commit-defer                                                                         5.000 ± 0%             2.000 ± 0%   -60.00% (p=0.002 n=6)
+Snapshot                                                                                       1.000 ± 0%             1.000 ± 0%         ~ (p=1.000 n=6) ¹
+SnapshotWrite                                                                                 271.00 ± 0%             41.00 ± 0%   -84.87% (p=0.002 n=6)
+Indexer/FromObject/StringFieldIndex                                                            2.000 ± 0%             1.000 ± 0%   -50.00% (p=0.002 n=6)
+Indexer/FromObject/StringFieldIndex-lowercase                                                  3.000 ± 0%             1.000 ± 0%   -66.67% (p=0.002 n=6)
+Indexer/FromObject/StringFieldIndex-pointer                                                    1.000 ± 0%             0.000 ± 0%  -100.00% (p=0.002 n=6)
+Indexer/FromObject/IntFieldIndex                                                               1.000 ± 0%             1.000 ± 0%         ~ (p=1.000 n=6) ¹
+Indexer/FromObject/UintFieldIndex                                                              1.000 ± 0%             1.000 ± 0%         ~ (p=1.000 n=6) ¹
+Indexer/FromObject/BoolFieldIndex                                                              1.000 ± 0%             1.000 ± 0%         ~ (p=1.000 n=6) ¹
+Indexer/FromObject/UUIDFieldIndex                                                              2.000 ± 0%             1.000 ± 0%   -50.00% (p=0.002 n=6)
+Indexer/FromObject/FieldSetIndex                                                               1.000 ± 0%             1.000 ± 0%         ~ (p=1.000 n=6) ¹
+Indexer/FromObject/ConditionalIndex                                                            1.000 ± 0%             1.000 ± 0%         ~ (p=1.000 n=6) ¹
+Indexer/FromObject/CompoundIndex                                                               8.000 ± 0%             1.000 ± 0%   -87.50% (p=0.002 n=6)
+Indexer/FromObject/StringSliceFieldIndex                                                       7.000 ± 0%             3.000 ± 0%   -57.14% (p=0.002 n=6)
+Indexer/FromObject/StringMapFieldIndex                                                        10.000 ± 0%             3.000 ± 0%   -70.00% (p=0.002 n=6)
+Indexer/FromObject/CompoundMultiIndex                                                         27.000 ± 0%             5.000 ± 0%   -81.48% (p=0.002 n=6)
+Indexer/FromArgs/StringFieldIndex                                                              2.000 ± 0%             1.000 ± 0%   -50.00% (p=0.002 n=6)
+Indexer/FromArgs/StringFieldIndex-lowercase                                                    3.000 ± 0%             1.000 ± 0%   -66.67% (p=0.002 n=6)
+Indexer/FromArgs/IntFieldIndex                                                                 1.000 ± 0%             1.000 ± 0%         ~ (p=1.000 n=6) ¹
+Indexer/FromArgs/UintFieldIndex                                                                1.000 ± 0%             1.000 ± 0%         ~ (p=1.000 n=6) ¹
+Indexer/FromArgs/BoolFieldIndex                                                                1.000 ± 0%             1.000 ± 0%         ~ (p=1.000 n=6) ¹
+Indexer/FromArgs/UUIDFieldIndex-string                                                         2.000 ± 0%             1.000 ± 0%   -50.00% (p=0.002 n=6)
+Indexer/FromArgs/StringMapFieldIndex                                                           3.000 ± 0%             1.000 ± 0%   -66.67% (p=0.002 n=6)
+Indexer/FromArgs/CompoundIndex                                                                11.000 ± 0%             1.000 ± 0%   -90.91% (p=0.002 n=6)
+Indexer/FromArgs/CompoundMultiIndex                                                           12.000 ± 0%             9.000 ± 0%   -25.00% (p=0.002 n=6)
+Indexer/PrefixFromArgs/UUIDFieldIndex                                                          3.000 ± 0%             2.000 ± 0%   -33.33% (p=0.002 n=6)
+First/schema=s3/keys=uuid/size=1000/hit                                                        5.000 ± 0%             1.000 ± 0%   -80.00% (p=0.002 n=6)
+First/schema=s3/keys=uuid/size=1000/miss                                                       5.000 ± 0%             1.000 ± 0%   -80.00% (p=0.002 n=6)
+First/schema=s3/keys=uuid/size=100000/hit                                                      5.000 ± 0%             1.000 ± 0%   -80.00% (p=0.002 n=6)
+First/schema=s3/keys=uuid/size=100000/miss                                                     5.000 ± 0%             1.000 ± 0%   -80.00% (p=0.002 n=6)
+First/schema=s3/keys=seq/size=1000/hit                                                         5.000 ± 0%             1.000 ± 0%   -80.00% (p=0.002 n=6)
+First/schema=s3/keys=seq/size=1000/miss                                                        5.000 ± 0%             1.000 ± 0%   -80.00% (p=0.002 n=6)
+First/schema=s3/keys=seq/size=100000/hit                                                       5.000 ± 0%             1.000 ± 0%   -80.00% (p=0.002 n=6)
+First/schema=s3/keys=seq/size=100000/miss                                                      5.000 ± 0%             1.000 ± 0%   -80.00% (p=0.002 n=6)
+First/schema=s3/keys=path/size=1000/hit                                                        5.000 ± 0%             1.000 ± 0%   -80.00% (p=0.002 n=6)
+First/schema=s3/keys=path/size=1000/miss                                                       5.000 ± 0%             1.000 ± 0%   -80.00% (p=0.002 n=6)
+First/schema=s3/keys=path/size=100000/hit                                                      5.000 ± 0%             1.000 ± 0%   -80.00% (p=0.002 n=6)
+First/schema=s3/keys=path/size=100000/miss                                                     5.000 ± 0%             1.000 ± 0%   -80.00% (p=0.002 n=6)
+First/schema=wide/keys=uuid/size=1000/hit                                                      5.000 ± 0%             1.000 ± 0%   -80.00% (p=0.002 n=6)
+First/schema=wide/keys=uuid/size=1000/miss                                                     5.000 ± 0%             1.000 ± 0%   -80.00% (p=0.002 n=6)
+First/schema=wide/keys=uuid/size=100000/hit                                                    5.000 ± 0%             1.000 ± 0%   -80.00% (p=0.002 n=6)
+First/schema=wide/keys=uuid/size=100000/miss                                                   5.000 ± 0%             1.000 ± 0%   -80.00% (p=0.002 n=6)
+First/schema=func/keys=uuid/size=1000/hit                                                      4.000 ± 0%             3.000 ± 0%   -25.00% (p=0.002 n=6)
+First/schema=func/keys=uuid/size=1000/miss                                                     4.000 ± 0%             3.000 ± 0%   -25.00% (p=0.002 n=6)
+First/schema=func/keys=uuid/size=100000/hit                                                    4.000 ± 0%             3.000 ± 0%   -25.00% (p=0.002 n=6)
+First/schema=func/keys=uuid/size=100000/miss                                                   4.000 ± 0%             3.000 ± 0%   -25.00% (p=0.002 n=6)
+TxnFirst/size=1000                                                                             7.000 ± 0%             2.000 ± 0%   -71.43% (p=0.002 n=6)
+TxnFirst/size=100000                                                                           7.000 ± 0%             2.000 ± 0%   -71.43% (p=0.002 n=6)
+FirstIndex/nonunique-string                                                                    8.000 ± 0%             1.000 ± 0%   -87.50% (p=0.002 n=6)
+FirstIndex/unique-lowercase                                                                    6.000 ± 0%             1.000 ± 0%   -83.33% (p=0.002 n=6)
+FirstIndex/id-prefix                                                                           7.000 ± 0%             1.000 ± 0%   -85.71% (p=0.002 n=6)
+FirstIndex/string-slice                                                                        9.000 ± 0%             1.000 ± 0%   -88.89% (p=0.002 n=6)
+FirstIndex/string-map                                                                         10.000 ± 0%             1.000 ± 0%   -90.00% (p=0.002 n=6)
+FirstIndex/int                                                                                 6.000 ± 0%             0.000 ± 0%  -100.00% (p=0.002 n=6)
+FirstIndex/uint                                                                                6.000 ± 0%             1.000 ± 0%   -83.33% (p=0.002 n=6)
+FirstIndex/bool                                                                                7.000 ± 0%             0.000 ± 0%  -100.00% (p=0.002 n=6)
+FirstIndex/uuid                                                                                5.000 ± 0%             1.000 ± 0%   -80.00% (p=0.002 n=6)
+FirstIndex/compound                                                                           13.000 ± 0%             1.000 ± 0%   -92.31% (p=0.002 n=6)
+FirstIndex/compound-prefix                                                                    10.000 ± 0%             1.000 ± 0%   -90.00% (p=0.002 n=6)
+FirstIndex/no-args                                                                             5.000 ± 0%             0.000 ± 0%  -100.00% (p=0.002 n=6)
+Last/unique                                                                                    5.000 ± 0%             1.000 ± 0%   -80.00% (p=0.002 n=6)
+Last/nonunique-string                                                                         10.000 ± 0%             1.000 ± 0%   -90.00% (p=0.002 n=6)
+Last/int                                                                                       9.000 ± 0%             0.000 ± 0%  -100.00% (p=0.002 n=6)
+Last/no-args                                                                                   8.000 ± 0%             0.000 ± 0%  -100.00% (p=0.002 n=6)
+GetOne/size=1000                                                                               9.000 ± 0%             2.000 ± 0%   -77.78% (p=0.002 n=6)
+GetOne/size=100000                                                                             9.000 ± 0%             2.000 ± 0%   -77.78% (p=0.002 n=6)
+Iterate/scan=all/keys=uuid/size=1000                                                           7.000 ± 0%             1.000 ± 0%   -85.71% (p=0.002 n=6)
+Iterate/scan=all/keys=seq/size=1000                                                            7.000 ± 0%             1.000 ± 0%   -85.71% (p=0.002 n=6)
+Iterate/scan=all/keys=path/size=1000                                                           7.000 ± 0%             1.000 ± 0%   -85.71% (p=0.002 n=6)
+Iterate/scan=group/size=1000                                                                  12.000 ± 0%             3.000 ± 0%   -75.00% (p=0.002 n=6)
+Iterate/scan=group-reverse/size=1000                                                          15.000 ± 0%             3.000 ± 0%   -80.00% (p=0.002 n=6)
+Iterate/scan=tags/size=1000                                                                   11.000 ± 0%             3.000 ± 0%   -72.73% (p=0.002 n=6)
+Iterate/scan=all-reverse/size=1000                                                            11.000 ± 0%             1.000 ± 0%   -90.91% (p=0.002 n=6)
+Iterate/scan=all/keys=uuid/size=100000                                                         8.000 ± 0%             1.000 ± 0%   -87.50% (p=0.002 n=6)
+Iterate/scan=all/keys=seq/size=100000                                                          8.000 ± 0%             1.000 ± 0%   -87.50% (p=0.002 n=6)
+Iterate/scan=all/keys=path/size=100000                                                         8.000 ± 0%             1.000 ± 0%   -87.50% (p=0.002 n=6)
+Iterate/scan=group/size=100000                                                                12.000 ± 0%             3.000 ± 0%   -75.00% (p=0.002 n=6)
+Iterate/scan=group-reverse/size=100000                                                        16.000 ± 0%             3.000 ± 0%   -81.25% (p=0.002 n=6)
+Iterate/scan=tags/size=100000                                                                 13.000 ± 0%             3.000 ± 0%   -76.92% (p=0.002 n=6)
+Iterate/scan=all-reverse/size=100000                                                          11.000 ± 0%             1.000 ± 0%   -90.91% (p=0.002 n=6)
+LowerBound/int                                                                                 9.000 ± 0%             1.000 ± 0%   -88.89% (p=0.002 n=6)
+LowerBound/int-reverse                                                                        11.000 ± 0%             1.000 ± 0%   -90.91% (p=0.002 n=6)
+LowerBound/uint                                                                                9.000 ± 0%             2.000 ± 0%   -77.78% (p=0.002 n=6)
+LowerBound/string                                                                             11.000 ± 0%             2.000 ± 0%   -81.82% (p=0.002 n=6)
+LowerBound/string-reverse                                                                     13.000 ± 0%             2.000 ± 0%   -84.62% (p=0.002 n=6)
+LongestPrefix/size=1000                                                                        4.000 ± 0%             3.000 ± 0%   -25.00% (p=0.002 n=6)
+LongestPrefix/size=100000                                                                      4.000 ± 0%             3.000 ± 0%   -25.00% (p=0.002 n=6)
+FilterIterator                                                                                12.000 ± 0%             3.000 ± 0%   -75.00% (p=0.002 n=6)
+ParallelTxnFirst/size=1000                                                                     7.000 ± 0%             2.000 ± 0%   -71.43% (p=0.002 n=6)
+ParallelTxnFirst/size=100000                                                                   7.000 ± 0%             2.000 ± 0%   -71.43% (p=0.002 n=6)
+ParallelTxnFirstWithWriter                                                                     7.000 ± 0%             2.000 ± 0%   -71.43% (p=0.002 n=6)
+FirstWatch/size=1000                                                                           5.000 ± 0%             1.000 ± 0%   -80.00% (p=0.002 n=6)
+FirstWatch/size=100000                                                                         5.000 ± 0%             1.000 ± 0%   -80.00% (p=0.002 n=6)
+GetWatchCh/size=1000                                                                          11.000 ± 0%             3.000 ± 0%   -72.73% (p=0.002 n=6)
+GetWatchCh/size=100000                                                                        11.000 ± 0%             3.000 ± 0%   -72.73% (p=0.002 n=6)
+WatchCycle/size=1000                                                                          260.00 ± 0%             34.00 ± 0%   -86.92% (p=0.002 n=6)
+WatchCycle/size=100000                                                                        310.00 ± 0%             42.00 ± 0%   -86.45% (p=0.002 n=6)
+CommitNotify/size=1000/rows=100                                                              10.518k ± 0%            1.830k ± 0%   -82.60% (p=0.002 n=6)
+CommitNotify/size=100000/rows=100                                                            14.832k ± 0%            2.546k ± 0%   -82.83% (p=0.002 n=6)
+WatchSetAdd                                                                                    7.000 ± 0%             7.000 ± 0%         ~ (p=1.000 n=6) ¹
+WatchSetWatchExpired/n=1                                                                       4.000 ± 0%             0.000 ± 0%  -100.00% (p=0.002 n=6)
+WatchSetWatchExpired/n=8                                                                       4.000 ± 0%             0.000 ± 0%  -100.00% (p=0.002 n=6)
+WatchSetWatchExpired/n=32                                                                      4.000 ± 0%             0.000 ± 0%  -100.00% (p=0.002 n=6)
+WatchSetWatchExpired/n=33                                                                      14.00 ± 0%              0.00 ± 0%  -100.00% (p=0.002 n=6)
+WatchSetWatchExpired/n=256                                                                     27.00 ± 0%              0.00 ± 0%  -100.00% (p=0.002 n=6)
+WatchSetWatchExpired/n=1024                                                                    76.00 ± 0%              0.00 ± 0%  -100.00% (p=0.002 n=6)
+WatchSetWatchCtxCancelled/n=1                                                                  0.000 ± 0%             0.000 ± 0%         ~ (p=1.000 n=6) ¹
+WatchSetWatchCtxCancelled/n=8                                                                  0.000 ± 0%             0.000 ± 0%         ~ (p=1.000 n=6) ¹
+WatchSetWatchCtxCancelled/n=32                                                                 0.000 ± 0%             0.000 ± 0%         ~ (p=1.000 n=6) ¹
+WatchSetWatchCtxCancelled/n=33                                                                 8.000 ± 0%             0.000 ± 0%  -100.00% (p=0.002 n=6)
+WatchSetWatchCtxCancelled/n=256                                                                21.00 ± 0%              0.00 ± 0%  -100.00% (p=0.002 n=6)
+WatchSetWatchCtxCancelled/n=1024                                                               69.00 ± 0%              0.00 ± 0%  -100.00% (p=0.002 n=6)
+WatchSetWatchCtxFired/n=1                                                                      0.000 ± 0%             0.000 ± 0%         ~ (p=1.000 n=6) ¹
+WatchSetWatchCtxFired/n=8                                                                      0.000 ± 0%             0.000 ± 0%         ~ (p=1.000 n=6) ¹
+WatchSetWatchCtxFired/n=32                                                                     0.000 ± 0%             0.000 ± 0%         ~ (p=1.000 n=6) ¹
+WatchSetWatchCtxFired/n=33                                                                     9.000 ± 0%             0.000 ± 0%  -100.00% (p=0.002 n=6)
+WatchSetWatchCtxFired/n=256                                                                    22.00 ± 0%             19.00 ± 0%   -13.64% (p=0.002 n=6)
+WatchSetWatchCtxFired/n=1024                                                                   71.00 ± 0%             68.00 ± 0%    -4.23% (p=0.002 n=6)
+WatchSetBlockThenFire/n=8                                                                      1.000 ± 0%             1.000 ± 0%         ~ (p=1.000 n=6) ¹
+WatchSetBlockThenFire/n=1024                                                                   72.00 ± 0%             69.00 ± 0%    -4.17% (p=0.002 n=6)
+InsertAbort/schema=s1/size=1000/batch=1                                                       38.000 ± 0%             6.000 ± 0%   -84.21% (p=0.002 n=6)
+InsertAbort/schema=s1/size=1000/batch=100                                                     1707.0 ± 0%             351.0 ± 0%   -79.44% (p=0.002 n=6)
+InsertAbort/schema=s1/size=100000/batch=1                                                     49.000 ± 0%             8.000 ± 0%   -83.67% (p=0.002 n=6)
+InsertAbort/schema=s1/size=100000/batch=100                                                   2729.0 ± 0%             529.0 ± 0%   -80.62% (p=0.002 n=6)
+InsertAbort/schema=s3/size=1000/batch=1                                                       183.00 ± 0%             30.00 ± 0%   -83.61% (p=0.002 n=6)
+InsertAbort/schema=s3/size=1000/batch=100                                                     7.753k ± 0%            1.668k ± 0%   -78.49% (p=0.002 n=6)
+InsertAbort/schema=s3/size=100000/batch=1                                                     238.00 ± 0%             39.00 ± 0%   -83.61% (p=0.002 n=6)
+InsertAbort/schema=s3/size=100000/batch=100                                                  12.086k ± 0%            2.424k ± 0%   -79.94% (p=0.002 n=6)
+InsertAbort/schema=wide/size=1000/batch=1                                                     504.00 ± 0%             82.00 ± 0%   -83.73% (p=0.002 n=6)
+InsertAbort/schema=wide/size=1000/batch=100                                                  22.033k ± 0%            4.687k ± 0%   -78.73% (p=0.002 n=6)
+InsertAbort/schema=wide/size=100000/batch=1                                                    636.0 ± 0%             103.0 ± 0%   -83.81% (p=0.002 n=6)
+InsertAbort/schema=wide/size=100000/batch=100                                                33.250k ± 0%            6.595k ± 0%   -80.17% (p=0.002 n=6)
+InsertAbort/schema=func/size=1000/batch=1                                                     114.00 ± 0%             22.00 ± 0%   -80.70% (p=0.002 n=6)
+InsertAbort/schema=func/size=1000/batch=100                                                   4.430k ± 0%            1.357k ± 0%   -69.37% (p=0.002 n=6)
+InsertAbort/schema=func/size=100000/batch=1                                                   146.00 ± 0%             28.00 ± 0%   -80.82% (p=0.002 n=6)
+InsertAbort/schema=func/size=100000/batch=100                                                 7.221k ± 0%            1.833k ± 0%   -74.62% (p=0.002 n=6)
+InsertDeleteCommit/schema=s1/keys=uuid/size=1000                                              115.00 ± 0%             12.00 ± 0%   -89.57% (p=0.002 n=6)
+InsertDeleteCommit/schema=s1/keys=uuid/size=100000                                            135.00 ± 0%             16.00 ± 0%   -88.15% (p=0.002 n=6)
+InsertDeleteCommit/schema=s3/keys=uuid/size=1000                                              453.00 ± 0%             53.00 ± 0%   -88.30% (p=0.002 n=6)
+InsertDeleteCommit/schema=s3/keys=uuid/size=100000                                            561.50 ± 0%             71.00 ± 0%   -87.36% (p=0.002 n=6)
+InsertDeleteCommit/schema=wide/keys=uuid/size=1000                                            1261.0 ± 0%             139.0 ± 0%   -88.98% (p=0.002 n=6)
+InsertDeleteCommit/schema=wide/keys=uuid/size=100000                                          1528.0 ± 0%             182.0 ± 0%   -88.09% (p=0.002 n=6)
+InsertDeleteCommit/schema=func/keys=uuid/size=1000                                            313.00 ± 0%             41.00 ± 0%   -86.90% (p=0.002 n=6)
+InsertDeleteCommit/schema=func/keys=uuid/size=100000                                          380.00 ± 0%             52.00 ± 0%   -86.32% (p=0.002 n=6)
+InsertDeleteCommit/schema=s3/keys=seq/size=1000                                               395.00 ± 0%             53.00 ± 0%   -86.58% (p=0.002 n=6)
+InsertDeleteCommit/schema=s3/keys=seq/size=100000                                             420.00 ± 0%             57.00 ± 0%   -86.43% (p=0.002 n=6)
+InsertDeleteCommit/schema=s3/keys=path/size=1000                                              488.00 ± 0%             66.00 ± 0%   -86.48% (p=0.002 n=6)
+InsertDeleteCommit/schema=s3/keys=path/size=100000                                            522.00 ± 0%             73.00 ± 0%   -86.02% (p=0.002 n=6)
+InsertDeleteCommitManyTables                                                                  453.00 ± 0%             55.00 ± 0%   -87.86% (p=0.002 n=6)
+UpdateCommit/schema=s3/size=1000/keys=same                                                    253.00 ± 0%             30.00 ± 0%   -88.14% (p=0.002 n=6)
+UpdateCommit/schema=s3/size=1000/keys=moved                                                   273.00 ± 0%             33.00 ± 0%   -87.91% (p=0.002 n=6)
+UpdateCommit/schema=s3/size=100000/keys=same                                                  303.00 ± 0%             38.00 ± 0%   -87.46% (p=0.002 n=6)
+UpdateCommit/schema=s3/size=100000/keys=moved                                                 312.00 ± 2%             39.00 ± 0%   -87.50% (p=0.002 n=6)
+UpdateCommit/schema=wide/size=1000/keys=same                                                  702.00 ± 0%             79.00 ± 0%   -88.75% (p=0.002 n=6)
+UpdateCommit/schema=wide/size=1000/keys=moved                                                 760.00 ± 0%             88.00 ± 0%   -88.42% (p=0.002 n=6)
+UpdateCommit/schema=wide/size=100000/keys=same                                                 832.0 ± 0%             100.0 ± 0%   -87.98% (p=0.002 n=6)
+UpdateCommit/schema=wide/size=100000/keys=moved                                                831.0 ± 0%             106.0 ± 5%   -87.24% (p=0.002 n=6)
+UpdateCommit/schema=func/size=1000/keys=same                                                  165.00 ± 0%             24.00 ± 0%   -85.45% (p=0.002 n=6)
+UpdateCommit/schema=func/size=1000/keys=moved                                                 188.00 ± 1%             28.00 ± 0%   -85.11% (p=0.002 n=6)
+UpdateCommit/schema=func/size=100000/keys=same                                                198.00 ± 0%             30.00 ± 0%   -84.85% (p=0.002 n=6)
+UpdateCommit/schema=func/size=100000/keys=moved                                               198.00 ± 0%             31.50 ± 2%   -84.09% (p=0.002 n=6)
+DeleteAbort/schema=s3/size=1000                                                               187.00 ± 0%             21.00 ± 0%   -88.77% (p=0.002 n=6)
+DeleteAbort/schema=s3/size=100000                                                             238.00 ± 0%             29.00 ± 0%   -87.82% (p=0.002 n=6)
+DeleteAbort/schema=wide/size=1000                                                             507.00 ± 0%             55.00 ± 0%   -89.15% (p=0.002 n=6)
+DeleteAbort/schema=wide/size=100000                                                           641.00 ± 0%             76.00 ± 0%   -88.14% (p=0.002 n=6)
+DeleteAllAbort/schema=s3/size=1000                                                            6823.0 ± 0%             613.0 ± 0%   -91.02% (p=0.002 n=6)
+DeleteAllAbort/schema=s3/size=100000                                                         10.595k ± 0%            1.253k ± 0%   -88.17% (p=0.002 n=6)
+DeleteAllAbort/schema=wide/size=1000                                                         17.997k ± 0%            1.516k ± 0%   -91.58% (p=0.002 n=6)
+DeleteAllAbort/schema=wide/size=100000                                                       27.863k ± 0%            3.145k ± 0%   -88.71% (p=0.002 n=6)
+DeletePrefixAbort/schema=s3/size=1000                                                         4138.0 ± 0%             234.0 ± 0%   -94.35% (p=0.002 n=6)
+DeletePrefixAbort/schema=s3/size=100000                                                       5960.0 ± 0%             518.0 ± 0%   -91.31% (p=0.002 n=6)
+Changes/n=10/dup=false                                                                        1424.0 ± 0%             281.0 ± 0%   -80.27% (p=0.002 n=6)
+Changes/n=10/dup=true                                                                         2216.0 ± 0%             336.0 ± 0%   -84.84% (p=0.002 n=6)
+Changes/n=1000/dup=false                                                                     103.58k ± 0%            22.36k ± 0%   -78.41% (p=0.002 n=6)
+Changes/n=1000/dup=true                                                                      184.28k ± 0%            27.39k ± 0%   -85.14% (p=0.002 n=6)
+ReadYourWrites/size=1000                                                                      1269.0 ± 0%             228.0 ± 0%   -82.03% (p=0.002 n=6)
+ReadYourWrites/size=100000                                                                    1542.0 ± 0%             273.0 ± 0%   -82.30% (p=0.002 n=6)
+IterateInWriteTxn/size=1000                                                                   313.00 ± 0%             56.00 ± 0%   -82.11% (p=0.002 n=6)
+IterateInWriteTxn/size=100000                                                                 422.00 ± 0%             74.00 ± 0%   -82.46% (p=0.002 n=6)
+TxnSnapshot                                                                                    762.0 ± 0%             105.0 ± 0%   -86.22% (p=0.002 n=6)
+BulkLoad/schema=s3/size=1000                                                                  59.03k ± 0%            12.14k ± 0%   -79.43% (p=0.002 n=6)
+BulkLoad/schema=s3/size=100000                                                                7.083M ± 0%            1.211M ± 0%   -82.91% (p=0.002 n=6)
+BulkLoad/schema=wide/size=1000                                                               157.91k ± 0%            32.79k ± 0%   -79.23% (p=0.002 n=6)
+BulkLoad/schema=wide/size=100000                                                             18.354M ± 0%            3.269M ± 0%   -82.19% (p=0.002 n=6)
+ExtCount/size=1000/impl=scan                                                                                          1.000 ± 0%
+ExtCount/size=1000/impl=bitmap                                                                                        8.000 ± 0%
+ExtCount/size=100000/impl=scan                                                                                        1.000 ± 0%
+ExtCount/size=100000/impl=bitmap                                                                                      152.0 ± 0%
+ExtCountOne/size=1000/impl=scan                                                                                       1.000 ± 0%
+ExtCountOne/size=1000/impl=bitmap                                                                                     0.000 ± 0%
+ExtCountOne/size=100000/impl=scan                                                                                     1.000 ± 0%
+ExtCountOne/size=100000/impl=bitmap                                                                                   0.000 ± 0%
+ExtIterate/size=1000/impl=scan                                                                                        1.000 ± 0%
+ExtIterate/size=1000/impl=bitmap                                                                                      7.000 ± 0%
+ExtIterate/size=100000/impl=scan                                                                                      1.000 ± 0%
+ExtIterate/size=100000/impl=bitmap                                                                                    433.0 ± 0%
+ExtWrite/op=insert-delete/size=1000/impl=classic                                                                      64.00 ± 0%
+ExtWrite/op=update-same-keys/size=1000/impl=classic                                                                   36.00 ± 0%
+ExtWrite/op=insert-delete/size=1000/impl=bitmap                                                                       109.0 ± 0%
+ExtWrite/op=update-same-keys/size=1000/impl=bitmap                                                                    14.00 ± 0%
+ExtWrite/op=insert-delete/size=100000/impl=classic                                                                    84.00 ± 0%
+ExtWrite/op=update-same-keys/size=100000/impl=classic                                                                 46.00 ± 0%
+ExtWrite/op=insert-delete/size=100000/impl=bitmap                                                                     145.0 ± 0%
+ExtWrite/op=update-same-keys/size=100000/impl=bitmap                                                                  16.00 ± 0%
+ExtTypedFirst/size=1000/impl=untyped                                                                                  1.000 ± 0%
+ExtTypedFirst/size=1000/impl=table                                                                                    1.000 ± 0%
+ExtTypedFirst/size=1000/impl=key                                                                                      0.000 ± 0%
+ExtTypedFirst/size=100000/impl=untyped                                                                                1.000 ± 0%
+ExtTypedFirst/size=100000/impl=table                                                                                  1.000 ± 0%
+ExtTypedFirst/size=100000/impl=key                                                                                    0.000 ± 0%
+ExtTypedInsert/impl=field                                                                                             699.0 ± 0%
+ExtTypedInsert/impl=func                                                                                              699.0 ± 0%
+geomean                                                                                                   ²                       ?                      ² ³
+¹ all samples are equal
+² summaries must be >0 to compute geomean
+³ ratios must be >0 to compute geomean
+
+                                       │ upstream.txt │ new.txt │
+                                       │                       rows/op                       │        rows/op          vs base                │
+Iterate/scan=all/keys=uuid/size=1000                                            1.000k ±  0%            1.000k ±   0%       ~ (p=1.000 n=6) ¹
+Iterate/scan=all/keys=seq/size=1000                                             1.000k ±  0%            1.000k ±   0%       ~ (p=1.000 n=6) ¹
+Iterate/scan=all/keys=path/size=1000                                            1.000k ±  0%            1.000k ±   0%       ~ (p=1.000 n=6) ¹
+Iterate/scan=group/size=1000                                                     100.0 ±  0%             100.0 ±   0%       ~ (p=1.000 n=6) ¹
+Iterate/scan=group-reverse/size=1000                                             100.0 ±  0%             100.0 ±   0%       ~ (p=1.000 n=6) ¹
+Iterate/scan=tags/size=1000                                                      44.50 ± 55%             20.00 ± 245%       ~ (p=0.545 n=6)
+Iterate/scan=all-reverse/size=1000                                              1.000k ±  0%            1.000k ±   0%       ~ (p=1.000 n=6) ¹
+Iterate/scan=all/keys=uuid/size=100000                                          100.0k ±  0%            100.0k ±   0%       ~ (p=1.000 n=6) ¹
+Iterate/scan=all/keys=seq/size=100000                                           100.0k ±  0%            100.0k ±   0%       ~ (p=1.000 n=6) ¹
+Iterate/scan=all/keys=path/size=100000                                          100.0k ±  0%            100.0k ±   0%       ~ (p=1.000 n=6) ¹
+Iterate/scan=group/size=100000                                                   100.0 ±  0%             100.0 ±   0%       ~ (p=1.000 n=6) ¹
+Iterate/scan=group-reverse/size=100000                                           100.0 ±  0%             100.0 ±   0%       ~ (p=1.000 n=6) ¹
+Iterate/scan=tags/size=100000                                                   6.361k ± 38%            6.361k ±   0%       ~ (p=0.455 n=6)
+Iterate/scan=all-reverse/size=100000                                            100.0k ±  0%            100.0k ±   0%       ~ (p=1.000 n=6) ¹
+geomean                                                                         1.764k                  1.666k         -5.55%
+¹ all samples are equal
+
+                                 │ upstream.txt │ new.txt │
+                                 │                        gc-ms                        │          gc-ms           vs base               │
+BulkLoad/schema=s3/size=1000                                               582.0m ± 4%               398.0m ± 3%  -31.62% (p=0.002 n=6)
+BulkLoad/schema=s3/size=100000                                              368.1 ± 4%                236.1 ± 2%  -35.88% (p=0.002 n=6)
+BulkLoad/schema=wide/size=1000                                            1503.0m ± 5%               882.5m ± 7%  -41.28% (p=0.002 n=6)
+BulkLoad/schema=wide/size=100000                                           1106.0 ± 6%                590.2 ± 2%  -46.64% (p=0.002 n=6)
+geomean                                                                     24.43                     14.87       -39.12%
+
+                                      │ upstream.txt │ new.txt │
+                                      │                      heapB/row                      │        heapB/row         vs base               │
+BulkLoad/schema=s3/size=1000                                                    2.413k ± 0%               1.009k ± 0%  -58.18% (p=0.002 n=6)
+BulkLoad/schema=s3/size=100000                                                  2.443k ± 0%               1.010k ± 0%  -58.66% (p=0.002 n=6)
+BulkLoad/schema=wide/size=1000                                                  6.478k ± 0%               2.696k ± 0%  -58.38% (p=0.002 n=6)
+BulkLoad/schema=wide/size=100000                                                6.529k ± 0%               2.698k ± 0%  -58.68% (p=0.002 n=6)
+ExtFootprint/size=1000/impl=classic                                                                       1.215k ± 0%
+ExtFootprint/size=1000/impl=bitmap                                                                         470.6 ± 0%
+ExtFootprint/size=100000/impl=classic                                                                     1.213k ± 0%
+ExtFootprint/size=100000/impl=bitmap                                                                       453.0 ± 0%
+geomean                                                                         3.974k                    1.111k       -58.48%
+
+                                      │ upstream.txt │ new.txt │
+                                      │                    heapobjs/row                     │      heapobjs/row        vs base               │
+BulkLoad/schema=s3/size=1000                                                     31.95 ± 0%                11.57 ± 0%  -63.79% (p=0.002 n=6)
+BulkLoad/schema=s3/size=100000                                                   32.16 ± 0%                11.68 ± 0%  -63.68% (p=0.002 n=6)
+BulkLoad/schema=wide/size=1000                                                   86.13 ± 0%                31.36 ± 0%  -63.59% (p=0.002 n=6)
+BulkLoad/schema=wide/size=100000                                                 86.39 ± 0%                31.50 ± 0%  -63.54% (p=0.002 n=6)
+ExtFootprint/size=1000/impl=classic                                                                        13.99 ± 0%
+ExtFootprint/size=1000/impl=bitmap                                                                         5.484 ± 0%
+ExtFootprint/size=100000/impl=classic                                                                      14.03 ± 0%
+ExtFootprint/size=100000/impl=bitmap                                                                       5.307 ± 0%
+geomean                                                                          52.58                     12.89       -63.65%

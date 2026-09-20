@@ -2,83 +2,83 @@ goos: darwin
 goarch: arm64
 pkg: github.com/thevilledev/go-maemmidb/benchmarks
 cpu: Apple M1 Max
-BenchmarkParallelTxnFirst/size=1000           	 4801992	       124.7 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=1000           	 4848517	       126.4 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=1000-4         	15288944	        39.45 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=1000-4         	15376237	        39.45 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=1000-8         	17974430	        31.91 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=1000-8         	19924287	        32.48 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=100000         	 1297221	       462.3 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=100000         	 1297626	       453.0 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=100000-4       	 4676791	       145.8 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=100000-4       	 4347909	       146.7 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=100000-8       	 8995996	        80.09 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=100000-8       	 8635014	        79.04 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000           	 5392022	       110.4 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000           	 5519554	       109.5 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000-4         	19205070	        30.72 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000-4         	19414177	        30.92 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000-8         	26129654	        22.51 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000-8         	27371689	        22.64 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000         	 1461561	       416.5 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000         	 1430660	       410.3 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000-4       	 4602398	       145.4 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000-4       	 5101969	       141.5 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000-8       	 9586648	        67.83 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000-8       	 9685900	        66.92 ns/op	      48 B/op	       2 allocs/op
 PASS
 goos: darwin
 goarch: arm64
 pkg: github.com/thevilledev/go-maemmidb/benchmarks
 cpu: Apple M1 Max
-BenchmarkParallelTxnFirstWithWriter     	 1000000	       515.4 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirstWithWriter     	 1224591	       451.5 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirstWithWriter-4   	 4442740	       148.2 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirstWithWriter-4   	 4494956	       147.5 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirstWithWriter-8   	 8938119	        79.99 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirstWithWriter-8   	 8638152	        79.20 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter     	 1429974	       425.1 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter     	 1328911	       417.9 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter-4   	 4951256	       139.6 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter-4   	 4772670	       138.4 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter-8   	 9726843	        67.27 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter-8   	 9479109	        68.00 ns/op	      48 B/op	       2 allocs/op
 PASS
 goos: darwin
 goarch: arm64
 pkg: github.com/thevilledev/go-maemmidb/benchmarks
 cpu: Apple M1 Max
-BenchmarkParallelTxnFirst/size=1000           	 4571055	       125.0 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=1000           	 4788345	       130.0 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=1000-4         	15113461	        39.75 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=1000-4         	15885009	        37.46 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=1000-8         	17434004	        32.70 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=1000-8         	18541002	        32.20 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=100000         	 1000000	       502.4 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=100000         	 1278523	       452.2 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=100000-4       	 4512769	       146.3 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=100000-4       	 4557261	       143.6 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=100000-8       	 8915569	        79.96 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=100000-8       	 9014890	        76.59 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000           	 5371299	       111.2 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000           	 5206423	       111.3 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000-4         	16664679	        33.52 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000-4         	18259513	        33.40 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000-8         	25505730	        25.76 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000-8         	23253897	        24.90 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000         	 1347927	       420.9 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000         	 1437492	       423.9 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000-4       	 4803004	       137.1 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000-4       	 4937901	       141.1 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000-8       	 9881605	        68.48 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000-8       	 9578925	        66.21 ns/op	      48 B/op	       2 allocs/op
 PASS
 goos: darwin
 goarch: arm64
 pkg: github.com/thevilledev/go-maemmidb/benchmarks
 cpu: Apple M1 Max
-BenchmarkParallelTxnFirstWithWriter     	 1272938	       455.5 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirstWithWriter     	 1289680	       448.8 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirstWithWriter-4   	 4426863	       148.2 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirstWithWriter-4   	 4443661	       146.3 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirstWithWriter-8   	 8813192	        77.74 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirstWithWriter-8   	 8958577	        79.56 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter     	 1304748	       459.1 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter     	 1399395	       423.2 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter-4   	 4730280	       134.7 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter-4   	 5088391	       138.3 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter-8   	 9345624	        71.14 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter-8   	 9301826	        70.26 ns/op	      48 B/op	       2 allocs/op
 PASS
 goos: darwin
 goarch: arm64
 pkg: github.com/thevilledev/go-maemmidb/benchmarks
 cpu: Apple M1 Max
-BenchmarkParallelTxnFirst/size=1000           	 4650884	       127.0 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=1000           	 4779343	       125.3 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=1000-4         	15112446	        39.73 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=1000-4         	15074618	        40.21 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=1000-8         	16250694	        34.89 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=1000-8         	16928449	        32.30 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=100000         	 1259506	       452.5 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=100000         	 1354924	       444.5 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=100000-4       	 4509438	       147.2 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=100000-4       	 4509706	       151.2 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=100000-8       	 8919457	        79.47 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirst/size=100000-8       	 8795756	        79.02 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000           	 5350464	       112.8 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000           	 5361313	       113.7 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000-4         	19279120	        31.05 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000-4         	19365405	        30.90 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000-8         	26917497	        21.73 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000-8         	24401113	        22.65 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000         	 1395102	       417.2 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000         	 1416309	       423.6 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000-4       	 4946054	       134.4 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000-4       	 4775746	       138.5 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000-8       	 9836709	        66.06 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000-8       	 9685327	        68.48 ns/op	      48 B/op	       2 allocs/op
 PASS
 goos: darwin
 goarch: arm64
 pkg: github.com/thevilledev/go-maemmidb/benchmarks
 cpu: Apple M1 Max
-BenchmarkParallelTxnFirstWithWriter     	 1360358	       446.1 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirstWithWriter     	 1306488	       439.6 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirstWithWriter-4   	 4357891	       149.5 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirstWithWriter-4   	 4323865	       159.2 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirstWithWriter-8   	 8508757	        78.80 ns/op	      96 B/op	       2 allocs/op
-BenchmarkParallelTxnFirstWithWriter-8   	 8793022	        77.69 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter     	 1449867	       425.2 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter     	 1491057	       410.0 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter-4   	 4778748	       138.0 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter-4   	 4983678	       134.9 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter-8   	 9860737	        68.38 ns/op	      48 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter-8   	 9413358	        66.87 ns/op	      48 B/op	       2 allocs/op
 PASS

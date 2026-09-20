@@ -1,0 +1,1716 @@
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkNewMemDB/schema=s1         	 1000000	       564.6 ns/op	    1384 B/op	      22 allocs/op
+BenchmarkNewMemDB/schema=s1         	 1000000	       567.4 ns/op	    1384 B/op	      22 allocs/op
+BenchmarkNewMemDB/schema=wide       	   84613	      7118 ns/op	   18589 B/op	     287 allocs/op
+BenchmarkNewMemDB/schema=wide       	   84501	      7095 ns/op	   18586 B/op	     287 allocs/op
+BenchmarkNewMemDB/schema=s50        	    4365	    139155 ns/op	  320060 B/op	    5217 allocs/op
+BenchmarkNewMemDB/schema=s50        	    4338	    139200 ns/op	  319707 B/op	    5217 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkTxn/read         	12246534	        49.89 ns/op	     128 B/op	       2 allocs/op
+BenchmarkTxn/read         	11992308	        50.65 ns/op	     128 B/op	       2 allocs/op
+BenchmarkTxn/write-commit-empty         	 7823301	        77.72 ns/op	     144 B/op	       3 allocs/op
+BenchmarkTxn/write-commit-empty         	 7821165	        77.95 ns/op	     144 B/op	       3 allocs/op
+BenchmarkTxn/write-abort-empty          	11121015	        54.79 ns/op	     128 B/op	       2 allocs/op
+BenchmarkTxn/write-abort-empty          	11205759	        54.97 ns/op	     128 B/op	       2 allocs/op
+BenchmarkTxn/write-commit-defer         	 5966140	       102.0 ns/op	     168 B/op	       5 allocs/op
+BenchmarkTxn/write-commit-defer         	 5933739	       102.2 ns/op	     168 B/op	       5 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkSnapshot 	35696738	        17.80 ns/op	      32 B/op	       1 allocs/op
+BenchmarkSnapshot 	35489376	        17.80 ns/op	      32 B/op	       1 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkSnapshotWrite 	   39259	     27260 ns/op	   19897 B/op	     271 allocs/op
+BenchmarkSnapshotWrite 	   40296	     28261 ns/op	   19898 B/op	     271 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkIndexer/FromObject/StringFieldIndex         	10625348	        56.48 ns/op	      96 B/op	       2 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex         	10419878	        57.47 ns/op	      96 B/op	       2 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex-lowercase         	 5966502	       100.7 ns/op	      59 B/op	       3 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex-lowercase         	 5994591	       101.4 ns/op	      59 B/op	       3 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex-pointer           	10389466	        57.70 ns/op	      16 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex-pointer           	10257174	        58.46 ns/op	      16 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/IntFieldIndex                      	14219589	        41.92 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/IntFieldIndex                      	14285653	        41.91 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/UintFieldIndex                     	13479487	        44.10 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/UintFieldIndex                     	13586107	        44.09 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/BoolFieldIndex                     	14178787	        42.33 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/BoolFieldIndex                     	14185383	        42.34 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/UUIDFieldIndex                     	 5775678	       104.0 ns/op	      48 B/op	       2 allocs/op
+BenchmarkIndexer/FromObject/UUIDFieldIndex                     	 5781728	       104.1 ns/op	      48 B/op	       2 allocs/op
+BenchmarkIndexer/FromObject/FieldSetIndex                      	11898338	        50.47 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/FieldSetIndex                      	11894877	        50.50 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/ConditionalIndex                   	100000000	         5.985 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/ConditionalIndex                   	100000000	         5.990 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/CompoundIndex                      	 2869274	       209.5 ns/op	     196 B/op	       8 allocs/op
+BenchmarkIndexer/FromObject/CompoundIndex                      	 2859344	       209.8 ns/op	     196 B/op	       8 allocs/op
+BenchmarkIndexer/FromObject/StringSliceFieldIndex              	 4600305	       129.0 ns/op	     128 B/op	       7 allocs/op
+BenchmarkIndexer/FromObject/StringSliceFieldIndex              	 4685906	       128.3 ns/op	     128 B/op	       7 allocs/op
+BenchmarkIndexer/FromObject/StringMapFieldIndex                	 2394265	       251.3 ns/op	     224 B/op	      10 allocs/op
+BenchmarkIndexer/FromObject/StringMapFieldIndex                	 2384408	       250.2 ns/op	     224 B/op	      10 allocs/op
+BenchmarkIndexer/FromObject/CompoundMultiIndex                 	 1000000	       528.1 ns/op	     828 B/op	      27 allocs/op
+BenchmarkIndexer/FromObject/CompoundMultiIndex                 	 1000000	       529.5 ns/op	     828 B/op	      27 allocs/op
+BenchmarkIndexer/FromArgs/StringFieldIndex                     	19021207	        31.57 ns/op	      96 B/op	       2 allocs/op
+BenchmarkIndexer/FromArgs/StringFieldIndex                     	19227014	        31.31 ns/op	      96 B/op	       2 allocs/op
+BenchmarkIndexer/FromArgs/StringFieldIndex-lowercase           	 8524884	        70.66 ns/op	      59 B/op	       3 allocs/op
+BenchmarkIndexer/FromArgs/StringFieldIndex-lowercase           	 8531846	        70.97 ns/op	      59 B/op	       3 allocs/op
+BenchmarkIndexer/FromArgs/IntFieldIndex                        	63032631	         9.509 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/IntFieldIndex                        	64196979	         9.499 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/UintFieldIndex                       	58069429	        10.35 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/UintFieldIndex                       	58431954	        10.39 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/BoolFieldIndex                       	97552472	         6.218 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/BoolFieldIndex                       	97649653	         6.218 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/UUIDFieldIndex-string                	 9246697	        65.07 ns/op	      48 B/op	       2 allocs/op
+BenchmarkIndexer/FromArgs/UUIDFieldIndex-string                	 9286056	        64.98 ns/op	      48 B/op	       2 allocs/op
+BenchmarkIndexer/FromArgs/StringMapFieldIndex                  	12896536	        47.00 ns/op	      40 B/op	       3 allocs/op
+BenchmarkIndexer/FromArgs/StringMapFieldIndex                  	12958800	        47.52 ns/op	      40 B/op	       3 allocs/op
+BenchmarkIndexer/FromArgs/CompoundIndex                        	 4152628	       144.8 ns/op	     244 B/op	      11 allocs/op
+BenchmarkIndexer/FromArgs/CompoundIndex                        	 4144419	       145.2 ns/op	     244 B/op	      11 allocs/op
+BenchmarkIndexer/FromArgs/CompoundMultiIndex                   	 3846960	       156.5 ns/op	     252 B/op	      12 allocs/op
+BenchmarkIndexer/FromArgs/CompoundMultiIndex                   	 3831153	       156.7 ns/op	     252 B/op	      12 allocs/op
+BenchmarkIndexer/PrefixFromArgs/UUIDFieldIndex                 	11747659	        51.78 ns/op	      40 B/op	       3 allocs/op
+BenchmarkIndexer/PrefixFromArgs/UUIDFieldIndex                 	11682939	        51.89 ns/op	      40 B/op	       3 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkFirst/schema=s3/keys=uuid/size=1000/hit         	 3068450	       195.3 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=1000/hit         	 3097760	       194.5 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=1000/miss        	 3223761	       186.6 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=1000/miss        	 3210760	       187.3 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=100000/hit       	  801088	       741.9 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=100000/hit       	  803113	       739.5 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=100000/miss      	 2641231	       374.0 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=100000/miss      	 2525770	       398.5 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=1000/hit          	 4263764	       251.0 ns/op	     112 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=1000/hit          	 3892396	       265.0 ns/op	     112 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=1000/miss         	 6930880	       163.9 ns/op	     112 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=1000/miss         	 6566974	       163.8 ns/op	     112 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=100000/hit        	 1011528	       578.8 ns/op	     112 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=100000/hit        	 1016840	       578.0 ns/op	     112 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=100000/miss       	 6389695	       186.7 ns/op	     112 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=100000/miss       	 6242496	       188.6 ns/op	     112 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=1000/hit         	 3703917	       178.5 ns/op	     151 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=1000/hit         	 3651651	       178.2 ns/op	     152 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=1000/miss        	 4708077	       254.4 ns/op	     151 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=1000/miss        	 4688978	       255.5 ns/op	     151 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=100000/hit       	  877382	       671.7 ns/op	     152 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=100000/hit       	  888930	       660.8 ns/op	     152 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=100000/miss      	 4868276	       125.8 ns/op	     151 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=100000/miss      	 4763569	       123.5 ns/op	     151 B/op	       5 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=1000/hit       	 3599252	       162.1 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=1000/hit       	 3580528	       162.5 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=1000/miss      	 3674152	       158.0 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=1000/miss      	 3707514	       157.1 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=100000/hit     	  594828	       845.3 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=100000/hit     	  708105	       839.9 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=100000/miss    	 2332809	       247.0 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=100000/miss    	 2296201	       246.5 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=1000/hit       	 3661586	       151.8 ns/op	     128 B/op	       4 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=1000/hit       	 3672116	       152.2 ns/op	     128 B/op	       4 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=1000/miss      	 3727190	       148.8 ns/op	     128 B/op	       4 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=1000/miss      	 3729796	       148.5 ns/op	     128 B/op	       4 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=100000/hit     	  735799	       811.6 ns/op	     128 B/op	       4 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=100000/hit     	  745420	       800.5 ns/op	     128 B/op	       4 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=100000/miss    	 2742675	       212.2 ns/op	     128 B/op	       4 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=100000/miss    	 2664718	       214.6 ns/op	     128 B/op	       4 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkTxnFirst/size=1000         	 2419321	       248.0 ns/op	     304 B/op	       7 allocs/op
+BenchmarkTxnFirst/size=1000         	 2399684	       248.2 ns/op	     304 B/op	       7 allocs/op
+BenchmarkTxnFirst/size=100000       	  629545	       941.6 ns/op	     304 B/op	       7 allocs/op
+BenchmarkTxnFirst/size=100000       	  640280	       927.7 ns/op	     304 B/op	       7 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkFirstIndex/nonunique-string         	 1449194	       397.7 ns/op	     217 B/op	       8 allocs/op
+BenchmarkFirstIndex/nonunique-string         	 1454487	       396.9 ns/op	     217 B/op	       8 allocs/op
+BenchmarkFirstIndex/unique-lowercase         	  822202	       712.2 ns/op	     151 B/op	       6 allocs/op
+BenchmarkFirstIndex/unique-lowercase         	  821524	       713.9 ns/op	     151 B/op	       6 allocs/op
+BenchmarkFirstIndex/id-prefix                	  682568	       856.9 ns/op	     152 B/op	       7 allocs/op
+BenchmarkFirstIndex/id-prefix                	  687564	       854.5 ns/op	     152 B/op	       7 allocs/op
+BenchmarkFirstIndex/string-slice             	 1084803	       540.5 ns/op	     280 B/op	       9 allocs/op
+BenchmarkFirstIndex/string-slice             	 1084359	       540.5 ns/op	     280 B/op	       9 allocs/op
+BenchmarkFirstIndex/string-map               	  937809	       630.6 ns/op	     358 B/op	      10 allocs/op
+BenchmarkFirstIndex/string-map               	  938808	       630.0 ns/op	     358 B/op	      10 allocs/op
+BenchmarkFirstIndex/int                      	 1961994	       297.1 ns/op	     249 B/op	       6 allocs/op
+BenchmarkFirstIndex/int                      	 1957766	       297.7 ns/op	     249 B/op	       6 allocs/op
+BenchmarkFirstIndex/uint                     	  885151	       665.8 ns/op	     120 B/op	       6 allocs/op
+BenchmarkFirstIndex/uint                     	  904614	       655.3 ns/op	     120 B/op	       6 allocs/op
+BenchmarkFirstIndex/bool                     	 2010387	       286.7 ns/op	     249 B/op	       7 allocs/op
+BenchmarkFirstIndex/bool                     	 2174779	       282.0 ns/op	     249 B/op	       7 allocs/op
+BenchmarkFirstIndex/uuid                     	  778584	       764.2 ns/op	     128 B/op	       5 allocs/op
+BenchmarkFirstIndex/uuid                     	  781983	       761.5 ns/op	     128 B/op	       5 allocs/op
+BenchmarkFirstIndex/compound                 	 1205239	       485.1 ns/op	     321 B/op	      13 allocs/op
+BenchmarkFirstIndex/compound                 	 1209798	       483.4 ns/op	     321 B/op	      13 allocs/op
+BenchmarkFirstIndex/compound-prefix          	 1308945	       446.5 ns/op	     249 B/op	      10 allocs/op
+BenchmarkFirstIndex/compound-prefix          	 1308330	       446.6 ns/op	     249 B/op	      10 allocs/op
+BenchmarkFirstIndex/no-args                  	 4896945	       415.9 ns/op	     232 B/op	       5 allocs/op
+BenchmarkFirstIndex/no-args                  	 4702560	       418.7 ns/op	     232 B/op	       5 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkLast/unique         	  756049	       772.9 ns/op	     176 B/op	       5 allocs/op
+BenchmarkLast/unique         	  760327	       775.1 ns/op	     176 B/op	       5 allocs/op
+BenchmarkLast/nonunique-string         	  978493	       570.2 ns/op	     488 B/op	      10 allocs/op
+BenchmarkLast/nonunique-string         	 1105723	       549.6 ns/op	     488 B/op	      10 allocs/op
+BenchmarkLast/int                      	 1551781	      1063 ns/op	     463 B/op	       9 allocs/op
+BenchmarkLast/int                      	 1423496	       764.2 ns/op	     463 B/op	       9 allocs/op
+BenchmarkLast/no-args                  	 1864936	       981.5 ns/op	     616 B/op	       8 allocs/op
+BenchmarkLast/no-args                  	 1898404	       967.2 ns/op	     616 B/op	       8 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkGetOne/size=1000         	 2302102	       262.0 ns/op	     264 B/op	       9 allocs/op
+BenchmarkGetOne/size=1000         	 2249455	       267.1 ns/op	     264 B/op	       9 allocs/op
+BenchmarkGetOne/size=100000       	  660892	       898.9 ns/op	     264 B/op	       9 allocs/op
+BenchmarkGetOne/size=100000       	  667058	       888.7 ns/op	     264 B/op	       9 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkIterate/scan=all/keys=uuid/size=1000         	  115862	      5597 ns/op	      1000 rows/op	     280 B/op	       7 allocs/op
+BenchmarkIterate/scan=all/keys=uuid/size=1000         	  116307	      5616 ns/op	      1000 rows/op	     280 B/op	       7 allocs/op
+BenchmarkIterate/scan=all/keys=seq/size=1000          	  157466	      3990 ns/op	      1000 rows/op	     280 B/op	       7 allocs/op
+BenchmarkIterate/scan=all/keys=seq/size=1000          	  158216	      3987 ns/op	      1000 rows/op	     280 B/op	       7 allocs/op
+BenchmarkIterate/scan=all/keys=path/size=1000         	  136706	      4573 ns/op	      1000 rows/op	     280 B/op	       7 allocs/op
+BenchmarkIterate/scan=all/keys=path/size=1000         	  136119	      4558 ns/op	      1000 rows/op	     280 B/op	       7 allocs/op
+BenchmarkIterate/scan=group/size=1000                 	  797383	      1036 ns/op	       100.0 rows/op	     360 B/op	      12 allocs/op
+BenchmarkIterate/scan=group/size=1000                 	  791582	      1032 ns/op	       100.0 rows/op	     360 B/op	      12 allocs/op
+BenchmarkIterate/scan=group-reverse/size=1000         	  321201	      2151 ns/op	       100.0 rows/op	     625 B/op	      15 allocs/op
+BenchmarkIterate/scan=group-reverse/size=1000         	  323286	      2134 ns/op	       100.0 rows/op	     625 B/op	      15 allocs/op
+BenchmarkIterate/scan=tags/size=1000                  	 1000000	       709.0 ns/op	        20.00 rows/op	     286 B/op	      11 allocs/op
+BenchmarkIterate/scan=tags/size=1000                  	 1000000	       721.0 ns/op	        20.00 rows/op	     286 B/op	      11 allocs/op
+BenchmarkIterate/scan=all-reverse/size=1000           	   36236	     16820 ns/op	      1000 rows/op	     680 B/op	      11 allocs/op
+BenchmarkIterate/scan=all-reverse/size=1000           	   36536	     16776 ns/op	      1000 rows/op	     680 B/op	      11 allocs/op
+BenchmarkIterate/scan=all/keys=uuid/size=100000       	      70	   8323222 ns/op	    100000 rows/op	     472 B/op	       8 allocs/op
+BenchmarkIterate/scan=all/keys=uuid/size=100000       	      69	   8519938 ns/op	    100000 rows/op	     472 B/op	       8 allocs/op
+BenchmarkIterate/scan=all/keys=seq/size=100000        	     103	   5732188 ns/op	    100000 rows/op	     472 B/op	       8 allocs/op
+BenchmarkIterate/scan=all/keys=seq/size=100000        	     103	   5725211 ns/op	    100000 rows/op	     472 B/op	       8 allocs/op
+BenchmarkIterate/scan=all/keys=path/size=100000       	      74	   7773492 ns/op	    100000 rows/op	     472 B/op	       8 allocs/op
+BenchmarkIterate/scan=all/keys=path/size=100000       	      75	   7722428 ns/op	    100000 rows/op	     472 B/op	       8 allocs/op
+BenchmarkIterate/scan=group/size=100000               	   60061	      9041 ns/op	       100.0 rows/op	     365 B/op	      12 allocs/op
+BenchmarkIterate/scan=group/size=100000               	   60090	      9040 ns/op	       100.0 rows/op	     365 B/op	      12 allocs/op
+BenchmarkIterate/scan=group-reverse/size=100000       	   33205	     16789 ns/op	       100.0 rows/op	     637 B/op	      16 allocs/op
+BenchmarkIterate/scan=group-reverse/size=100000       	   32875	     16887 ns/op	       100.0 rows/op	     637 B/op	      16 allocs/op
+BenchmarkIterate/scan=tags/size=100000                	     974	    599555 ns/op	      6361 rows/op	     528 B/op	      13 allocs/op
+BenchmarkIterate/scan=tags/size=100000                	     975	    599539 ns/op	      6361 rows/op	     528 B/op	      13 allocs/op
+BenchmarkIterate/scan=all-reverse/size=100000         	      32	  18263383 ns/op	    100000 rows/op	     680 B/op	      11 allocs/op
+BenchmarkIterate/scan=all-reverse/size=100000         	      31	  18461722 ns/op	    100000 rows/op	     680 B/op	      11 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkLowerBound/int         	 1252298	       604.6 ns/op	     486 B/op	       9 allocs/op
+BenchmarkLowerBound/int         	 1124521	       561.1 ns/op	     486 B/op	       9 allocs/op
+BenchmarkLowerBound/int-reverse 	  978138	       770.8 ns/op	     608 B/op	      11 allocs/op
+BenchmarkLowerBound/int-reverse 	  890136	       709.8 ns/op	     608 B/op	      11 allocs/op
+BenchmarkLowerBound/uint        	  590706	      1004 ns/op	     307 B/op	       9 allocs/op
+BenchmarkLowerBound/uint        	  591366	       995.6 ns/op	     307 B/op	       9 allocs/op
+BenchmarkLowerBound/string      	  319917	      1863 ns/op	     505 B/op	      11 allocs/op
+BenchmarkLowerBound/string      	  320042	      1863 ns/op	     505 B/op	      11 allocs/op
+BenchmarkLowerBound/string-reverse         	  225280	      2647 ns/op	     690 B/op	      13 allocs/op
+BenchmarkLowerBound/string-reverse         	  225338	      2646 ns/op	     690 B/op	      13 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkLongestPrefix/size=1000         	 3197760	       188.7 ns/op	     128 B/op	       4 allocs/op
+BenchmarkLongestPrefix/size=1000         	 3228596	       186.3 ns/op	     128 B/op	       4 allocs/op
+BenchmarkLongestPrefix/size=100000       	 2569564	       350.2 ns/op	     128 B/op	       4 allocs/op
+BenchmarkLongestPrefix/size=100000       	 2552850	       349.8 ns/op	     128 B/op	       4 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkFilterIterator 	   36054	     16356 ns/op	     365 B/op	      12 allocs/op
+BenchmarkFilterIterator 	   35787	     16439 ns/op	     365 B/op	      12 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkParallelTxnFirst/size=1000         	 2401464	       247.7 ns/op	     304 B/op	       7 allocs/op
+BenchmarkParallelTxnFirst/size=1000         	 2409349	       247.3 ns/op	     304 B/op	       7 allocs/op
+BenchmarkParallelTxnFirst/size=100000       	  620241	       947.3 ns/op	     304 B/op	       7 allocs/op
+BenchmarkParallelTxnFirst/size=100000       	  622802	       940.0 ns/op	     304 B/op	       7 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkParallelTxnFirstWithWriter 	  626760	       934.1 ns/op	     305 B/op	       7 allocs/op
+BenchmarkParallelTxnFirstWithWriter 	  626360	       936.8 ns/op	     305 B/op	       7 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkFirstWatch/size=1000         	 3065356	       195.9 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirstWatch/size=1000         	 3060766	       196.2 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirstWatch/size=100000       	  785760	       757.6 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirstWatch/size=100000       	  790741	       749.5 ns/op	     176 B/op	       5 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkGetWatchCh/size=1000         	 1828080	       330.7 ns/op	     292 B/op	      11 allocs/op
+BenchmarkGetWatchCh/size=1000         	 1835916	       328.5 ns/op	     292 B/op	      11 allocs/op
+BenchmarkGetWatchCh/size=100000       	 1723742	       564.5 ns/op	     287 B/op	      11 allocs/op
+BenchmarkGetWatchCh/size=100000       	 1714147	       574.4 ns/op	     287 B/op	      11 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkWatchCycle/size=1000         	   37754	     16141 ns/op	   17527 B/op	     260 allocs/op
+BenchmarkWatchCycle/size=1000         	   37660	     16031 ns/op	   17528 B/op	     260 allocs/op
+BenchmarkWatchCycle/size=100000       	   29906	     32969 ns/op	   22025 B/op	     310 allocs/op
+BenchmarkWatchCycle/size=100000       	   29331	     33711 ns/op	   22024 B/op	     310 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkCommitNotify/size=1000/rows=100         	     888	    696682 ns/op	  696971 B/op	   10518 allocs/op
+BenchmarkCommitNotify/size=1000/rows=100         	     859	    703148 ns/op	  696971 B/op	   10518 allocs/op
+BenchmarkCommitNotify/size=100000/rows=100       	     565	   1691865 ns/op	 1186197 B/op	   14832 allocs/op
+BenchmarkCommitNotify/size=100000/rows=100       	     570	   1705747 ns/op	 1186196 B/op	   14832 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkWatchSetAdd 	  436417	      1393 ns/op	    2120 B/op	       7 allocs/op
+BenchmarkWatchSetAdd 	  438850	      1394 ns/op	    2120 B/op	       7 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkWatchSetWatchExpired/n=1         	 1000000	       526.9 ns/op	     256 B/op	       4 allocs/op
+BenchmarkWatchSetWatchExpired/n=1         	 1000000	       527.3 ns/op	     256 B/op	       4 allocs/op
+BenchmarkWatchSetWatchExpired/n=8         	  756416	       801.4 ns/op	     256 B/op	       4 allocs/op
+BenchmarkWatchSetWatchExpired/n=8         	  757568	       800.3 ns/op	     256 B/op	       4 allocs/op
+BenchmarkWatchSetWatchExpired/n=32        	  255380	      2334 ns/op	     256 B/op	       4 allocs/op
+BenchmarkWatchSetWatchExpired/n=32        	  246054	      2354 ns/op	     256 B/op	       4 allocs/op
+BenchmarkWatchSetWatchExpired/n=33        	  170318	      3521 ns/op	    1471 B/op	      14 allocs/op
+BenchmarkWatchSetWatchExpired/n=33        	  169940	      3528 ns/op	    1471 B/op	      14 allocs/op
+BenchmarkWatchSetWatchExpired/n=256       	   35887	     16680 ns/op	    3551 B/op	      27 allocs/op
+BenchmarkWatchSetWatchExpired/n=256       	   36342	     16531 ns/op	    3551 B/op	      27 allocs/op
+BenchmarkWatchSetWatchExpired/n=1024      	    9585	     61683 ns/op	   10848 B/op	      76 allocs/op
+BenchmarkWatchSetWatchExpired/n=1024      	    9624	     61705 ns/op	   10848 B/op	      76 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkWatchSetWatchCtxCancelled/n=1         	 6645174	        90.60 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=1         	 6587629	        92.04 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=8         	 2183029	       274.8 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=8         	 2181213	       275.0 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=32        	  457344	      1313 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=32        	  455766	      1315 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=33        	  590078	      4709 ns/op	     848 B/op	       8 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=33        	  558871	      4772 ns/op	     848 B/op	       8 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=256       	   27984	     23694 ns/op	    2928 B/op	      21 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=256       	   28994	     23425 ns/op	    2928 B/op	      21 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=1024      	   10000	     94110 ns/op	   10224 B/op	      69 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=1024      	   10000	     95239 ns/op	   10224 B/op	      69 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkWatchSetWatchCtxFired/n=1         	 9402567	        63.05 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=1         	 9478965	        66.08 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=8         	 2549308	       235.4 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=8         	 2547194	       235.6 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=32        	  480958	      1248 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=32        	  481766	      1243 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=33        	  195068	      3056 ns/op	     960 B/op	       9 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=33        	  194869	      3059 ns/op	     960 B/op	       9 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=256       	   32265	     18486 ns/op	    3049 B/op	      22 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=256       	   32246	     18535 ns/op	    3048 B/op	      22 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=1024      	    7579	     77367 ns/op	   10458 B/op	      71 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=1024      	    7543	     77535 ns/op	   10487 B/op	      71 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkWatchSetBlockThenFire/n=8         	  931483	       647.4 ns/op	     112 B/op	       1 allocs/op
+BenchmarkWatchSetBlockThenFire/n=8         	  926023	       652.2 ns/op	     112 B/op	       1 allocs/op
+BenchmarkWatchSetBlockThenFire/n=1024      	    7722	     76341 ns/op	   10638 B/op	      72 allocs/op
+BenchmarkWatchSetBlockThenFire/n=1024      	    7987	     76742 ns/op	   10618 B/op	      72 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkInsertAbort/schema=s1/size=1000/batch=1         	  345015	      1739 ns/op	    3176 B/op	      38 allocs/op
+BenchmarkInsertAbort/schema=s1/size=1000/batch=1         	  330158	      1741 ns/op	    3176 B/op	      38 allocs/op
+BenchmarkInsertAbort/schema=s1/size=1000/batch=100       	    5652	    110135 ns/op	  130936 B/op	    1707 allocs/op
+BenchmarkInsertAbort/schema=s1/size=1000/batch=100       	    5512	    110712 ns/op	  130944 B/op	    1708 allocs/op
+BenchmarkInsertAbort/schema=s1/size=100000/batch=1       	  258765	      4298 ns/op	    4088 B/op	      49 allocs/op
+BenchmarkInsertAbort/schema=s1/size=100000/batch=1       	  257445	      4153 ns/op	    4088 B/op	      49 allocs/op
+BenchmarkInsertAbort/schema=s1/size=100000/batch=100     	    3007	    283458 ns/op	  242096 B/op	    2729 allocs/op
+BenchmarkInsertAbort/schema=s1/size=100000/batch=100     	    3136	    283104 ns/op	  242094 B/op	    2729 allocs/op
+BenchmarkInsertAbort/schema=s3/size=1000/batch=1         	   63530	     14346 ns/op	   13406 B/op	     183 allocs/op
+BenchmarkInsertAbort/schema=s3/size=1000/batch=1         	   65125	     14419 ns/op	   13402 B/op	     183 allocs/op
+BenchmarkInsertAbort/schema=s3/size=1000/batch=100       	    1222	    767871 ns/op	  570191 B/op	    7752 allocs/op
+BenchmarkInsertAbort/schema=s3/size=1000/batch=100       	    1221	    766281 ns/op	  570208 B/op	    7753 allocs/op
+BenchmarkInsertAbort/schema=s3/size=100000/batch=1       	   40412	     25365 ns/op	   19013 B/op	     238 allocs/op
+BenchmarkInsertAbort/schema=s3/size=100000/batch=1       	   39765	     25236 ns/op	   19011 B/op	     238 allocs/op
+BenchmarkInsertAbort/schema=s3/size=100000/batch=100     	     541	   1854338 ns/op	 1021370 B/op	   12087 allocs/op
+BenchmarkInsertAbort/schema=s3/size=100000/batch=100     	     512	   1776765 ns/op	 1021507 B/op	   12088 allocs/op
+BenchmarkInsertAbort/schema=wide/size=1000/batch=1       	   16476	     65193 ns/op	   45971 B/op	     504 allocs/op
+BenchmarkInsertAbort/schema=wide/size=1000/batch=1       	   16408	     63753 ns/op	   45970 B/op	     504 allocs/op
+BenchmarkInsertAbort/schema=wide/size=1000/batch=100     	     354	   3248712 ns/op	 1643394 B/op	   22033 allocs/op
+BenchmarkInsertAbort/schema=wide/size=1000/batch=100     	     356	   3217250 ns/op	 1643354 B/op	   22033 allocs/op
+BenchmarkInsertAbort/schema=wide/size=100000/batch=1     	   12870	     44500 ns/op	   68170 B/op	     636 allocs/op
+BenchmarkInsertAbort/schema=wide/size=100000/batch=1     	   13090	     43145 ns/op	   68178 B/op	     636 allocs/op
+BenchmarkInsertAbort/schema=wide/size=100000/batch=100   	     170	   3291088 ns/op	 3585263 B/op	   33250 allocs/op
+BenchmarkInsertAbort/schema=wide/size=100000/batch=100   	     171	   3280060 ns/op	 3585664 B/op	   33251 allocs/op
+BenchmarkInsertAbort/schema=func/size=1000/batch=1       	  102261	      5432 ns/op	    8650 B/op	     114 allocs/op
+BenchmarkInsertAbort/schema=func/size=1000/batch=1       	  112464	      5706 ns/op	    8650 B/op	     114 allocs/op
+BenchmarkInsertAbort/schema=func/size=1000/batch=100     	    1831	    295838 ns/op	  357324 B/op	    4430 allocs/op
+BenchmarkInsertAbort/schema=func/size=1000/batch=100     	    1832	    294747 ns/op	  357314 B/op	    4430 allocs/op
+BenchmarkInsertAbort/schema=func/size=100000/batch=1     	   68158	      8108 ns/op	   11291 B/op	     146 allocs/op
+BenchmarkInsertAbort/schema=func/size=100000/batch=1     	   72046	      7731 ns/op	   11291 B/op	     146 allocs/op
+BenchmarkInsertAbort/schema=func/size=100000/batch=100   	     907	    626179 ns/op	  662158 B/op	    7221 allocs/op
+BenchmarkInsertAbort/schema=func/size=100000/batch=100   	     912	    622606 ns/op	  662153 B/op	    7221 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkInsertDeleteCommit/schema=s1/keys=uuid/size=1000         	  117308	      5132 ns/op	    8344 B/op	     115 allocs/op
+BenchmarkInsertDeleteCommit/schema=s1/keys=uuid/size=1000         	  116090	      5195 ns/op	    8344 B/op	     115 allocs/op
+BenchmarkInsertDeleteCommit/schema=s1/keys=uuid/size=100000       	   97269	     10514 ns/op	   10140 B/op	     135 allocs/op
+BenchmarkInsertDeleteCommit/schema=s1/keys=uuid/size=100000       	   99174	     10663 ns/op	   10141 B/op	     135 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=uuid/size=1000         	   19144	     34446 ns/op	   31322 B/op	     453 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=uuid/size=1000         	   19352	     34755 ns/op	   31315 B/op	     453 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=uuid/size=100000       	   15350	     59361 ns/op	   41807 B/op	     561 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=uuid/size=100000       	   14164	     66016 ns/op	   41845 B/op	     562 allocs/op
+BenchmarkInsertDeleteCommit/schema=wide/keys=uuid/size=1000       	    5727	    171167 ns/op	  103969 B/op	    1261 allocs/op
+BenchmarkInsertDeleteCommit/schema=wide/keys=uuid/size=1000       	    5232	    178334 ns/op	  103953 B/op	    1261 allocs/op
+BenchmarkInsertDeleteCommit/schema=wide/keys=uuid/size=100000     	    5518	    109058 ns/op	  146248 B/op	    1527 allocs/op
+BenchmarkInsertDeleteCommit/schema=wide/keys=uuid/size=100000     	    5766	    102038 ns/op	  146234 B/op	    1528 allocs/op
+BenchmarkInsertDeleteCommit/schema=func/keys=uuid/size=1000       	   39669	     14313 ns/op	   21354 B/op	     313 allocs/op
+BenchmarkInsertDeleteCommit/schema=func/keys=uuid/size=1000       	   39620	     14325 ns/op	   21354 B/op	     313 allocs/op
+BenchmarkInsertDeleteCommit/schema=func/keys=uuid/size=100000     	   25465	     21584 ns/op	   26809 B/op	     380 allocs/op
+BenchmarkInsertDeleteCommit/schema=func/keys=uuid/size=100000     	   29144	     19428 ns/op	   26809 B/op	     380 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=seq/size=1000          	   36025	     15508 ns/op	   24949 B/op	     395 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=seq/size=1000          	   36150	     15467 ns/op	   24950 B/op	     395 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=seq/size=100000        	   32972	     17499 ns/op	   26614 B/op	     420 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=seq/size=100000        	   36835	     15356 ns/op	   26613 B/op	     420 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=path/size=1000         	   31000	     18657 ns/op	   31083 B/op	     488 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=path/size=1000         	   31143	     18576 ns/op	   31088 B/op	     488 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=path/size=100000       	   28216	     20682 ns/op	   34047 B/op	     522 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=path/size=100000       	   28352	     20227 ns/op	   34047 B/op	     522 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkInsertDeleteCommitManyTables 	   22962	     26252 ns/op	   31353 B/op	     453 allocs/op
+BenchmarkInsertDeleteCommitManyTables 	   22952	     26183 ns/op	   31353 B/op	     453 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkUpdateCommit/schema=s3/size=1000/keys=same         	   38624	     15619 ns/op	   17224 B/op	     253 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=1000/keys=same         	   38635	     15671 ns/op	   17223 B/op	     253 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=1000/keys=moved        	   27759	     21836 ns/op	   18750 B/op	     273 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=1000/keys=moved        	   28040	     21820 ns/op	   18753 B/op	     273 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=100000/keys=same       	   29595	     33603 ns/op	   21720 B/op	     303 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=100000/keys=same       	   29595	     33191 ns/op	   21720 B/op	     303 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=100000/keys=moved      	   28039	     35516 ns/op	   23032 B/op	     319 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=100000/keys=moved      	   30331	     36901 ns/op	   21875 B/op	     305 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=1000/keys=same       	   10000	     52655 ns/op	   54626 B/op	     702 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=1000/keys=same       	   10000	     50216 ns/op	   54630 B/op	     702 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=1000/keys=moved      	   10000	     63783 ns/op	   59105 B/op	     760 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=1000/keys=moved      	   10000	     61075 ns/op	   59108 B/op	     760 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=100000/keys=same     	    8184	     72087 ns/op	   74329 B/op	     832 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=100000/keys=same     	    8703	     67823 ns/op	   74339 B/op	     832 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=100000/keys=moved    	    7569	     74684 ns/op	   74358 B/op	     831 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=100000/keys=moved    	    7341	     74934 ns/op	   74360 B/op	     831 allocs/op
+BenchmarkUpdateCommit/schema=func/size=1000/keys=same       	   56799	      9781 ns/op	   10994 B/op	     165 allocs/op
+BenchmarkUpdateCommit/schema=func/size=1000/keys=same       	   57159	      9752 ns/op	   10994 B/op	     165 allocs/op
+BenchmarkUpdateCommit/schema=func/size=1000/keys=moved      	   48273	     11731 ns/op	   12745 B/op	     187 allocs/op
+BenchmarkUpdateCommit/schema=func/size=1000/keys=moved      	   48099	     11757 ns/op	   12771 B/op	     188 allocs/op
+BenchmarkUpdateCommit/schema=func/size=100000/keys=same     	   32460	     15481 ns/op	   13673 B/op	     198 allocs/op
+BenchmarkUpdateCommit/schema=func/size=100000/keys=same     	   39342	     14532 ns/op	   13674 B/op	     198 allocs/op
+BenchmarkUpdateCommit/schema=func/size=100000/keys=moved    	   32372	     15538 ns/op	   13700 B/op	     198 allocs/op
+BenchmarkUpdateCommit/schema=func/size=100000/keys=moved    	   39024	     14552 ns/op	   13702 B/op	     198 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkDeleteAbort/schema=s3/size=1000         	   58503	     10364 ns/op	   13752 B/op	     187 allocs/op
+BenchmarkDeleteAbort/schema=s3/size=1000         	   59076	     10347 ns/op	   13752 B/op	     187 allocs/op
+BenchmarkDeleteAbort/schema=s3/size=100000       	   35158	     25389 ns/op	   18285 B/op	     238 allocs/op
+BenchmarkDeleteAbort/schema=s3/size=100000       	   35414	     26618 ns/op	   18285 B/op	     238 allocs/op
+BenchmarkDeleteAbort/schema=wide/size=1000       	   10000	     83373 ns/op	   44650 B/op	     507 allocs/op
+BenchmarkDeleteAbort/schema=wide/size=1000       	   10000	     77701 ns/op	   44650 B/op	     507 allocs/op
+BenchmarkDeleteAbort/schema=wide/size=100000     	   12201	     51645 ns/op	   64539 B/op	     641 allocs/op
+BenchmarkDeleteAbort/schema=wide/size=100000     	   12236	     51876 ns/op	   64539 B/op	     641 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkDeleteAllAbort/schema=s3/size=1000         	    1124	    545785 ns/op	  541403 B/op	    6824 allocs/op
+BenchmarkDeleteAllAbort/schema=s3/size=1000         	    1060	    547445 ns/op	  541385 B/op	    6823 allocs/op
+BenchmarkDeleteAllAbort/schema=s3/size=100000       	     507	   1746733 ns/op	  922321 B/op	   10595 allocs/op
+BenchmarkDeleteAllAbort/schema=s3/size=100000       	     498	   1805277 ns/op	  922471 B/op	   10597 allocs/op
+BenchmarkDeleteAllAbort/schema=wide/size=1000       	     331	   3182707 ns/op	 1345828 B/op	   17998 allocs/op
+BenchmarkDeleteAllAbort/schema=wide/size=1000       	     330	   3201497 ns/op	 1345722 B/op	   17997 allocs/op
+BenchmarkDeleteAllAbort/schema=wide/size=100000     	     176	   3332459 ns/op	 2873606 B/op	   27864 allocs/op
+BenchmarkDeleteAllAbort/schema=wide/size=100000     	     180	   3238949 ns/op	 2873024 B/op	   27863 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkDeletePrefixAbort/schema=s3/size=1000         	    1989	    309931 ns/op	  260076 B/op	    4138 allocs/op
+BenchmarkDeletePrefixAbort/schema=s3/size=1000         	    2068	    310198 ns/op	  260074 B/op	    4138 allocs/op
+BenchmarkDeletePrefixAbort/schema=s3/size=100000       	    1066	    635169 ns/op	  443024 B/op	    5960 allocs/op
+BenchmarkDeletePrefixAbort/schema=s3/size=100000       	    1058	    638780 ns/op	  443011 B/op	    5960 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkChanges/n=10/dup=false         	    5614	    162527 ns/op	  122557 B/op	    1424 allocs/op
+BenchmarkChanges/n=10/dup=false         	    5827	    160452 ns/op	  122557 B/op	    1424 allocs/op
+BenchmarkChanges/n=10/dup=true          	    3253	    257024 ns/op	  181426 B/op	    2216 allocs/op
+BenchmarkChanges/n=10/dup=true          	    3268	    259203 ns/op	  181426 B/op	    2216 allocs/op
+BenchmarkChanges/n=1000/dup=false       	      50	  16312342 ns/op	 8882879 B/op	  103585 allocs/op
+BenchmarkChanges/n=1000/dup=false       	      50	  16232206 ns/op	 8882864 B/op	  103585 allocs/op
+BenchmarkChanges/n=1000/dup=true        	      28	  28464236 ns/op	14459676 B/op	  184275 allocs/op
+BenchmarkChanges/n=1000/dup=true        	      28	  27527183 ns/op	14465524 B/op	  184275 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkReadYourWrites/size=1000         	    9754	     69374 ns/op	   93360 B/op	    1269 allocs/op
+BenchmarkReadYourWrites/size=1000         	    9879	     69698 ns/op	   93360 B/op	    1269 allocs/op
+BenchmarkReadYourWrites/size=100000       	    5430	    168121 ns/op	  125789 B/op	    1542 allocs/op
+BenchmarkReadYourWrites/size=100000       	    5574	    167949 ns/op	  125789 B/op	    1542 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkIterateInWriteTxn/size=1000         	   33235	     18134 ns/op	   22557 B/op	     313 allocs/op
+BenchmarkIterateInWriteTxn/size=1000         	   33099	     18193 ns/op	   22554 B/op	     313 allocs/op
+BenchmarkIterateInWriteTxn/size=100000       	   12670	     60206 ns/op	   32147 B/op	     422 allocs/op
+BenchmarkIterateInWriteTxn/size=100000       	   12861	     59108 ns/op	   32148 B/op	     422 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkTxnSnapshot 	    8157	     71049 ns/op	   75047 B/op	     762 allocs/op
+BenchmarkTxnSnapshot 	    8503	     83581 ns/op	   75044 B/op	     762 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkBulkLoad/schema=s3/size=1000         	     151	   3966051 ns/op	         0.5790 gc-ms	      2413 heapB/row	        31.95 heapobjs/row	 3875395 B/op	   59026 allocs/op
+BenchmarkBulkLoad/schema=s3/size=1000         	     147	   4022682 ns/op	         0.6040 gc-ms	      2413 heapB/row	        31.95 heapobjs/row	 3875408 B/op	   59026 allocs/op
+BenchmarkBulkLoad/schema=s3/size=100000       	       1	 899236428 ns/op	       366.0 gc-ms	      2443 heapB/row	        32.16 heapobjs/row	444496992 B/op	 7083179 allocs/op
+BenchmarkBulkLoad/schema=s3/size=100000       	       1	 900407734 ns/op	       374.2 gc-ms	      2443 heapB/row	        32.16 heapobjs/row	444333104 B/op	 7083166 allocs/op
+BenchmarkBulkLoad/schema=wide/size=1000       	      54	  14585253 ns/op	         1.493 gc-ms	      6478 heapB/row	        86.11 heapobjs/row	10169482 B/op	  157910 allocs/op
+BenchmarkBulkLoad/schema=wide/size=1000       	      52	  14362885 ns/op	         1.525 gc-ms	      6478 heapB/row	        86.13 heapobjs/row	10171135 B/op	  157910 allocs/op
+BenchmarkBulkLoad/schema=wide/size=100000     	       1	3194175690 ns/op	      1118 gc-ms	      6529 heapB/row	        86.40 heapobjs/row	1117757392 B/op	18354359 allocs/op
+BenchmarkBulkLoad/schema=wide/size=100000     	       1	3191801098 ns/op	      1106 gc-ms	      6529 heapB/row	        86.39 heapobjs/row	1118324608 B/op	18354398 allocs/op
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkNewMemDB/schema=s1         	 1000000	       571.7 ns/op	    1384 B/op	      22 allocs/op
+BenchmarkNewMemDB/schema=s1         	 1000000	       571.5 ns/op	    1384 B/op	      22 allocs/op
+BenchmarkNewMemDB/schema=wide       	   84163	      7144 ns/op	   18557 B/op	     287 allocs/op
+BenchmarkNewMemDB/schema=wide       	   85351	      7060 ns/op	   18571 B/op	     287 allocs/op
+BenchmarkNewMemDB/schema=s50        	    4402	    138414 ns/op	  319873 B/op	    5215 allocs/op
+BenchmarkNewMemDB/schema=s50        	    4398	    138340 ns/op	  319549 B/op	    5213 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkTxn/read         	11956230	        49.57 ns/op	     128 B/op	       2 allocs/op
+BenchmarkTxn/read         	12353954	        49.33 ns/op	     128 B/op	       2 allocs/op
+BenchmarkTxn/write-commit-empty         	 7812918	        77.50 ns/op	     144 B/op	       3 allocs/op
+BenchmarkTxn/write-commit-empty         	 7783014	        77.71 ns/op	     144 B/op	       3 allocs/op
+BenchmarkTxn/write-abort-empty          	11331753	        53.80 ns/op	     128 B/op	       2 allocs/op
+BenchmarkTxn/write-abort-empty          	11294530	        53.81 ns/op	     128 B/op	       2 allocs/op
+BenchmarkTxn/write-commit-defer         	 5879816	       102.9 ns/op	     168 B/op	       5 allocs/op
+BenchmarkTxn/write-commit-defer         	 5930076	       102.4 ns/op	     168 B/op	       5 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkSnapshot 	35461528	        18.11 ns/op	      32 B/op	       1 allocs/op
+BenchmarkSnapshot 	35734677	        18.13 ns/op	      32 B/op	       1 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkSnapshotWrite 	   39148	     27506 ns/op	   19901 B/op	     271 allocs/op
+BenchmarkSnapshotWrite 	   39967	     28159 ns/op	   19896 B/op	     271 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkIndexer/FromObject/StringFieldIndex         	10605602	        56.60 ns/op	      96 B/op	       2 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex         	10644397	        56.50 ns/op	      96 B/op	       2 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex-lowercase         	 5616438	       105.2 ns/op	      59 B/op	       3 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex-lowercase         	 5771688	       105.1 ns/op	      59 B/op	       3 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex-pointer           	10507197	        57.13 ns/op	      16 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex-pointer           	10544598	        57.00 ns/op	      16 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/IntFieldIndex                      	14196817	        42.06 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/IntFieldIndex                      	14194530	        42.06 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/UintFieldIndex                     	13433343	        44.27 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/UintFieldIndex                     	13419159	        44.27 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/BoolFieldIndex                     	14121880	        42.47 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/BoolFieldIndex                     	14146224	        42.47 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/UUIDFieldIndex                     	 5806786	       104.0 ns/op	      48 B/op	       2 allocs/op
+BenchmarkIndexer/FromObject/UUIDFieldIndex                     	 5767366	       103.6 ns/op	      48 B/op	       2 allocs/op
+BenchmarkIndexer/FromObject/FieldSetIndex                      	11916463	        50.40 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/FieldSetIndex                      	11912614	        50.41 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/ConditionalIndex                   	100000000	         6.050 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/ConditionalIndex                   	100000000	         6.049 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/CompoundIndex                      	 2841524	       211.5 ns/op	     196 B/op	       8 allocs/op
+BenchmarkIndexer/FromObject/CompoundIndex                      	 2845962	       210.9 ns/op	     196 B/op	       8 allocs/op
+BenchmarkIndexer/FromObject/StringSliceFieldIndex              	 4656114	       129.4 ns/op	     128 B/op	       7 allocs/op
+BenchmarkIndexer/FromObject/StringSliceFieldIndex              	 4631790	       129.6 ns/op	     128 B/op	       7 allocs/op
+BenchmarkIndexer/FromObject/StringMapFieldIndex                	 2307559	       262.8 ns/op	     224 B/op	      10 allocs/op
+BenchmarkIndexer/FromObject/StringMapFieldIndex                	 2300372	       261.1 ns/op	     224 B/op	      10 allocs/op
+BenchmarkIndexer/FromObject/CompoundMultiIndex                 	 1000000	       541.2 ns/op	     828 B/op	      27 allocs/op
+BenchmarkIndexer/FromObject/CompoundMultiIndex                 	 1000000	       541.0 ns/op	     828 B/op	      27 allocs/op
+BenchmarkIndexer/FromArgs/StringFieldIndex                     	18317196	        32.86 ns/op	      96 B/op	       2 allocs/op
+BenchmarkIndexer/FromArgs/StringFieldIndex                     	18033356	        32.87 ns/op	      96 B/op	       2 allocs/op
+BenchmarkIndexer/FromArgs/StringFieldIndex-lowercase           	 8179549	        73.68 ns/op	      59 B/op	       3 allocs/op
+BenchmarkIndexer/FromArgs/StringFieldIndex-lowercase           	 8197086	        73.59 ns/op	      59 B/op	       3 allocs/op
+BenchmarkIndexer/FromArgs/IntFieldIndex                        	63410139	         9.541 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/IntFieldIndex                        	63510141	         9.508 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/UintFieldIndex                       	60933778	        10.01 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/UintFieldIndex                       	61118728	        10.17 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/BoolFieldIndex                       	96916363	         6.301 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/BoolFieldIndex                       	96533745	         6.297 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/UUIDFieldIndex-string                	 9109868	        66.04 ns/op	      48 B/op	       2 allocs/op
+BenchmarkIndexer/FromArgs/UUIDFieldIndex-string                	 9135630	        66.11 ns/op	      48 B/op	       2 allocs/op
+BenchmarkIndexer/FromArgs/StringMapFieldIndex                  	13179751	        45.78 ns/op	      40 B/op	       3 allocs/op
+BenchmarkIndexer/FromArgs/StringMapFieldIndex                  	13138866	        45.93 ns/op	      40 B/op	       3 allocs/op
+BenchmarkIndexer/FromArgs/CompoundIndex                        	 4137336	       145.5 ns/op	     244 B/op	      11 allocs/op
+BenchmarkIndexer/FromArgs/CompoundIndex                        	 4133391	       145.6 ns/op	     244 B/op	      11 allocs/op
+BenchmarkIndexer/FromArgs/CompoundMultiIndex                   	 3789648	       158.2 ns/op	     252 B/op	      12 allocs/op
+BenchmarkIndexer/FromArgs/CompoundMultiIndex                   	 3815926	       157.6 ns/op	     252 B/op	      12 allocs/op
+BenchmarkIndexer/PrefixFromArgs/UUIDFieldIndex                 	11227977	        53.28 ns/op	      40 B/op	       3 allocs/op
+BenchmarkIndexer/PrefixFromArgs/UUIDFieldIndex                 	11263758	        53.47 ns/op	      40 B/op	       3 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkFirst/schema=s3/keys=uuid/size=1000/hit         	 3327093	       181.0 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=1000/hit         	 3330850	       180.5 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=1000/miss        	 3527926	       170.1 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=1000/miss        	 3533372	       169.8 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=100000/hit       	  797616	       747.9 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=100000/hit       	  803894	       739.6 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=100000/miss      	 2867026	       363.4 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=100000/miss      	 2855299	       393.8 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=1000/hit          	 3864826	       263.0 ns/op	     112 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=1000/hit          	 4049452	       251.2 ns/op	     112 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=1000/miss         	 6301392	       167.7 ns/op	     112 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=1000/miss         	 6697956	       169.1 ns/op	     112 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=100000/hit        	  978808	       613.4 ns/op	     112 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=100000/hit        	  963396	       603.8 ns/op	     112 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=100000/miss       	 6396316	       184.2 ns/op	     112 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=100000/miss       	 6319749	       186.6 ns/op	     112 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=1000/hit         	 3674991	       177.2 ns/op	     152 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=1000/hit         	 3708841	       176.6 ns/op	     152 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=1000/miss        	 5020904	       243.3 ns/op	     152 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=1000/miss        	 4803098	       241.1 ns/op	     151 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=100000/hit       	  903792	       653.8 ns/op	     152 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=100000/hit       	  913189	       644.8 ns/op	     152 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=100000/miss      	 5071488	       125.6 ns/op	     152 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=100000/miss      	 4755328	       118.8 ns/op	     151 B/op	       5 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=1000/hit       	 3895006	       148.3 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=1000/hit       	 3907965	       147.9 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=1000/miss      	 4204966	       139.8 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=1000/miss      	 4149321	       142.8 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=100000/hit     	  608211	       832.6 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=100000/hit     	  714798	       831.0 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=100000/miss    	 2466790	       231.0 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=100000/miss    	 2448666	       232.8 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=1000/hit       	 4078206	       133.2 ns/op	     128 B/op	       4 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=1000/hit       	 4073420	       133.6 ns/op	     128 B/op	       4 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=1000/miss      	 4439497	       123.2 ns/op	     128 B/op	       4 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=1000/miss      	 4451798	       122.8 ns/op	     128 B/op	       4 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=100000/hit     	  750676	       794.3 ns/op	     128 B/op	       4 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=100000/hit     	  751917	       793.1 ns/op	     128 B/op	       4 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=100000/miss    	 2994267	       193.7 ns/op	     128 B/op	       4 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=100000/miss    	 2942827	       195.5 ns/op	     128 B/op	       4 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkTxnFirst/size=1000         	 2454733	       244.9 ns/op	     304 B/op	       7 allocs/op
+BenchmarkTxnFirst/size=1000         	 2433014	       249.0 ns/op	     304 B/op	       7 allocs/op
+BenchmarkTxnFirst/size=100000       	  638179	       929.9 ns/op	     304 B/op	       7 allocs/op
+BenchmarkTxnFirst/size=100000       	  645505	       922.1 ns/op	     304 B/op	       7 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkFirstIndex/nonunique-string         	 1449205	       397.4 ns/op	     217 B/op	       8 allocs/op
+BenchmarkFirstIndex/nonunique-string         	 1449022	       397.7 ns/op	     217 B/op	       8 allocs/op
+BenchmarkFirstIndex/unique-lowercase         	  808170	       726.1 ns/op	     151 B/op	       6 allocs/op
+BenchmarkFirstIndex/unique-lowercase         	  800450	       732.1 ns/op	     151 B/op	       6 allocs/op
+BenchmarkFirstIndex/id-prefix                	  688104	       857.2 ns/op	     152 B/op	       7 allocs/op
+BenchmarkFirstIndex/id-prefix                	  689402	       855.8 ns/op	     152 B/op	       7 allocs/op
+BenchmarkFirstIndex/string-slice             	 1087665	       539.5 ns/op	     280 B/op	       9 allocs/op
+BenchmarkFirstIndex/string-slice             	 1083228	       539.9 ns/op	     280 B/op	       9 allocs/op
+BenchmarkFirstIndex/string-map               	  922510	       641.8 ns/op	     358 B/op	      10 allocs/op
+BenchmarkFirstIndex/string-map               	  920127	       643.2 ns/op	     358 B/op	      10 allocs/op
+BenchmarkFirstIndex/int                      	 1929300	       302.5 ns/op	     249 B/op	       6 allocs/op
+BenchmarkFirstIndex/int                      	 1937184	       301.1 ns/op	     249 B/op	       6 allocs/op
+BenchmarkFirstIndex/uint                     	  890481	       664.1 ns/op	     120 B/op	       6 allocs/op
+BenchmarkFirstIndex/uint                     	  906049	       655.6 ns/op	     120 B/op	       6 allocs/op
+BenchmarkFirstIndex/bool                     	 2123775	       281.3 ns/op	     249 B/op	       7 allocs/op
+BenchmarkFirstIndex/bool                     	 1973574	       293.8 ns/op	     249 B/op	       7 allocs/op
+BenchmarkFirstIndex/uuid                     	  770799	       771.4 ns/op	     128 B/op	       5 allocs/op
+BenchmarkFirstIndex/uuid                     	  775254	       767.6 ns/op	     128 B/op	       5 allocs/op
+BenchmarkFirstIndex/compound                 	 1185024	       494.8 ns/op	     321 B/op	      13 allocs/op
+BenchmarkFirstIndex/compound                 	 1183662	       496.2 ns/op	     321 B/op	      13 allocs/op
+BenchmarkFirstIndex/compound-prefix          	 1331418	       437.8 ns/op	     249 B/op	      10 allocs/op
+BenchmarkFirstIndex/compound-prefix          	 1328367	       438.0 ns/op	     249 B/op	      10 allocs/op
+BenchmarkFirstIndex/no-args                  	 4665062	       417.1 ns/op	     232 B/op	       5 allocs/op
+BenchmarkFirstIndex/no-args                  	 4537567	       434.3 ns/op	     232 B/op	       5 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkLast/unique         	  763574	       776.2 ns/op	     176 B/op	       5 allocs/op
+BenchmarkLast/unique         	  758577	       779.2 ns/op	     176 B/op	       5 allocs/op
+BenchmarkLast/nonunique-string         	 1164355	       592.5 ns/op	     488 B/op	      10 allocs/op
+BenchmarkLast/nonunique-string         	 1082910	       551.7 ns/op	     488 B/op	      10 allocs/op
+BenchmarkLast/int                      	 1468627	       880.3 ns/op	     463 B/op	       9 allocs/op
+BenchmarkLast/int                      	 1561716	       969.0 ns/op	     463 B/op	       9 allocs/op
+BenchmarkLast/no-args                  	 1455384	       903.0 ns/op	     616 B/op	       8 allocs/op
+BenchmarkLast/no-args                  	 1532294	       983.1 ns/op	     616 B/op	       8 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkGetOne/size=1000         	 2390512	       251.7 ns/op	     264 B/op	       9 allocs/op
+BenchmarkGetOne/size=1000         	 2386645	       251.4 ns/op	     264 B/op	       9 allocs/op
+BenchmarkGetOne/size=100000       	  659656	       898.4 ns/op	     264 B/op	       9 allocs/op
+BenchmarkGetOne/size=100000       	  656331	       896.3 ns/op	     264 B/op	       9 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkIterate/scan=all/keys=uuid/size=1000         	  113798	      5692 ns/op	      1000 rows/op	     280 B/op	       7 allocs/op
+BenchmarkIterate/scan=all/keys=uuid/size=1000         	  113838	      5668 ns/op	      1000 rows/op	     280 B/op	       7 allocs/op
+BenchmarkIterate/scan=all/keys=seq/size=1000          	  159201	      4001 ns/op	      1000 rows/op	     280 B/op	       7 allocs/op
+BenchmarkIterate/scan=all/keys=seq/size=1000          	  159679	      3974 ns/op	      1000 rows/op	     280 B/op	       7 allocs/op
+BenchmarkIterate/scan=all/keys=path/size=1000         	  136444	      4582 ns/op	      1000 rows/op	     280 B/op	       7 allocs/op
+BenchmarkIterate/scan=all/keys=path/size=1000         	  134667	      4576 ns/op	      1000 rows/op	     280 B/op	       7 allocs/op
+BenchmarkIterate/scan=group/size=1000                 	  740510	      1061 ns/op	       100.0 rows/op	     360 B/op	      12 allocs/op
+BenchmarkIterate/scan=group/size=1000                 	  748730	      1066 ns/op	       100.0 rows/op	     360 B/op	      12 allocs/op
+BenchmarkIterate/scan=group-reverse/size=1000         	  320558	      2189 ns/op	       100.0 rows/op	     625 B/op	      15 allocs/op
+BenchmarkIterate/scan=group-reverse/size=1000         	  306273	      2306 ns/op	       100.0 rows/op	     625 B/op	      15 allocs/op
+BenchmarkIterate/scan=tags/size=1000                  	  979801	       770.9 ns/op	        69.00 rows/op	     286 B/op	      11 allocs/op
+BenchmarkIterate/scan=tags/size=1000                  	  964509	       819.7 ns/op	        69.00 rows/op	     286 B/op	      11 allocs/op
+BenchmarkIterate/scan=all-reverse/size=1000           	   36380	     16864 ns/op	      1000 rows/op	     680 B/op	      11 allocs/op
+BenchmarkIterate/scan=all-reverse/size=1000           	   36151	     16923 ns/op	      1000 rows/op	     680 B/op	      11 allocs/op
+BenchmarkIterate/scan=all/keys=uuid/size=100000       	      70	   8372786 ns/op	    100000 rows/op	     472 B/op	       8 allocs/op
+BenchmarkIterate/scan=all/keys=uuid/size=100000       	      69	   8504514 ns/op	    100000 rows/op	     472 B/op	       8 allocs/op
+BenchmarkIterate/scan=all/keys=seq/size=100000        	     103	   5746167 ns/op	    100000 rows/op	     472 B/op	       8 allocs/op
+BenchmarkIterate/scan=all/keys=seq/size=100000        	     103	   5737844 ns/op	    100000 rows/op	     472 B/op	       8 allocs/op
+BenchmarkIterate/scan=all/keys=path/size=100000       	      74	   7856042 ns/op	    100000 rows/op	     472 B/op	       8 allocs/op
+BenchmarkIterate/scan=all/keys=path/size=100000       	      74	   7842151 ns/op	    100000 rows/op	     472 B/op	       8 allocs/op
+BenchmarkIterate/scan=group/size=100000               	   60259	      9033 ns/op	       100.0 rows/op	     365 B/op	      12 allocs/op
+BenchmarkIterate/scan=group/size=100000               	   60332	      9016 ns/op	       100.0 rows/op	     365 B/op	      12 allocs/op
+BenchmarkIterate/scan=group-reverse/size=100000       	   32851	     16869 ns/op	       100.0 rows/op	     637 B/op	      16 allocs/op
+BenchmarkIterate/scan=group-reverse/size=100000       	   32785	     16879 ns/op	       100.0 rows/op	     637 B/op	      16 allocs/op
+BenchmarkIterate/scan=tags/size=100000                	     975	    599028 ns/op	      6361 rows/op	     528 B/op	      13 allocs/op
+BenchmarkIterate/scan=tags/size=100000                	     975	    598597 ns/op	      6361 rows/op	     528 B/op	      13 allocs/op
+BenchmarkIterate/scan=all-reverse/size=100000         	      31	  18468946 ns/op	    100000 rows/op	     680 B/op	      11 allocs/op
+BenchmarkIterate/scan=all-reverse/size=100000         	      31	  18487925 ns/op	    100000 rows/op	     680 B/op	      11 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkLowerBound/int         	 1328156	       808.6 ns/op	     486 B/op	       9 allocs/op
+BenchmarkLowerBound/int         	 1191998	       595.1 ns/op	     486 B/op	       9 allocs/op
+BenchmarkLowerBound/int-reverse 	  974335	       767.2 ns/op	     608 B/op	      11 allocs/op
+BenchmarkLowerBound/int-reverse 	  903594	       733.7 ns/op	     608 B/op	      11 allocs/op
+BenchmarkLowerBound/uint        	  640464	       917.2 ns/op	     307 B/op	       9 allocs/op
+BenchmarkLowerBound/uint        	  641006	       917.3 ns/op	     307 B/op	       9 allocs/op
+BenchmarkLowerBound/string      	  323804	      1848 ns/op	     505 B/op	      11 allocs/op
+BenchmarkLowerBound/string      	  322988	      1853 ns/op	     505 B/op	      11 allocs/op
+BenchmarkLowerBound/string-reverse         	  224979	      2660 ns/op	     690 B/op	      13 allocs/op
+BenchmarkLowerBound/string-reverse         	  190280	      2666 ns/op	     690 B/op	      13 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkLongestPrefix/size=1000         	 3493598	       169.4 ns/op	     128 B/op	       4 allocs/op
+BenchmarkLongestPrefix/size=1000         	 3550071	       168.8 ns/op	     128 B/op	       4 allocs/op
+BenchmarkLongestPrefix/size=100000       	 2682986	       334.6 ns/op	     128 B/op	       4 allocs/op
+BenchmarkLongestPrefix/size=100000       	 2697603	       331.6 ns/op	     128 B/op	       4 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkFilterIterator 	   36103	     16309 ns/op	     365 B/op	      12 allocs/op
+BenchmarkFilterIterator 	   35744	     16410 ns/op	     365 B/op	      12 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkParallelTxnFirst/size=1000         	 2552796	       234.1 ns/op	     304 B/op	       7 allocs/op
+BenchmarkParallelTxnFirst/size=1000         	 2564812	       234.8 ns/op	     304 B/op	       7 allocs/op
+BenchmarkParallelTxnFirst/size=100000       	  634770	       930.6 ns/op	     304 B/op	       7 allocs/op
+BenchmarkParallelTxnFirst/size=100000       	  635373	       923.4 ns/op	     304 B/op	       7 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkParallelTxnFirstWithWriter 	  633614	       929.2 ns/op	     305 B/op	       7 allocs/op
+BenchmarkParallelTxnFirstWithWriter 	  630211	       929.9 ns/op	     305 B/op	       7 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkFirstWatch/size=1000         	 3315068	       180.7 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirstWatch/size=1000         	 3300046	       180.9 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirstWatch/size=100000       	  797184	       745.6 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirstWatch/size=100000       	  801790	       738.3 ns/op	     176 B/op	       5 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkGetWatchCh/size=1000         	 1741084	       344.8 ns/op	     292 B/op	      11 allocs/op
+BenchmarkGetWatchCh/size=1000         	 1739468	       344.0 ns/op	     292 B/op	      11 allocs/op
+BenchmarkGetWatchCh/size=100000       	 1694827	       589.7 ns/op	     287 B/op	      11 allocs/op
+BenchmarkGetWatchCh/size=100000       	 1712696	       589.0 ns/op	     287 B/op	      11 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkWatchCycle/size=1000         	   38184	     15817 ns/op	   17527 B/op	     260 allocs/op
+BenchmarkWatchCycle/size=1000         	   33736	     16997 ns/op	   17527 B/op	     260 allocs/op
+BenchmarkWatchCycle/size=100000       	   29436	     32503 ns/op	   22024 B/op	     310 allocs/op
+BenchmarkWatchCycle/size=100000       	   29913	     33041 ns/op	   22025 B/op	     310 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkCommitNotify/size=1000/rows=100         	     867	    698076 ns/op	  696972 B/op	   10518 allocs/op
+BenchmarkCommitNotify/size=1000/rows=100         	     883	    701108 ns/op	  696971 B/op	   10518 allocs/op
+BenchmarkCommitNotify/size=100000/rows=100       	     576	   1681945 ns/op	 1186199 B/op	   14832 allocs/op
+BenchmarkCommitNotify/size=100000/rows=100       	     576	   1644131 ns/op	 1186201 B/op	   14832 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkWatchSetAdd 	  448568	      1363 ns/op	    2120 B/op	       7 allocs/op
+BenchmarkWatchSetAdd 	  446926	      1368 ns/op	    2120 B/op	       7 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkWatchSetWatchExpired/n=1         	 1000000	       533.6 ns/op	     256 B/op	       4 allocs/op
+BenchmarkWatchSetWatchExpired/n=1         	 1000000	       533.8 ns/op	     256 B/op	       4 allocs/op
+BenchmarkWatchSetWatchExpired/n=8         	  754982	       803.6 ns/op	     256 B/op	       4 allocs/op
+BenchmarkWatchSetWatchExpired/n=8         	  753687	       810.5 ns/op	     256 B/op	       4 allocs/op
+BenchmarkWatchSetWatchExpired/n=32        	  254202	      2336 ns/op	     256 B/op	       4 allocs/op
+BenchmarkWatchSetWatchExpired/n=32        	  251649	      2350 ns/op	     256 B/op	       4 allocs/op
+BenchmarkWatchSetWatchExpired/n=33        	  166556	      3569 ns/op	    1471 B/op	      14 allocs/op
+BenchmarkWatchSetWatchExpired/n=33        	  167187	      3550 ns/op	    1471 B/op	      14 allocs/op
+BenchmarkWatchSetWatchExpired/n=256       	   36597	     16359 ns/op	    3551 B/op	      27 allocs/op
+BenchmarkWatchSetWatchExpired/n=256       	   36640	     16401 ns/op	    3551 B/op	      27 allocs/op
+BenchmarkWatchSetWatchExpired/n=1024      	    9903	     60916 ns/op	   10848 B/op	      76 allocs/op
+BenchmarkWatchSetWatchExpired/n=1024      	    9906	     61054 ns/op	   10848 B/op	      76 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkWatchSetWatchCtxCancelled/n=1         	 6578619	        91.25 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=1         	 6561234	        91.54 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=8         	 2180055	       275.1 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=8         	 2180178	       275.2 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=32        	  457928	      1308 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=32        	  460669	      1305 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=33        	  580648	      4737 ns/op	     848 B/op	       8 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=33        	  587509	      4801 ns/op	     848 B/op	       8 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=256       	   25779	     22771 ns/op	    2928 B/op	      21 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=256       	   30684	     23188 ns/op	    2928 B/op	      21 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=1024      	   10000	     93839 ns/op	   10224 B/op	      69 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=1024      	   10000	     93126 ns/op	   10224 B/op	      69 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkWatchSetWatchCtxFired/n=1         	 9505339	        63.27 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=1         	 9450700	        63.39 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=8         	 2559566	       234.4 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=8         	 2559685	       234.4 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=32        	  482800	      1241 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=32        	  485692	      1236 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=33        	  193286	      3108 ns/op	     960 B/op	       9 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=33        	  189187	      3103 ns/op	     960 B/op	       9 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=256       	   31980	     18808 ns/op	    3046 B/op	      22 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=256       	   32281	     18517 ns/op	    3047 B/op	      22 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=1024      	    7773	     77724 ns/op	   10494 B/op	      71 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=1024      	    7680	     78411 ns/op	   10509 B/op	      71 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkWatchSetBlockThenFire/n=8         	  964777	       633.1 ns/op	     112 B/op	       1 allocs/op
+BenchmarkWatchSetBlockThenFire/n=8         	  961036	       640.4 ns/op	     112 B/op	       1 allocs/op
+BenchmarkWatchSetBlockThenFire/n=1024      	    7710	     77886 ns/op	   10653 B/op	      72 allocs/op
+BenchmarkWatchSetBlockThenFire/n=1024      	    7646	     78169 ns/op	   10629 B/op	      72 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkInsertAbort/schema=s1/size=1000/batch=1         	  340940	      1730 ns/op	    3176 B/op	      38 allocs/op
+BenchmarkInsertAbort/schema=s1/size=1000/batch=1         	  353575	      1732 ns/op	    3176 B/op	      38 allocs/op
+BenchmarkInsertAbort/schema=s1/size=1000/batch=100       	    5764	    109110 ns/op	  130937 B/op	    1707 allocs/op
+BenchmarkInsertAbort/schema=s1/size=1000/batch=100       	    5724	    109485 ns/op	  130937 B/op	    1707 allocs/op
+BenchmarkInsertAbort/schema=s1/size=100000/batch=1       	  265220	      4113 ns/op	    4088 B/op	      49 allocs/op
+BenchmarkInsertAbort/schema=s1/size=100000/batch=1       	  266216	      4141 ns/op	    4088 B/op	      49 allocs/op
+BenchmarkInsertAbort/schema=s1/size=100000/batch=100     	    3218	    294333 ns/op	  242092 B/op	    2729 allocs/op
+BenchmarkInsertAbort/schema=s1/size=100000/batch=100     	    3190	    285201 ns/op	  242090 B/op	    2729 allocs/op
+BenchmarkInsertAbort/schema=s3/size=1000/batch=1         	   66116	     15111 ns/op	   13404 B/op	     183 allocs/op
+BenchmarkInsertAbort/schema=s3/size=1000/batch=1         	   66058	     15099 ns/op	   13404 B/op	     183 allocs/op
+BenchmarkInsertAbort/schema=s3/size=1000/batch=100       	    1221	    769437 ns/op	  570208 B/op	    7753 allocs/op
+BenchmarkInsertAbort/schema=s3/size=1000/batch=100       	    1233	    772036 ns/op	  570191 B/op	    7752 allocs/op
+BenchmarkInsertAbort/schema=s3/size=100000/batch=1       	   41368	     25038 ns/op	   19015 B/op	     238 allocs/op
+BenchmarkInsertAbort/schema=s3/size=100000/batch=1       	   41450	     24898 ns/op	   19016 B/op	     238 allocs/op
+BenchmarkInsertAbort/schema=s3/size=100000/batch=100     	     554	   1949422 ns/op	 1021345 B/op	   12086 allocs/op
+BenchmarkInsertAbort/schema=s3/size=100000/batch=100     	     555	   1896122 ns/op	 1021344 B/op	   12086 allocs/op
+BenchmarkInsertAbort/schema=wide/size=1000/batch=1       	   16369	     64730 ns/op	   45963 B/op	     504 allocs/op
+BenchmarkInsertAbort/schema=wide/size=1000/batch=1       	   16705	     63343 ns/op	   45969 B/op	     504 allocs/op
+BenchmarkInsertAbort/schema=wide/size=1000/batch=100     	     355	   3292600 ns/op	 1643378 B/op	   22033 allocs/op
+BenchmarkInsertAbort/schema=wide/size=1000/batch=100     	     369	   3174180 ns/op	 1642787 B/op	   22025 allocs/op
+BenchmarkInsertAbort/schema=wide/size=100000/batch=1     	   11982	     48052 ns/op	   68156 B/op	     636 allocs/op
+BenchmarkInsertAbort/schema=wide/size=100000/batch=1     	   12837	     44059 ns/op	   68163 B/op	     636 allocs/op
+BenchmarkInsertAbort/schema=wide/size=100000/batch=100   	     168	   3364525 ns/op	 3585098 B/op	   33249 allocs/op
+BenchmarkInsertAbort/schema=wide/size=100000/batch=100   	     169	   3346870 ns/op	 3585006 B/op	   33249 allocs/op
+BenchmarkInsertAbort/schema=func/size=1000/batch=1       	  105849	      5560 ns/op	    8651 B/op	     114 allocs/op
+BenchmarkInsertAbort/schema=func/size=1000/batch=1       	  111121	      5638 ns/op	    8650 B/op	     114 allocs/op
+BenchmarkInsertAbort/schema=func/size=1000/batch=100     	    1810	    301599 ns/op	  357281 B/op	    4430 allocs/op
+BenchmarkInsertAbort/schema=func/size=1000/batch=100     	    1815	    298604 ns/op	  357291 B/op	    4430 allocs/op
+BenchmarkInsertAbort/schema=func/size=100000/batch=1     	   70177	      7928 ns/op	   11292 B/op	     146 allocs/op
+BenchmarkInsertAbort/schema=func/size=100000/batch=1     	   72192	      7730 ns/op	   11291 B/op	     146 allocs/op
+BenchmarkInsertAbort/schema=func/size=100000/batch=100   	     913	    622856 ns/op	  662152 B/op	    7221 allocs/op
+BenchmarkInsertAbort/schema=func/size=100000/batch=100   	     915	    622299 ns/op	  662154 B/op	    7221 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkInsertDeleteCommit/schema=s1/keys=uuid/size=1000         	  113278	      5166 ns/op	    8344 B/op	     115 allocs/op
+BenchmarkInsertDeleteCommit/schema=s1/keys=uuid/size=1000         	  116383	      5151 ns/op	    8343 B/op	     115 allocs/op
+BenchmarkInsertDeleteCommit/schema=s1/keys=uuid/size=100000       	  104415	     10869 ns/op	   10140 B/op	     135 allocs/op
+BenchmarkInsertDeleteCommit/schema=s1/keys=uuid/size=100000       	  108031	     11336 ns/op	   10141 B/op	     135 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=uuid/size=1000         	   19275	     34297 ns/op	   31318 B/op	     453 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=uuid/size=1000         	   19633	     34148 ns/op	   31307 B/op	     453 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=uuid/size=100000       	   15193	     61513 ns/op	   41804 B/op	     561 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=uuid/size=100000       	   14110	     67023 ns/op	   41845 B/op	     562 allocs/op
+BenchmarkInsertDeleteCommit/schema=wide/keys=uuid/size=1000       	    5764	    169402 ns/op	  103958 B/op	    1261 allocs/op
+BenchmarkInsertDeleteCommit/schema=wide/keys=uuid/size=1000       	    5830	    168849 ns/op	  103945 B/op	    1261 allocs/op
+BenchmarkInsertDeleteCommit/schema=wide/keys=uuid/size=100000     	    5784	    104706 ns/op	  146240 B/op	    1528 allocs/op
+BenchmarkInsertDeleteCommit/schema=wide/keys=uuid/size=100000     	    5769	    101007 ns/op	  146240 B/op	    1528 allocs/op
+BenchmarkInsertDeleteCommit/schema=func/keys=uuid/size=1000       	   40442	     14031 ns/op	   21354 B/op	     313 allocs/op
+BenchmarkInsertDeleteCommit/schema=func/keys=uuid/size=1000       	   40501	     14013 ns/op	   21353 B/op	     313 allocs/op
+BenchmarkInsertDeleteCommit/schema=func/keys=uuid/size=100000     	   26115	     21448 ns/op	   26809 B/op	     380 allocs/op
+BenchmarkInsertDeleteCommit/schema=func/keys=uuid/size=100000     	   29322	     19260 ns/op	   26809 B/op	     380 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=seq/size=1000          	   36277	     15301 ns/op	   24950 B/op	     395 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=seq/size=1000          	   36276	     15304 ns/op	   24950 B/op	     395 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=seq/size=100000        	   36075	     15865 ns/op	   26611 B/op	     420 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=seq/size=100000        	   38010	     14873 ns/op	   26617 B/op	     420 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=path/size=1000         	   31897	     18079 ns/op	   31081 B/op	     488 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=path/size=1000         	   31944	     18060 ns/op	   31081 B/op	     488 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=path/size=100000       	   21691	     23771 ns/op	   34056 B/op	     523 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=path/size=100000       	   28886	     20086 ns/op	   34050 B/op	     522 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkInsertDeleteCommitManyTables 	   22874	     26140 ns/op	   31353 B/op	     453 allocs/op
+BenchmarkInsertDeleteCommitManyTables 	   22737	     26305 ns/op	   31352 B/op	     453 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkUpdateCommit/schema=s3/size=1000/keys=same         	   39092	     15555 ns/op	   17223 B/op	     253 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=1000/keys=same         	   39024	     15524 ns/op	   17223 B/op	     253 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=1000/keys=moved        	   28120	     21712 ns/op	   18763 B/op	     273 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=1000/keys=moved        	   27877	     21760 ns/op	   18760 B/op	     273 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=100000/keys=same       	   29960	     32642 ns/op	   21721 B/op	     303 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=100000/keys=same       	   29439	     33868 ns/op	   21720 B/op	     303 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=100000/keys=moved      	   28794	     35393 ns/op	   23051 B/op	     319 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=100000/keys=moved      	   30680	     33269 ns/op	   21846 B/op	     305 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=1000/keys=same       	   12051	     59197 ns/op	   54626 B/op	     702 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=1000/keys=same       	   10000	     51434 ns/op	   54627 B/op	     702 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=1000/keys=moved      	    9927	     60909 ns/op	   59114 B/op	     760 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=1000/keys=moved      	   10000	     58769 ns/op	   59081 B/op	     760 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=100000/keys=same     	    8420	     69125 ns/op	   74320 B/op	     832 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=100000/keys=same     	    8916	     65727 ns/op	   74329 B/op	     832 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=100000/keys=moved    	    7657	     74230 ns/op	   74359 B/op	     831 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=100000/keys=moved    	    7437	     75631 ns/op	   74357 B/op	     831 allocs/op
+BenchmarkUpdateCommit/schema=func/size=1000/keys=same       	   57249	      9665 ns/op	   10994 B/op	     165 allocs/op
+BenchmarkUpdateCommit/schema=func/size=1000/keys=same       	   57560	      9670 ns/op	   10994 B/op	     165 allocs/op
+BenchmarkUpdateCommit/schema=func/size=1000/keys=moved      	   48559	     11615 ns/op	   12758 B/op	     188 allocs/op
+BenchmarkUpdateCommit/schema=func/size=1000/keys=moved      	   48589	     11613 ns/op	   12760 B/op	     188 allocs/op
+BenchmarkUpdateCommit/schema=func/size=100000/keys=same     	   32720	     15385 ns/op	   13673 B/op	     198 allocs/op
+BenchmarkUpdateCommit/schema=func/size=100000/keys=same     	   39666	     14435 ns/op	   13673 B/op	     198 allocs/op
+BenchmarkUpdateCommit/schema=func/size=100000/keys=moved    	   32419	     15514 ns/op	   13700 B/op	     198 allocs/op
+BenchmarkUpdateCommit/schema=func/size=100000/keys=moved    	   39309	     14466 ns/op	   13701 B/op	     198 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkDeleteAbort/schema=s3/size=1000         	   57765	     10333 ns/op	   13752 B/op	     187 allocs/op
+BenchmarkDeleteAbort/schema=s3/size=1000         	   58773	     10224 ns/op	   13753 B/op	     187 allocs/op
+BenchmarkDeleteAbort/schema=s3/size=100000       	   35439	     25612 ns/op	   18285 B/op	     238 allocs/op
+BenchmarkDeleteAbort/schema=s3/size=100000       	   35568	     25344 ns/op	   18285 B/op	     238 allocs/op
+BenchmarkDeleteAbort/schema=wide/size=1000       	   10000	     80751 ns/op	   44643 B/op	     507 allocs/op
+BenchmarkDeleteAbort/schema=wide/size=1000       	   10000	     80533 ns/op	   44643 B/op	     507 allocs/op
+BenchmarkDeleteAbort/schema=wide/size=100000     	   12411	     56763 ns/op	   64533 B/op	     641 allocs/op
+BenchmarkDeleteAbort/schema=wide/size=100000     	   10000	     50614 ns/op	   64524 B/op	     641 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkDeleteAllAbort/schema=s3/size=1000         	    1117	    541822 ns/op	  541411 B/op	    6823 allocs/op
+BenchmarkDeleteAllAbort/schema=s3/size=1000         	    1138	    542864 ns/op	  541366 B/op	    6823 allocs/op
+BenchmarkDeleteAllAbort/schema=s3/size=100000       	     504	   1758905 ns/op	  922320 B/op	   10595 allocs/op
+BenchmarkDeleteAllAbort/schema=s3/size=100000       	     500	   1821327 ns/op	  922408 B/op	   10596 allocs/op
+BenchmarkDeleteAllAbort/schema=wide/size=1000       	     334	   3119942 ns/op	 1345344 B/op	   17997 allocs/op
+BenchmarkDeleteAllAbort/schema=wide/size=1000       	     334	   3110328 ns/op	 1345340 B/op	   17997 allocs/op
+BenchmarkDeleteAllAbort/schema=wide/size=100000     	     178	   3276967 ns/op	 2872856 B/op	   27862 allocs/op
+BenchmarkDeleteAllAbort/schema=wide/size=100000     	     180	   3228091 ns/op	 2872725 B/op	   27863 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkDeletePrefixAbort/schema=s3/size=1000         	    2052	    306677 ns/op	  260076 B/op	    4138 allocs/op
+BenchmarkDeletePrefixAbort/schema=s3/size=1000         	    2028	    306344 ns/op	  260074 B/op	    4138 allocs/op
+BenchmarkDeletePrefixAbort/schema=s3/size=100000       	    1100	    635563 ns/op	  443038 B/op	    5960 allocs/op
+BenchmarkDeletePrefixAbort/schema=s3/size=100000       	    1111	    626159 ns/op	  443017 B/op	    5960 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkChanges/n=10/dup=false         	    5565	    150063 ns/op	  122557 B/op	    1424 allocs/op
+BenchmarkChanges/n=10/dup=false         	    5607	    166234 ns/op	  122557 B/op	    1424 allocs/op
+BenchmarkChanges/n=10/dup=true          	    3211	    267816 ns/op	  181426 B/op	    2216 allocs/op
+BenchmarkChanges/n=10/dup=true          	    3241	    260063 ns/op	  181426 B/op	    2216 allocs/op
+BenchmarkChanges/n=1000/dup=false       	      49	  16115924 ns/op	 8882881 B/op	  103585 allocs/op
+BenchmarkChanges/n=1000/dup=false       	      49	  16499530 ns/op	 8882887 B/op	  103585 allocs/op
+BenchmarkChanges/n=1000/dup=true        	      28	  27942341 ns/op	14459690 B/op	  184275 allocs/op
+BenchmarkChanges/n=1000/dup=true        	      28	  28441040 ns/op	14463602 B/op	  184275 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkReadYourWrites/size=1000         	   10000	     69025 ns/op	   93360 B/op	    1269 allocs/op
+BenchmarkReadYourWrites/size=1000         	   10000	     68992 ns/op	   93360 B/op	    1269 allocs/op
+BenchmarkReadYourWrites/size=100000       	    5731	    158492 ns/op	  125789 B/op	    1542 allocs/op
+BenchmarkReadYourWrites/size=100000       	    5938	    160817 ns/op	  125789 B/op	    1542 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkIterateInWriteTxn/size=1000         	   32875	     18198 ns/op	   22548 B/op	     313 allocs/op
+BenchmarkIterateInWriteTxn/size=1000         	   32896	     18190 ns/op	   22548 B/op	     313 allocs/op
+BenchmarkIterateInWriteTxn/size=100000       	   12472	     60293 ns/op	   32147 B/op	     422 allocs/op
+BenchmarkIterateInWriteTxn/size=100000       	   12891	     59071 ns/op	   32148 B/op	     422 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkTxnSnapshot 	    8409	     81219 ns/op	   75031 B/op	     762 allocs/op
+BenchmarkTxnSnapshot 	    9002	     98353 ns/op	   75046 B/op	     762 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkBulkLoad/schema=s3/size=1000         	     154	   3897610 ns/op	         0.5750 gc-ms	      2413 heapB/row	        31.95 heapobjs/row	 3875413 B/op	   59026 allocs/op
+BenchmarkBulkLoad/schema=s3/size=1000         	     152	   3915903 ns/op	         0.5800 gc-ms	      2413 heapB/row	        31.95 heapobjs/row	 3875409 B/op	   59026 allocs/op
+BenchmarkBulkLoad/schema=s3/size=100000       	       1	 895268043 ns/op	       354.6 gc-ms	      2443 heapB/row	        32.16 heapobjs/row	444553744 B/op	 7083183 allocs/op
+BenchmarkBulkLoad/schema=s3/size=100000       	       1	 892026135 ns/op	       370.3 gc-ms	      2443 heapB/row	        32.15 heapobjs/row	444551072 B/op	 7083182 allocs/op
+BenchmarkBulkLoad/schema=wide/size=1000       	      54	  14217680 ns/op	         1.440 gc-ms	      6478 heapB/row	        86.13 heapobjs/row	10168301 B/op	  157910 allocs/op
+BenchmarkBulkLoad/schema=wide/size=1000       	      55	  14343883 ns/op	         1.463 gc-ms	      6479 heapB/row	        86.17 heapobjs/row	10174026 B/op	  157909 allocs/op
+BenchmarkBulkLoad/schema=wide/size=100000     	       1	3236916077 ns/op	      1084 gc-ms	      6528 heapB/row	        86.37 heapobjs/row	1117805264 B/op	18354369 allocs/op
+BenchmarkBulkLoad/schema=wide/size=100000     	       1	3180583943 ns/op	      1083 gc-ms	      6529 heapB/row	        86.39 heapobjs/row	1118156352 B/op	18354372 allocs/op
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkNewMemDB/schema=s1         	 1000000	       580.6 ns/op	    1384 B/op	      22 allocs/op
+BenchmarkNewMemDB/schema=s1         	 1000000	       580.1 ns/op	    1384 B/op	      22 allocs/op
+BenchmarkNewMemDB/schema=wide       	   81730	      7351 ns/op	   18530 B/op	     286 allocs/op
+BenchmarkNewMemDB/schema=wide       	   82422	      7299 ns/op	   18589 B/op	     287 allocs/op
+BenchmarkNewMemDB/schema=s50        	    4246	    144062 ns/op	  320035 B/op	    5218 allocs/op
+BenchmarkNewMemDB/schema=s50        	    4222	    144119 ns/op	  319933 B/op	    5216 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkTxn/read         	12314206	        49.65 ns/op	     128 B/op	       2 allocs/op
+BenchmarkTxn/read         	12313651	        49.68 ns/op	     128 B/op	       2 allocs/op
+BenchmarkTxn/write-commit-empty         	 7797565	        77.86 ns/op	     144 B/op	       3 allocs/op
+BenchmarkTxn/write-commit-empty         	 7758033	        77.90 ns/op	     144 B/op	       3 allocs/op
+BenchmarkTxn/write-abort-empty          	11252404	        54.03 ns/op	     128 B/op	       2 allocs/op
+BenchmarkTxn/write-abort-empty          	11300473	        53.94 ns/op	     128 B/op	       2 allocs/op
+BenchmarkTxn/write-commit-defer         	 5837864	       104.4 ns/op	     168 B/op	       5 allocs/op
+BenchmarkTxn/write-commit-defer         	 5549924	       106.2 ns/op	     168 B/op	       5 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkSnapshot 	35361114	        18.07 ns/op	      32 B/op	       1 allocs/op
+BenchmarkSnapshot 	34644686	        18.00 ns/op	      32 B/op	       1 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkSnapshotWrite 	   38769	     26906 ns/op	   19903 B/op	     271 allocs/op
+BenchmarkSnapshotWrite 	   39873	     29914 ns/op	   19896 B/op	     271 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkIndexer/FromObject/StringFieldIndex         	10568322	        57.05 ns/op	      96 B/op	       2 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex         	10567036	        56.77 ns/op	      96 B/op	       2 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex-lowercase         	 5996564	       100.3 ns/op	      59 B/op	       3 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex-lowercase         	 5980107	       100.7 ns/op	      59 B/op	       3 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex-pointer           	10338450	        58.18 ns/op	      16 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex-pointer           	10384929	        57.89 ns/op	      16 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/IntFieldIndex                      	14151884	        42.05 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/IntFieldIndex                      	14180684	        42.05 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/UintFieldIndex                     	13431554	        44.26 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/UintFieldIndex                     	13421661	        44.31 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/BoolFieldIndex                     	14117367	        42.55 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/BoolFieldIndex                     	14101599	        42.56 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/UUIDFieldIndex                     	 5800508	       103.5 ns/op	      48 B/op	       2 allocs/op
+BenchmarkIndexer/FromObject/UUIDFieldIndex                     	 5813248	       103.5 ns/op	      48 B/op	       2 allocs/op
+BenchmarkIndexer/FromObject/FieldSetIndex                      	11845005	        50.70 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/FieldSetIndex                      	11841838	        50.69 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/ConditionalIndex                   	95599537	         6.353 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/ConditionalIndex                   	95300569	         6.357 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/CompoundIndex                      	 2846337	       211.1 ns/op	     196 B/op	       8 allocs/op
+BenchmarkIndexer/FromObject/CompoundIndex                      	 2846668	       210.9 ns/op	     196 B/op	       8 allocs/op
+BenchmarkIndexer/FromObject/StringSliceFieldIndex              	 4535616	       132.6 ns/op	     128 B/op	       7 allocs/op
+BenchmarkIndexer/FromObject/StringSliceFieldIndex              	 4527652	       133.1 ns/op	     128 B/op	       7 allocs/op
+BenchmarkIndexer/FromObject/StringMapFieldIndex                	 2385588	       250.3 ns/op	     224 B/op	      10 allocs/op
+BenchmarkIndexer/FromObject/StringMapFieldIndex                	 2393618	       249.9 ns/op	     224 B/op	      10 allocs/op
+BenchmarkIndexer/FromObject/CompoundMultiIndex                 	 1000000	       526.6 ns/op	     828 B/op	      27 allocs/op
+BenchmarkIndexer/FromObject/CompoundMultiIndex                 	 1000000	       525.4 ns/op	     828 B/op	      27 allocs/op
+BenchmarkIndexer/FromArgs/StringFieldIndex                     	18214371	        33.09 ns/op	      96 B/op	       2 allocs/op
+BenchmarkIndexer/FromArgs/StringFieldIndex                     	18178922	        33.14 ns/op	      96 B/op	       2 allocs/op
+BenchmarkIndexer/FromArgs/StringFieldIndex-lowercase           	 8243907	        73.16 ns/op	      59 B/op	       3 allocs/op
+BenchmarkIndexer/FromArgs/StringFieldIndex-lowercase           	 8266578	        73.01 ns/op	      59 B/op	       3 allocs/op
+BenchmarkIndexer/FromArgs/IntFieldIndex                        	59703738	        10.20 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/IntFieldIndex                        	59576919	        10.21 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/UintFieldIndex                       	56572429	        10.67 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/UintFieldIndex                       	56669815	        10.66 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/BoolFieldIndex                       	96017528	         6.494 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/BoolFieldIndex                       	93266804	         6.532 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/UUIDFieldIndex-string                	 8984019	        67.71 ns/op	      48 B/op	       2 allocs/op
+BenchmarkIndexer/FromArgs/UUIDFieldIndex-string                	 8855553	        67.93 ns/op	      48 B/op	       2 allocs/op
+BenchmarkIndexer/FromArgs/StringMapFieldIndex                  	12522423	        48.00 ns/op	      40 B/op	       3 allocs/op
+BenchmarkIndexer/FromArgs/StringMapFieldIndex                  	12508320	        47.98 ns/op	      40 B/op	       3 allocs/op
+BenchmarkIndexer/FromArgs/CompoundIndex                        	 4077218	       146.6 ns/op	     244 B/op	      11 allocs/op
+BenchmarkIndexer/FromArgs/CompoundIndex                        	 4098642	       146.9 ns/op	     244 B/op	      11 allocs/op
+BenchmarkIndexer/FromArgs/CompoundMultiIndex                   	 3717168	       160.8 ns/op	     252 B/op	      12 allocs/op
+BenchmarkIndexer/FromArgs/CompoundMultiIndex                   	 3746887	       161.6 ns/op	     252 B/op	      12 allocs/op
+BenchmarkIndexer/PrefixFromArgs/UUIDFieldIndex                 	11246217	        52.94 ns/op	      40 B/op	       3 allocs/op
+BenchmarkIndexer/PrefixFromArgs/UUIDFieldIndex                 	11941149	        49.95 ns/op	      40 B/op	       3 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkFirst/schema=s3/keys=uuid/size=1000/hit         	 3233299	       185.0 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=1000/hit         	 3243882	       186.1 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=1000/miss        	 3443060	       173.8 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=1000/miss        	 3449014	       174.2 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=100000/hit       	  808798	       740.8 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=100000/hit       	  802891	       743.1 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=100000/miss      	 2916261	       353.4 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=100000/miss      	 2921540	       362.9 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=1000/hit          	 3825337	       271.5 ns/op	     112 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=1000/hit          	 3886872	       270.7 ns/op	     112 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=1000/miss         	 6274129	       168.1 ns/op	     112 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=1000/miss         	 6599517	       169.8 ns/op	     112 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=100000/hit        	  998936	       587.3 ns/op	     112 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=100000/hit        	 1002104	       586.2 ns/op	     112 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=100000/miss       	 6310436	       187.7 ns/op	     112 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=100000/miss       	 6341805	       187.9 ns/op	     112 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=1000/hit         	 3600114	       176.7 ns/op	     151 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=1000/hit         	 3652993	       178.7 ns/op	     152 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=1000/miss        	 4896410	       242.9 ns/op	     152 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=1000/miss        	 4847409	       245.0 ns/op	     151 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=100000/hit       	  836728	       705.9 ns/op	     152 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=100000/hit       	  853284	       690.6 ns/op	     152 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=100000/miss      	 4764961	       122.1 ns/op	     151 B/op	       5 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=100000/miss      	 4906758	       127.8 ns/op	     151 B/op	       5 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=1000/hit       	 3902103	       148.7 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=1000/hit       	 3853288	       149.0 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=1000/miss      	 4097641	       142.0 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=1000/miss      	 4214746	       141.2 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=100000/hit     	  594764	       855.3 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=100000/hit     	  695352	       857.2 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=100000/miss    	 2460453	       233.0 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=100000/miss    	 2487110	       229.5 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=1000/hit       	 4068950	       135.0 ns/op	     128 B/op	       4 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=1000/hit       	 4088132	       135.0 ns/op	     128 B/op	       4 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=1000/miss      	 4417779	       123.9 ns/op	     128 B/op	       4 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=1000/miss      	 4436822	       123.1 ns/op	     128 B/op	       4 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=100000/hit     	  762445	       781.0 ns/op	     128 B/op	       4 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=100000/hit     	  760669	       782.3 ns/op	     128 B/op	       4 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=100000/miss    	 3028314	       191.2 ns/op	     128 B/op	       4 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=100000/miss    	 2984523	       191.0 ns/op	     128 B/op	       4 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkTxnFirst/size=1000         	 2482231	       242.9 ns/op	     304 B/op	       7 allocs/op
+BenchmarkTxnFirst/size=1000         	 2476780	       241.6 ns/op	     304 B/op	       7 allocs/op
+BenchmarkTxnFirst/size=100000       	  644012	       922.7 ns/op	     304 B/op	       7 allocs/op
+BenchmarkTxnFirst/size=100000       	  649392	       915.6 ns/op	     304 B/op	       7 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkFirstIndex/nonunique-string         	 1419942	       408.5 ns/op	     217 B/op	       8 allocs/op
+BenchmarkFirstIndex/nonunique-string         	 1413321	       410.4 ns/op	     217 B/op	       8 allocs/op
+BenchmarkFirstIndex/unique-lowercase         	  807962	       725.7 ns/op	     151 B/op	       6 allocs/op
+BenchmarkFirstIndex/unique-lowercase         	  812721	       721.2 ns/op	     151 B/op	       6 allocs/op
+BenchmarkFirstIndex/id-prefix                	  683787	       862.2 ns/op	     152 B/op	       7 allocs/op
+BenchmarkFirstIndex/id-prefix                	  692808	       853.4 ns/op	     152 B/op	       7 allocs/op
+BenchmarkFirstIndex/string-slice             	 1063348	       552.5 ns/op	     280 B/op	       9 allocs/op
+BenchmarkFirstIndex/string-slice             	 1064626	       551.9 ns/op	     280 B/op	       9 allocs/op
+BenchmarkFirstIndex/string-map               	  924013	       641.3 ns/op	     358 B/op	      10 allocs/op
+BenchmarkFirstIndex/string-map               	  924523	       640.7 ns/op	     358 B/op	      10 allocs/op
+BenchmarkFirstIndex/int                      	 1906244	       306.9 ns/op	     249 B/op	       6 allocs/op
+BenchmarkFirstIndex/int                      	 1905517	       306.9 ns/op	     249 B/op	       6 allocs/op
+BenchmarkFirstIndex/uint                     	  880228	       670.3 ns/op	     120 B/op	       6 allocs/op
+BenchmarkFirstIndex/uint                     	  897292	       660.8 ns/op	     120 B/op	       6 allocs/op
+BenchmarkFirstIndex/bool                     	 2094154	       279.6 ns/op	     249 B/op	       7 allocs/op
+BenchmarkFirstIndex/bool                     	 2087524	       280.3 ns/op	     249 B/op	       7 allocs/op
+BenchmarkFirstIndex/uuid                     	  779277	       762.5 ns/op	     128 B/op	       5 allocs/op
+BenchmarkFirstIndex/uuid                     	  781052	       761.1 ns/op	     128 B/op	       5 allocs/op
+BenchmarkFirstIndex/compound                 	 1172860	       500.9 ns/op	     321 B/op	      13 allocs/op
+BenchmarkFirstIndex/compound                 	 1171274	       503.0 ns/op	     321 B/op	      13 allocs/op
+BenchmarkFirstIndex/compound-prefix          	 1212448	       478.4 ns/op	     249 B/op	      10 allocs/op
+BenchmarkFirstIndex/compound-prefix          	 1267434	       459.8 ns/op	     249 B/op	      10 allocs/op
+BenchmarkFirstIndex/no-args                  	 4909646	       408.3 ns/op	     232 B/op	       5 allocs/op
+BenchmarkFirstIndex/no-args                  	 4727805	       421.9 ns/op	     232 B/op	       5 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkLast/unique         	  760766	       772.7 ns/op	     176 B/op	       5 allocs/op
+BenchmarkLast/unique         	  758676	       774.7 ns/op	     176 B/op	       5 allocs/op
+BenchmarkLast/nonunique-string         	 1084407	       536.7 ns/op	     488 B/op	      10 allocs/op
+BenchmarkLast/nonunique-string         	  964784	       584.4 ns/op	     488 B/op	      10 allocs/op
+BenchmarkLast/int                      	 1480813	       901.7 ns/op	     463 B/op	       9 allocs/op
+BenchmarkLast/int                      	 1476705	       910.3 ns/op	     463 B/op	       9 allocs/op
+BenchmarkLast/no-args                  	 1879266	       970.2 ns/op	     616 B/op	       8 allocs/op
+BenchmarkLast/no-args                  	 1420674	       927.6 ns/op	     616 B/op	       8 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkGetOne/size=1000         	 2341286	       256.1 ns/op	     264 B/op	       9 allocs/op
+BenchmarkGetOne/size=1000         	 2345480	       256.4 ns/op	     264 B/op	       9 allocs/op
+BenchmarkGetOne/size=100000       	  666780	       891.1 ns/op	     264 B/op	       9 allocs/op
+BenchmarkGetOne/size=100000       	  671452	       882.2 ns/op	     264 B/op	       9 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkIterate/scan=all/keys=uuid/size=1000         	  113084	      5710 ns/op	      1000 rows/op	     280 B/op	       7 allocs/op
+BenchmarkIterate/scan=all/keys=uuid/size=1000         	  114244	      5682 ns/op	      1000 rows/op	     280 B/op	       7 allocs/op
+BenchmarkIterate/scan=all/keys=seq/size=1000          	  155025	      3990 ns/op	      1000 rows/op	     280 B/op	       7 allocs/op
+BenchmarkIterate/scan=all/keys=seq/size=1000          	  158244	      4009 ns/op	      1000 rows/op	     280 B/op	       7 allocs/op
+BenchmarkIterate/scan=all/keys=path/size=1000         	  135658	      4593 ns/op	      1000 rows/op	     280 B/op	       7 allocs/op
+BenchmarkIterate/scan=all/keys=path/size=1000         	  135585	      4580 ns/op	      1000 rows/op	     280 B/op	       7 allocs/op
+BenchmarkIterate/scan=group/size=1000                 	  731485	      1064 ns/op	       100.0 rows/op	     360 B/op	      12 allocs/op
+BenchmarkIterate/scan=group/size=1000                 	  738564	      1064 ns/op	       100.0 rows/op	     360 B/op	      12 allocs/op
+BenchmarkIterate/scan=group-reverse/size=1000         	  308804	      2225 ns/op	       100.0 rows/op	     625 B/op	      15 allocs/op
+BenchmarkIterate/scan=group-reverse/size=1000         	  310404	      2353 ns/op	       100.0 rows/op	     625 B/op	      15 allocs/op
+BenchmarkIterate/scan=tags/size=1000                  	  965970	       815.6 ns/op	        69.00 rows/op	     286 B/op	      11 allocs/op
+BenchmarkIterate/scan=tags/size=1000                  	  967245	       816.0 ns/op	        20.00 rows/op	     286 B/op	      11 allocs/op
+BenchmarkIterate/scan=all-reverse/size=1000           	   35286	     17402 ns/op	      1000 rows/op	     680 B/op	      11 allocs/op
+BenchmarkIterate/scan=all-reverse/size=1000           	   35300	     17491 ns/op	      1000 rows/op	     680 B/op	      11 allocs/op
+BenchmarkIterate/scan=all/keys=uuid/size=100000       	      56	   9057320 ns/op	    100000 rows/op	     472 B/op	       8 allocs/op
+BenchmarkIterate/scan=all/keys=uuid/size=100000       	      66	   8943588 ns/op	    100000 rows/op	     472 B/op	       8 allocs/op
+BenchmarkIterate/scan=all/keys=seq/size=100000        	     100	   5874362 ns/op	    100000 rows/op	     472 B/op	       8 allocs/op
+BenchmarkIterate/scan=all/keys=seq/size=100000        	     100	   5870172 ns/op	    100000 rows/op	     472 B/op	       8 allocs/op
+BenchmarkIterate/scan=all/keys=path/size=100000       	      73	   7927945 ns/op	    100000 rows/op	     472 B/op	       8 allocs/op
+BenchmarkIterate/scan=all/keys=path/size=100000       	      74	   7884437 ns/op	    100000 rows/op	     472 B/op	       8 allocs/op
+BenchmarkIterate/scan=group/size=100000               	   58954	      9310 ns/op	       100.0 rows/op	     365 B/op	      12 allocs/op
+BenchmarkIterate/scan=group/size=100000               	   59072	      9313 ns/op	       100.0 rows/op	     365 B/op	      12 allocs/op
+BenchmarkIterate/scan=group-reverse/size=100000       	   32121	     17391 ns/op	       100.0 rows/op	     637 B/op	      16 allocs/op
+BenchmarkIterate/scan=group-reverse/size=100000       	   32163	     17346 ns/op	       100.0 rows/op	     637 B/op	      16 allocs/op
+BenchmarkIterate/scan=tags/size=100000                	     957	    612530 ns/op	      3960 rows/op	     528 B/op	      13 allocs/op
+BenchmarkIterate/scan=tags/size=100000                	     957	    612400 ns/op	      3960 rows/op	     528 B/op	      13 allocs/op
+BenchmarkIterate/scan=all-reverse/size=100000         	      30	  19462641 ns/op	    100000 rows/op	     680 B/op	      11 allocs/op
+BenchmarkIterate/scan=all-reverse/size=100000         	      30	  19516875 ns/op	    100000 rows/op	     680 B/op	      11 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkLowerBound/int         	 1294723	       733.7 ns/op	     486 B/op	       9 allocs/op
+BenchmarkLowerBound/int         	 1297480	       737.3 ns/op	     486 B/op	       9 allocs/op
+BenchmarkLowerBound/int-reverse 	  941152	       745.6 ns/op	     608 B/op	      11 allocs/op
+BenchmarkLowerBound/int-reverse 	  954997	       910.8 ns/op	     608 B/op	      11 allocs/op
+BenchmarkLowerBound/uint        	  615958	       948.2 ns/op	     307 B/op	       9 allocs/op
+BenchmarkLowerBound/uint        	  622572	       932.7 ns/op	     307 B/op	       9 allocs/op
+BenchmarkLowerBound/string      	  315111	      1892 ns/op	     505 B/op	      11 allocs/op
+BenchmarkLowerBound/string      	  314475	      1895 ns/op	     505 B/op	      11 allocs/op
+BenchmarkLowerBound/string-reverse         	  219663	      2711 ns/op	     690 B/op	      13 allocs/op
+BenchmarkLowerBound/string-reverse         	  184717	      2714 ns/op	     690 B/op	      13 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkLongestPrefix/size=1000         	 3494790	       172.9 ns/op	     128 B/op	       4 allocs/op
+BenchmarkLongestPrefix/size=1000         	 3345540	       179.9 ns/op	     128 B/op	       4 allocs/op
+BenchmarkLongestPrefix/size=100000       	 2598884	       344.4 ns/op	     128 B/op	       4 allocs/op
+BenchmarkLongestPrefix/size=100000       	 2589200	       343.0 ns/op	     128 B/op	       4 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkFilterIterator 	   35706	     16457 ns/op	     365 B/op	      12 allocs/op
+BenchmarkFilterIterator 	   35515	     16551 ns/op	     365 B/op	      12 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkParallelTxnFirst/size=1000         	 2470611	       244.6 ns/op	     304 B/op	       7 allocs/op
+BenchmarkParallelTxnFirst/size=1000         	 2453971	       243.8 ns/op	     304 B/op	       7 allocs/op
+BenchmarkParallelTxnFirst/size=100000       	  618262	       934.9 ns/op	     304 B/op	       7 allocs/op
+BenchmarkParallelTxnFirst/size=100000       	  621510	       936.4 ns/op	     304 B/op	       7 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkParallelTxnFirstWithWriter 	  636403	       927.0 ns/op	     305 B/op	       7 allocs/op
+BenchmarkParallelTxnFirstWithWriter 	  637767	       924.1 ns/op	     305 B/op	       7 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkFirstWatch/size=1000         	 3241455	       185.2 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirstWatch/size=1000         	 3253988	       185.1 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirstWatch/size=100000       	  800601	       747.3 ns/op	     176 B/op	       5 allocs/op
+BenchmarkFirstWatch/size=100000       	  802322	       741.0 ns/op	     176 B/op	       5 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkGetWatchCh/size=1000         	 1674993	       357.4 ns/op	     292 B/op	      11 allocs/op
+BenchmarkGetWatchCh/size=1000         	 1686758	       355.6 ns/op	     292 B/op	      11 allocs/op
+BenchmarkGetWatchCh/size=100000       	 1508802	       647.7 ns/op	     287 B/op	      11 allocs/op
+BenchmarkGetWatchCh/size=100000       	 1500571	       654.5 ns/op	     287 B/op	      11 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkWatchCycle/size=1000         	   37582	     15993 ns/op	   17527 B/op	     260 allocs/op
+BenchmarkWatchCycle/size=1000         	   37810	     15951 ns/op	   17527 B/op	     260 allocs/op
+BenchmarkWatchCycle/size=100000       	   30036	     32722 ns/op	   22025 B/op	     310 allocs/op
+BenchmarkWatchCycle/size=100000       	   29481	     33404 ns/op	   22024 B/op	     310 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkCommitNotify/size=1000/rows=100         	     883	    701269 ns/op	  696970 B/op	   10518 allocs/op
+BenchmarkCommitNotify/size=1000/rows=100         	     861	    704566 ns/op	  696972 B/op	   10518 allocs/op
+BenchmarkCommitNotify/size=100000/rows=100       	     555	   1706498 ns/op	 1186198 B/op	   14832 allocs/op
+BenchmarkCommitNotify/size=100000/rows=100       	     562	   1650690 ns/op	 1186196 B/op	   14832 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkWatchSetAdd 	  453111	      1365 ns/op	    2120 B/op	       7 allocs/op
+BenchmarkWatchSetAdd 	  448164	      1365 ns/op	    2120 B/op	       7 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkWatchSetWatchExpired/n=1         	 1000000	       519.4 ns/op	     256 B/op	       4 allocs/op
+BenchmarkWatchSetWatchExpired/n=1         	 1000000	       519.5 ns/op	     256 B/op	       4 allocs/op
+BenchmarkWatchSetWatchExpired/n=8         	  748411	       803.8 ns/op	     256 B/op	       4 allocs/op
+BenchmarkWatchSetWatchExpired/n=8         	  754947	       810.3 ns/op	     256 B/op	       4 allocs/op
+BenchmarkWatchSetWatchExpired/n=32        	  249686	      2347 ns/op	     256 B/op	       4 allocs/op
+BenchmarkWatchSetWatchExpired/n=32        	  255646	      2342 ns/op	     256 B/op	       4 allocs/op
+BenchmarkWatchSetWatchExpired/n=33        	  171369	      3465 ns/op	    1471 B/op	      14 allocs/op
+BenchmarkWatchSetWatchExpired/n=33        	  172802	      3472 ns/op	    1471 B/op	      14 allocs/op
+BenchmarkWatchSetWatchExpired/n=256       	   36672	     16301 ns/op	    3551 B/op	      27 allocs/op
+BenchmarkWatchSetWatchExpired/n=256       	   36542	     16351 ns/op	    3551 B/op	      27 allocs/op
+BenchmarkWatchSetWatchExpired/n=1024      	    9429	     61336 ns/op	   10848 B/op	      76 allocs/op
+BenchmarkWatchSetWatchExpired/n=1024      	    9492	     61745 ns/op	   10848 B/op	      76 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkWatchSetWatchCtxCancelled/n=1         	 6424498	        92.84 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=1         	 6484018	        92.40 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=8         	 2183082	       274.5 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=8         	 2185796	       274.4 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=32        	  462742	      1300 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=32        	  455617	      1322 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=33        	  640994	      4670 ns/op	     848 B/op	       8 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=33        	  598678	      4821 ns/op	     848 B/op	       8 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=256       	   28938	     22259 ns/op	    2928 B/op	      21 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=256       	   26410	     23049 ns/op	    2928 B/op	      21 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=1024      	   10000	     89635 ns/op	   10224 B/op	      69 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=1024      	   10000	     89731 ns/op	   10224 B/op	      69 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkWatchSetWatchCtxFired/n=1         	 9513541	        65.28 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=1         	 8781909	        68.33 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=8         	 2532324	       236.9 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=8         	 2534612	       236.6 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=32        	  481312	      1243 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=32        	  473977	      1265 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=33        	  194812	      3063 ns/op	     960 B/op	       9 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=33        	  196681	      3049 ns/op	     960 B/op	       9 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=256       	   32078	     18601 ns/op	    3049 B/op	      22 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=256       	   32160	     18642 ns/op	    3047 B/op	      22 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=1024      	    7562	     77455 ns/op	   10519 B/op	      71 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=1024      	    7369	     78431 ns/op	   10501 B/op	      71 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkWatchSetBlockThenFire/n=8         	  930396	       660.9 ns/op	     112 B/op	       1 allocs/op
+BenchmarkWatchSetBlockThenFire/n=8         	  869731	       660.2 ns/op	     112 B/op	       1 allocs/op
+BenchmarkWatchSetBlockThenFire/n=1024      	    7696	     76656 ns/op	   10633 B/op	      72 allocs/op
+BenchmarkWatchSetBlockThenFire/n=1024      	    7729	     76752 ns/op	   10636 B/op	      72 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkInsertAbort/schema=s1/size=1000/batch=1         	  336566	      1776 ns/op	    3176 B/op	      38 allocs/op
+BenchmarkInsertAbort/schema=s1/size=1000/batch=1         	  329610	      1772 ns/op	    3176 B/op	      38 allocs/op
+BenchmarkInsertAbort/schema=s1/size=1000/batch=100       	    5654	    110607 ns/op	  130937 B/op	    1707 allocs/op
+BenchmarkInsertAbort/schema=s1/size=1000/batch=100       	    5661	    110612 ns/op	  130932 B/op	    1707 allocs/op
+BenchmarkInsertAbort/schema=s1/size=100000/batch=1       	  257974	      4211 ns/op	    4088 B/op	      49 allocs/op
+BenchmarkInsertAbort/schema=s1/size=100000/batch=1       	  254067	      4369 ns/op	    4088 B/op	      49 allocs/op
+BenchmarkInsertAbort/schema=s1/size=100000/batch=100     	    2941	    296539 ns/op	  242098 B/op	    2729 allocs/op
+BenchmarkInsertAbort/schema=s1/size=100000/batch=100     	    2990	    295399 ns/op	  242099 B/op	    2729 allocs/op
+BenchmarkInsertAbort/schema=s3/size=1000/batch=1         	   65484	     14539 ns/op	   13401 B/op	     183 allocs/op
+BenchmarkInsertAbort/schema=s3/size=1000/batch=1         	   65100	     14477 ns/op	   13402 B/op	     183 allocs/op
+BenchmarkInsertAbort/schema=s3/size=1000/batch=100       	    1216	    776164 ns/op	  570288 B/op	    7753 allocs/op
+BenchmarkInsertAbort/schema=s3/size=1000/batch=100       	    1220	    772769 ns/op	  570214 B/op	    7753 allocs/op
+BenchmarkInsertAbort/schema=s3/size=100000/batch=1       	   44616	     24192 ns/op	   19014 B/op	     238 allocs/op
+BenchmarkInsertAbort/schema=s3/size=100000/batch=1       	   44380	     25487 ns/op	   19013 B/op	     238 allocs/op
+BenchmarkInsertAbort/schema=s3/size=100000/batch=100     	     573	   1918337 ns/op	 1021227 B/op	   12085 allocs/op
+BenchmarkInsertAbort/schema=s3/size=100000/batch=100     	     583	   1863356 ns/op	 1021222 B/op	   12085 allocs/op
+BenchmarkInsertAbort/schema=wide/size=1000/batch=1       	   15886	     66425 ns/op	   45979 B/op	     504 allocs/op
+BenchmarkInsertAbort/schema=wide/size=1000/batch=1       	   16633	     64044 ns/op	   45975 B/op	     504 allocs/op
+BenchmarkInsertAbort/schema=wide/size=1000/batch=100     	     380	   3186108 ns/op	 1643384 B/op	   22033 allocs/op
+BenchmarkInsertAbort/schema=wide/size=1000/batch=100     	     391	   3077748 ns/op	 1643465 B/op	   22034 allocs/op
+BenchmarkInsertAbort/schema=wide/size=100000/batch=1     	   13027	     43368 ns/op	   68174 B/op	     636 allocs/op
+BenchmarkInsertAbort/schema=wide/size=100000/batch=1     	   13029	     43085 ns/op	   68174 B/op	     636 allocs/op
+BenchmarkInsertAbort/schema=wide/size=100000/batch=100   	     170	   3274169 ns/op	 3585736 B/op	   33250 allocs/op
+BenchmarkInsertAbort/schema=wide/size=100000/batch=100   	     171	   3266983 ns/op	 3586133 B/op	   33251 allocs/op
+BenchmarkInsertAbort/schema=func/size=1000/batch=1       	   94759	      5945 ns/op	    8650 B/op	     114 allocs/op
+BenchmarkInsertAbort/schema=func/size=1000/batch=1       	  106153	      5524 ns/op	    8651 B/op	     114 allocs/op
+BenchmarkInsertAbort/schema=func/size=1000/batch=100     	    1778	    308445 ns/op	  357292 B/op	    4430 allocs/op
+BenchmarkInsertAbort/schema=func/size=1000/batch=100     	    1779	    307060 ns/op	  357294 B/op	    4430 allocs/op
+BenchmarkInsertAbort/schema=func/size=100000/batch=1     	   65704	      8418 ns/op	   11292 B/op	     146 allocs/op
+BenchmarkInsertAbort/schema=func/size=100000/batch=1     	   68954	      8104 ns/op	   11291 B/op	     146 allocs/op
+BenchmarkInsertAbort/schema=func/size=100000/batch=100   	     886	    645882 ns/op	  662166 B/op	    7221 allocs/op
+BenchmarkInsertAbort/schema=func/size=100000/batch=100   	     886	    646692 ns/op	  662166 B/op	    7221 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkInsertDeleteCommit/schema=s1/keys=uuid/size=1000         	  117616	      5191 ns/op	    8344 B/op	     115 allocs/op
+BenchmarkInsertDeleteCommit/schema=s1/keys=uuid/size=1000         	  117062	      5191 ns/op	    8344 B/op	     115 allocs/op
+BenchmarkInsertDeleteCommit/schema=s1/keys=uuid/size=100000       	  103040	     11049 ns/op	   10141 B/op	     135 allocs/op
+BenchmarkInsertDeleteCommit/schema=s1/keys=uuid/size=100000       	  103023	     11121 ns/op	   10141 B/op	     135 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=uuid/size=1000         	   19372	     34543 ns/op	   31315 B/op	     453 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=uuid/size=1000         	   19172	     34188 ns/op	   31321 B/op	     453 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=uuid/size=100000       	   15622	     58089 ns/op	   41813 B/op	     561 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=uuid/size=100000       	   14432	     63731 ns/op	   41841 B/op	     562 allocs/op
+BenchmarkInsertDeleteCommit/schema=wide/keys=uuid/size=1000       	    6411	    154345 ns/op	  103892 B/op	    1261 allocs/op
+BenchmarkInsertDeleteCommit/schema=wide/keys=uuid/size=1000       	    6436	    154638 ns/op	  103893 B/op	    1261 allocs/op
+BenchmarkInsertDeleteCommit/schema=wide/keys=uuid/size=100000     	    5763	    104793 ns/op	  146232 B/op	    1528 allocs/op
+BenchmarkInsertDeleteCommit/schema=wide/keys=uuid/size=100000     	    5778	    100828 ns/op	  146235 B/op	    1528 allocs/op
+BenchmarkInsertDeleteCommit/schema=func/keys=uuid/size=1000       	   39846	     14282 ns/op	   21354 B/op	     313 allocs/op
+BenchmarkInsertDeleteCommit/schema=func/keys=uuid/size=1000       	   39832	     14257 ns/op	   21354 B/op	     313 allocs/op
+BenchmarkInsertDeleteCommit/schema=func/keys=uuid/size=100000     	   26887	     20368 ns/op	   26808 B/op	     380 allocs/op
+BenchmarkInsertDeleteCommit/schema=func/keys=uuid/size=100000     	   29131	     19555 ns/op	   26809 B/op	     380 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=seq/size=1000          	   35721	     15654 ns/op	   24948 B/op	     395 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=seq/size=1000          	   35688	     15660 ns/op	   24948 B/op	     395 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=seq/size=100000        	   32814	     17606 ns/op	   26614 B/op	     420 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=seq/size=100000        	   36765	     15443 ns/op	   26613 B/op	     420 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=path/size=1000         	   31087	     18620 ns/op	   31086 B/op	     488 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=path/size=1000         	   31046	     18656 ns/op	   31084 B/op	     488 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=path/size=100000       	   23224	     21669 ns/op	   34042 B/op	     522 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=path/size=100000       	   28752	     20519 ns/op	   34049 B/op	     522 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkInsertDeleteCommitManyTables 	   22988	     26498 ns/op	   31353 B/op	     453 allocs/op
+BenchmarkInsertDeleteCommitManyTables 	   22609	     26557 ns/op	   31351 B/op	     453 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkUpdateCommit/schema=s3/size=1000/keys=same         	   38902	     15529 ns/op	   17223 B/op	     253 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=1000/keys=same         	   38805	     15541 ns/op	   17223 B/op	     253 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=1000/keys=moved        	   27606	     21980 ns/op	   18762 B/op	     273 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=1000/keys=moved        	   27309	     22169 ns/op	   18745 B/op	     273 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=100000/keys=same       	   28795	     33689 ns/op	   21720 B/op	     303 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=100000/keys=same       	   28699	     34217 ns/op	   21719 B/op	     303 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=100000/keys=moved      	   29095	     37273 ns/op	   23059 B/op	     319 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=100000/keys=moved      	   30874	     35989 ns/op	   21837 B/op	     305 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=1000/keys=same       	   10000	     51101 ns/op	   54632 B/op	     702 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=1000/keys=same       	   10000	     52349 ns/op	   54635 B/op	     702 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=1000/keys=moved      	   10000	     63097 ns/op	   59116 B/op	     760 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=1000/keys=moved      	   10000	     60983 ns/op	   59119 B/op	     760 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=100000/keys=same     	    8101	     72487 ns/op	   74332 B/op	     832 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=100000/keys=same     	    8637	     68170 ns/op	   74335 B/op	     832 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=100000/keys=moved    	    7567	     74760 ns/op	   74350 B/op	     831 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=100000/keys=moved    	    7468	     74696 ns/op	   74351 B/op	     831 allocs/op
+BenchmarkUpdateCommit/schema=func/size=1000/keys=same       	   56149	      9911 ns/op	   10994 B/op	     165 allocs/op
+BenchmarkUpdateCommit/schema=func/size=1000/keys=same       	   56972	      9775 ns/op	   10994 B/op	     165 allocs/op
+BenchmarkUpdateCommit/schema=func/size=1000/keys=moved      	   47871	     11835 ns/op	   12753 B/op	     188 allocs/op
+BenchmarkUpdateCommit/schema=func/size=1000/keys=moved      	   47630	     11879 ns/op	   12776 B/op	     188 allocs/op
+BenchmarkUpdateCommit/schema=func/size=100000/keys=same     	   32419	     15561 ns/op	   13673 B/op	     198 allocs/op
+BenchmarkUpdateCommit/schema=func/size=100000/keys=same     	   39093	     14642 ns/op	   13673 B/op	     198 allocs/op
+BenchmarkUpdateCommit/schema=func/size=100000/keys=moved    	   32050	     15739 ns/op	   13700 B/op	     198 allocs/op
+BenchmarkUpdateCommit/schema=func/size=100000/keys=moved    	   38755	     14650 ns/op	   13701 B/op	     198 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkDeleteAbort/schema=s3/size=1000         	   58934	     10357 ns/op	   13753 B/op	     187 allocs/op
+BenchmarkDeleteAbort/schema=s3/size=1000         	   58704	     10340 ns/op	   13753 B/op	     187 allocs/op
+BenchmarkDeleteAbort/schema=s3/size=100000       	   35352	     25186 ns/op	   18285 B/op	     238 allocs/op
+BenchmarkDeleteAbort/schema=s3/size=100000       	   35612	     24933 ns/op	   18285 B/op	     238 allocs/op
+BenchmarkDeleteAbort/schema=wide/size=1000       	   10000	     79351 ns/op	   44653 B/op	     507 allocs/op
+BenchmarkDeleteAbort/schema=wide/size=1000       	   10000	     81645 ns/op	   44653 B/op	     507 allocs/op
+BenchmarkDeleteAbort/schema=wide/size=100000     	   12332	     56833 ns/op	   64554 B/op	     641 allocs/op
+BenchmarkDeleteAbort/schema=wide/size=100000     	   12476	     54149 ns/op	   64552 B/op	     641 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkDeleteAllAbort/schema=s3/size=1000         	    1090	    545939 ns/op	  541385 B/op	    6823 allocs/op
+BenchmarkDeleteAllAbort/schema=s3/size=1000         	    1136	    546467 ns/op	  541411 B/op	    6823 allocs/op
+BenchmarkDeleteAllAbort/schema=s3/size=100000       	     513	   1736160 ns/op	  922288 B/op	   10595 allocs/op
+BenchmarkDeleteAllAbort/schema=s3/size=100000       	     512	   1732699 ns/op	  922303 B/op	   10595 allocs/op
+BenchmarkDeleteAllAbort/schema=wide/size=1000       	     336	   3126704 ns/op	 1345615 B/op	   17998 allocs/op
+BenchmarkDeleteAllAbort/schema=wide/size=1000       	     338	   3162199 ns/op	 1345437 B/op	   17996 allocs/op
+BenchmarkDeleteAllAbort/schema=wide/size=100000     	     175	   3272721 ns/op	 2873741 B/op	   27867 allocs/op
+BenchmarkDeleteAllAbort/schema=wide/size=100000     	     178	   3205062 ns/op	 2873128 B/op	   27862 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkDeletePrefixAbort/schema=s3/size=1000         	    1969	    312451 ns/op	  260074 B/op	    4138 allocs/op
+BenchmarkDeletePrefixAbort/schema=s3/size=1000         	    1972	    310596 ns/op	  260077 B/op	    4138 allocs/op
+BenchmarkDeletePrefixAbort/schema=s3/size=100000       	    1086	    639222 ns/op	  443018 B/op	    5960 allocs/op
+BenchmarkDeletePrefixAbort/schema=s3/size=100000       	    1083	    637330 ns/op	  443013 B/op	    5960 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkChanges/n=10/dup=false         	    5083	    161351 ns/op	  122557 B/op	    1424 allocs/op
+BenchmarkChanges/n=10/dup=false         	    5470	    160454 ns/op	  122557 B/op	    1424 allocs/op
+BenchmarkChanges/n=10/dup=true          	    3289	    262674 ns/op	  181426 B/op	    2216 allocs/op
+BenchmarkChanges/n=10/dup=true          	    3330	    251805 ns/op	  181426 B/op	    2216 allocs/op
+BenchmarkChanges/n=1000/dup=false       	      50	  15958013 ns/op	 8882864 B/op	  103585 allocs/op
+BenchmarkChanges/n=1000/dup=false       	      50	  15887852 ns/op	 8882858 B/op	  103585 allocs/op
+BenchmarkChanges/n=1000/dup=true        	      28	  27699691 ns/op	14463572 B/op	  184275 allocs/op
+BenchmarkChanges/n=1000/dup=true        	      28	  27149404 ns/op	14471418 B/op	  184275 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkReadYourWrites/size=1000         	    9645	     70269 ns/op	   93360 B/op	    1269 allocs/op
+BenchmarkReadYourWrites/size=1000         	    9891	     70247 ns/op	   93360 B/op	    1269 allocs/op
+BenchmarkReadYourWrites/size=100000       	    5362	    163455 ns/op	  125790 B/op	    1542 allocs/op
+BenchmarkReadYourWrites/size=100000       	    5409	    165645 ns/op	  125789 B/op	    1542 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkIterateInWriteTxn/size=1000         	   33014	     18126 ns/op	   22551 B/op	     313 allocs/op
+BenchmarkIterateInWriteTxn/size=1000         	   32914	     18243 ns/op	   22549 B/op	     313 allocs/op
+BenchmarkIterateInWriteTxn/size=100000       	   12800	     59575 ns/op	   32147 B/op	     422 allocs/op
+BenchmarkIterateInWriteTxn/size=100000       	   10000	     54948 ns/op	   32158 B/op	     422 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkTxnSnapshot 	    8204	     71949 ns/op	   75048 B/op	     762 allocs/op
+BenchmarkTxnSnapshot 	    8731	     88199 ns/op	   75043 B/op	     762 allocs/op
+PASS
+goos: linux
+goarch: amd64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M       
+BenchmarkBulkLoad/schema=s3/size=1000         	     151	   3966604 ns/op	         0.5840 gc-ms	      2413 heapB/row	        31.95 heapobjs/row	 3875406 B/op	   59026 allocs/op
+BenchmarkBulkLoad/schema=s3/size=1000         	     151	   3971656 ns/op	         0.5870 gc-ms	      2413 heapB/row	        31.95 heapobjs/row	 3875404 B/op	   59026 allocs/op
+BenchmarkBulkLoad/schema=s3/size=100000       	       1	 895588185 ns/op	       371.9 gc-ms	      2443 heapB/row	        32.16 heapobjs/row	444442800 B/op	 7083175 allocs/op
+BenchmarkBulkLoad/schema=s3/size=100000       	       1	 893574653 ns/op	       356.8 gc-ms	      2443 heapB/row	        32.16 heapobjs/row	444608320 B/op	 7083187 allocs/op
+BenchmarkBulkLoad/schema=wide/size=1000       	      54	  14411008 ns/op	         1.585 gc-ms	      6477 heapB/row	        86.02 heapobjs/row	10167583 B/op	  157910 allocs/op
+BenchmarkBulkLoad/schema=wide/size=1000       	      56	  14623365 ns/op	         1.513 gc-ms	      6479 heapB/row	        86.17 heapobjs/row	10174237 B/op	  157909 allocs/op
+BenchmarkBulkLoad/schema=wide/size=100000     	       1	3188181741 ns/op	      1176 gc-ms	      6530 heapB/row	        86.49 heapobjs/row	1118102816 B/op	18354382 allocs/op
+BenchmarkBulkLoad/schema=wide/size=100000     	       1	3183703537 ns/op	      1106 gc-ms	      6528 heapB/row	        86.36 heapobjs/row	1118082576 B/op	18354379 allocs/op
+PASS

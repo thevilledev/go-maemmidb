@@ -2,35 +2,35 @@ goos: darwin
 goarch: arm64
 pkg: memdb
 cpu: Apple M1 Max
-BenchmarkUUIDFieldIndex_parseString-10       	13396425	        79.78 ns/op	      16 B/op	       1 allocs/op
-BenchmarkUUIDFieldIndex_parseString-10       	14139799	        80.69 ns/op	      16 B/op	       1 allocs/op
-BenchmarkUUIDFieldIndex_parseString-10       	14588445	        86.03 ns/op	      16 B/op	       1 allocs/op
-BenchmarkUUIDFieldIndex_parseString-10       	14249799	        88.97 ns/op	      16 B/op	       1 allocs/op
-BenchmarkUUIDFieldIndex_parseString-10       	14747146	        79.54 ns/op	      16 B/op	       1 allocs/op
-BenchmarkUUIDFieldIndex_parseString-10       	15570428	        83.93 ns/op	      16 B/op	       1 allocs/op
-BenchmarkUUIDFieldIndex_parseString-10       	14241505	        78.39 ns/op	      16 B/op	       1 allocs/op
-BenchmarkUUIDFieldIndex_parseString-10       	14790878	        75.88 ns/op	      16 B/op	       1 allocs/op
-BenchmarkUUIDFieldIndex_parseString-10       	15259806	        79.02 ns/op	      16 B/op	       1 allocs/op
-BenchmarkUUIDFieldIndex_parseString-10       	15045975	        79.99 ns/op	      16 B/op	       1 allocs/op
-BenchmarkCompoundMultiIndex_FromObject-10    	 5078314	       235.9 ns/op	     352 B/op	       5 allocs/op
-BenchmarkCompoundMultiIndex_FromObject-10    	 5064470	       236.5 ns/op	     352 B/op	       5 allocs/op
-BenchmarkCompoundMultiIndex_FromObject-10    	 5073118	       236.2 ns/op	     352 B/op	       5 allocs/op
-BenchmarkCompoundMultiIndex_FromObject-10    	 5041686	       236.6 ns/op	     352 B/op	       5 allocs/op
-BenchmarkCompoundMultiIndex_FromObject-10    	 4903074	       236.5 ns/op	     352 B/op	       5 allocs/op
-BenchmarkCompoundMultiIndex_FromObject-10    	 5051646	       236.6 ns/op	     352 B/op	       5 allocs/op
-BenchmarkCompoundMultiIndex_FromObject-10    	 5069596	       236.9 ns/op	     352 B/op	       5 allocs/op
-BenchmarkCompoundMultiIndex_FromObject-10    	 5066090	       236.5 ns/op	     352 B/op	       5 allocs/op
-BenchmarkCompoundMultiIndex_FromObject-10    	 5058913	       237.3 ns/op	     352 B/op	       5 allocs/op
-BenchmarkCompoundMultiIndex_FromObject-10    	 5080724	       236.7 ns/op	     352 B/op	       5 allocs/op
-BenchmarkWatch-10                            	58420575	        20.61 ns/op	       0 B/op	       0 allocs/op
-BenchmarkWatch-10                            	58376522	        20.61 ns/op	       0 B/op	       0 allocs/op
-BenchmarkWatch-10                            	58403396	        20.97 ns/op	       0 B/op	       0 allocs/op
-BenchmarkWatch-10                            	57709880	        21.06 ns/op	       0 B/op	       0 allocs/op
-BenchmarkWatch-10                            	57380691	        21.11 ns/op	       0 B/op	       0 allocs/op
-BenchmarkWatch-10                            	56649199	        20.98 ns/op	       0 B/op	       0 allocs/op
-BenchmarkWatch-10                            	57393612	        20.69 ns/op	       0 B/op	       0 allocs/op
-BenchmarkWatch-10                            	58352515	        20.60 ns/op	       0 B/op	       0 allocs/op
-BenchmarkWatch-10                            	58125334	        20.62 ns/op	       0 B/op	       0 allocs/op
-BenchmarkWatch-10                            	58435272	        20.64 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUUIDFieldIndex_parseString-10       	15440661	        83.15 ns/op	      16 B/op	       1 allocs/op
+BenchmarkUUIDFieldIndex_parseString-10       	15858619	        79.59 ns/op	      16 B/op	       1 allocs/op
+BenchmarkUUIDFieldIndex_parseString-10       	14747268	        82.28 ns/op	      16 B/op	       1 allocs/op
+BenchmarkUUIDFieldIndex_parseString-10       	16029448	        84.76 ns/op	      16 B/op	       1 allocs/op
+BenchmarkUUIDFieldIndex_parseString-10       	14592621	        82.22 ns/op	      16 B/op	       1 allocs/op
+BenchmarkUUIDFieldIndex_parseString-10       	14346816	        80.36 ns/op	      16 B/op	       1 allocs/op
+BenchmarkUUIDFieldIndex_parseString-10       	15659704	        85.99 ns/op	      16 B/op	       1 allocs/op
+BenchmarkUUIDFieldIndex_parseString-10       	13716597	        84.15 ns/op	      16 B/op	       1 allocs/op
+BenchmarkUUIDFieldIndex_parseString-10       	14492760	        82.08 ns/op	      16 B/op	       1 allocs/op
+BenchmarkUUIDFieldIndex_parseString-10       	15591012	        79.86 ns/op	      16 B/op	       1 allocs/op
+BenchmarkCompoundMultiIndex_FromObject-10    	 5099910	       236.9 ns/op	     352 B/op	       5 allocs/op
+BenchmarkCompoundMultiIndex_FromObject-10    	 5050159	       235.3 ns/op	     352 B/op	       5 allocs/op
+BenchmarkCompoundMultiIndex_FromObject-10    	 5118654	       236.7 ns/op	     352 B/op	       5 allocs/op
+BenchmarkCompoundMultiIndex_FromObject-10    	 5108350	       237.5 ns/op	     352 B/op	       5 allocs/op
+BenchmarkCompoundMultiIndex_FromObject-10    	 5135734	       235.6 ns/op	     352 B/op	       5 allocs/op
+BenchmarkCompoundMultiIndex_FromObject-10    	 5104372	       236.2 ns/op	     352 B/op	       5 allocs/op
+BenchmarkCompoundMultiIndex_FromObject-10    	 4970746	       235.9 ns/op	     352 B/op	       5 allocs/op
+BenchmarkCompoundMultiIndex_FromObject-10    	 5069074	       236.0 ns/op	     352 B/op	       5 allocs/op
+BenchmarkCompoundMultiIndex_FromObject-10    	 5094110	       235.4 ns/op	     352 B/op	       5 allocs/op
+BenchmarkCompoundMultiIndex_FromObject-10    	 5096623	       235.4 ns/op	     352 B/op	       5 allocs/op
+BenchmarkWatch-10                            	57905390	        20.66 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatch-10                            	58482025	        20.62 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatch-10                            	58209453	        20.68 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatch-10                            	58374039	        21.06 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatch-10                            	58244060	        20.81 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatch-10                            	58558603	        20.71 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatch-10                            	58554316	        20.72 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatch-10                            	55907456	        20.76 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatch-10                            	58482025	        20.76 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatch-10                            	58522311	        20.72 ns/op	       0 B/op	       0 allocs/op
 PASS
-ok  	github.com/thevilledev/go-maemmidb	39.473s
+ok  	github.com/thevilledev/go-maemmidb	41.158s

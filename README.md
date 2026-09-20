@@ -20,38 +20,41 @@ immutable radix trees. No dependencies.
 
 ## Performance
 
-Measured against go-memdb v1.3.5 on an Apple M1 Max (Go 1.27.1), 190 benchmarks
-from one shared source: **182 are faster, 8 are statistically equal, none is
-slower, none allocates more or uses more memory** -- geometric mean **2.58x**.
+Measured against go-memdb v1.3.5 with 190 benchmarks from one shared source, on
+two machines. On an Apple M1 Max (Go 1.27.1): **186 are faster, 4 are
+statistically equal, none is slower, none allocates more or uses more memory**
+-- geometric mean **2.74x**. On an AMD Ryzen AI 9 HX PRO 370 (Zen 5, Linux):
+186 faster, 4 equal, none slower -- geometric mean **2.94x**.
 
-| 100,000-row table | go-memdb | go-maemmidb | |
+| 100,000-row table, M1 Max | go-memdb | go-maemmidb | |
 |---|---:|---:|---:|
-| Insert + commit, then delete + commit (3 indexes) | 45.1 µs | 13.3 µs | **3.4x** |
+| Insert + commit, then delete + commit (3 indexes) | 45.2 µs | 13.1 µs | **3.4x** |
 | The same with 11 indexes | 152 µs | 64 µs | **2.4x** |
-| Update + commit, keys unchanged (3 / 11 indexes) | 29.1 / 50.1 µs | 8.6 / 36.2 µs | **3.4x / 1.4x** |
-| Bulk load, 3 indexes | 0.79 s | 0.24 s | **3.3x** |
-| `First` by id: hit / miss | 683 / 398 ns | 424 / 127 ns | **1.6x / 3.1x** |
-| Open a read transaction and `First` | 939 ns | 451 ns | **2.1x** |
-| `Last` on a non-unique index | 624 ns | 207 ns | **3.0x** |
-| Iterate a 100-row group: forward / reverse | 5.1 / 9.6 µs | 2.5 / 2.8 µs | **2.0x / 3.5x** |
-| Scan all 100,000 rows | 4.7 ms | 2.6 ms | **1.8x** |
-| Read your own writes (10 inserts + lookups in one txn) | 156 µs | 50 µs | **3.2x** |
-| `DeletePrefix` of 100 rows | 544 µs | 160 µs | **3.4x** |
-| Track 1,000 changes and call `Changes()` | 11.7 ms | 4.4 ms | **2.6x** |
-| Watch a row, update it, observe the notification | 31.2 µs | 9.5 µs | **3.3x** |
-| Parallel readers on 8 procs, with a writer | 157 ns | 79 ns | **2.0x** |
-| Upstream's own `BenchmarkWatch` (1024 channels, expired timeout) | 106 µs | 21 ns | |
-| Heap bytes per row (3 / 11 indexes) | 2.4 / 6.5 kB | 1.1 / 3.0 kB | **-54%** |
+| Update + commit, keys unchanged (3 indexes) | 29.1 µs | 8.3 µs | **3.5x** |
+| Bulk load, 3 indexes | 0.79 s | 0.22 s | **3.6x** |
+| `First` by id: hit / miss | 683 / 398 ns | 398 / 127 ns | **1.7x / 3.1x** |
+| Open a read transaction and `First` | 939 ns | 396 ns | **2.4x** |
+| Open and close a read transaction | 64.6 ns | 24.4 ns | **2.6x** |
+| `Last` on a non-unique index | 624 ns | 197 ns | **3.2x** |
+| Iterate a 100-row group: forward / reverse | 5.1 / 9.6 µs | 2.2 / 2.1 µs | **2.3x / 4.5x** |
+| Scan all 100,000 rows | 4.7 ms | 2.5 ms | **1.9x** |
+| Read your own writes (10 inserts + lookups in one txn) | 156 µs | 44 µs | **3.6x** |
+| `DeletePrefix` of 100 rows | 544 µs | 155 µs | **3.5x** |
+| Track 1,000 changes and call `Changes()` | 11.7 ms | 4.1 ms | **2.9x** |
+| Watch a row, update it, observe the notification | 31.2 µs | 8.7 µs | **3.6x** |
+| Parallel readers on 8 procs, with a writer | 154 ns | 68 ns | **2.3x** |
+| Upstream's own `BenchmarkWatch` (1024 channels, expired timeout) | 94 µs | 21 ns | |
+| Heap bytes per row (3 / 11 indexes) | 2.4 / 6.5 kB | 1.0 / 2.7 kB | **-59%** |
 | Heap objects per row (3 / 11 indexes) | 32 / 86 | 12 / 32 | **-64%** |
 
-The machine was carrying ordinary desktop load, so read the ratios rather than
-the absolute times.
+The M1 was carrying ordinary desktop load, so read the ratios rather than the
+absolute times.
 
 Every number comes from the *same benchmark source file* built twice: once
 against `github.com/hashicorp/go-memdb` (`-tags upstream`) and once against this
 package, via a file of type aliases, so there is no adapter in the measured
 path. Runs are interleaved (A/B/A/B), every round with differently laid out
-binaries and after a discarded warm-up pass, and compared with `benchstat`.
+binaries, and compared with `benchstat`.
 `make bench-gate` then enforces the claim: it fails if **any** benchmark is
 slower (statistically significant and beyond a 2% noise tolerance), allocates
 more often, or uses more memory than upstream. Method, environment and the full
@@ -167,25 +170,93 @@ for obj := it.Next(); obj != nil; obj = it.Next() {
 }
 ```
 
-## Roadmap
+## Beyond go-memdb
 
-The first goal was a faithful, faster go-memdb, and nothing else. Planned on top
-of it, as opt-in additions that never touch the default paths (and are held to
-the same benchmark gate):
+Everything above is go-memdb's API. Three additions go further; none of them
+changes what the rest does, and a database that does not use them pays nothing
+for them. The benchmark gate holds them to that.
 
-- **Bitmap indexes and set-algebra queries.** Roaring-style compressed bitmaps
-  over dense per-table row ids, with `And` / `Or` / `Not` / `Count` across
-  indexes -- the queries that need a filtering scan today.
-- **A typed, generic facade** (`Table[T]`, indexers built from accessor
-  functions): no reflection and no interface boxing at all.
-- **`iter.Seq` iterators** for range-over-func.
+### Bitmap indexes and set queries
+
+Wrap an indexer in `BitmapIndex` and the index maps each value to the *set* of
+rows that have it -- a persistent, Roaring-style compressed bitmap over row
+ids -- instead of to an ordered list of rows:
+
+```go
+"status": {Name: "status", Indexer: &memdb.BitmapIndex{Indexer: &memdb.StringFieldIndex{Field: "Status"}}},
+"node":   {Name: "node",   Indexer: &memdb.BitmapIndex{Indexer: &memdb.StringFieldIndex{Field: "NodeID"}}},
+"tags":   {Name: "tags",   Indexer: &memdb.BitmapIndex{Indexer: &memdb.StringSliceFieldIndex{Field: "Tags"}}},
+```
+
+```go
+running, err := txn.Where("alloc", "status", "running")
+onNode, _ := txn.Where("alloc", "node", nodeID)
+batch, _ := txn.Where("alloc", "tags", "batch")
+
+n := running.And(onNode).Len()                 // a count, without visiting a row
+for obj := range running.And(onNode).AndNot(batch).All() {
+	...
+}
+
+all, _ := txn.AllRows("alloc")
+notRunning := all.AndNot(running)              // a complement; all.Len() is the table size
+```
+
+Sets are immutable values as transactional as everything else (snapshots,
+aborts, read-your-writes), and `WhereWatch` fires when a row enters or leaves a
+set. It suits columns with few distinct values relative to the number of rows:
+states, types, flags, owners, tags. Measured on a 100,000-row table against the
+same columns as ordinary indexes ([BENCHMARKS.md](BENCHMARKS.md#extensions)):
+
+| | ordinary indexes | bitmap indexes |
+|---|---:|---:|
+| Count rows matching three columns | 214 µs (index walk + filter) | **18 µs** |
+| Count rows with one value | 242 µs | **39 ns** |
+| Visit the 10,000 rows matching two columns | 657 µs | **237 µs** |
+| Replace a row, indexed values unchanged | 11.6 µs | **4.5 µs** |
+| Insert a row, then delete it | 24.6 µs | 21.7 µs |
+| Heap per row (id + three such indexes) | 1213 B | **453 B** |
+
+What it gives up: results come in row id order (roughly insertion order), not
+index order; there are no range scans, and `First`/`Get` refuse such an index.
+
+### A typed API
+
+```go
+var people = memdb.NewTable[Person]("person")
+var personByEmail = people.StringKey("id")
+
+err := people.Insert(txn, &Person{...})
+p, err := personByEmail.First(txn, "joe@aol.com") // p is a *Person
+rows, err := people.Get(txn, "age", 30)
+for p := range rows.All() { ... }
+```
+
+- `StringKey`, `IntKey` and `UintKey` take the key as a Go value. The untyped
+  API has to box its arguments into interfaces -- an allocation per query for
+  anything but small integers -- and resolve two names; a typed key does
+  neither: a point lookup on a small table takes 51 ns instead of 92 ns (157
+  instead of 229 ns on 100,000 rows) and does not allocate.
+- `StringIndex[T]`, `IntIndex[T, N]`, `UintIndex[T, N]`, `BoolIndex[T]` and
+  `StringSliceIndex[T]` are indexers built from accessor functions
+  (`Get: func(p *Person) string { return p.Email }`). They go where the
+  `*FieldIndex` types go, produce exactly the same keys, and use no reflection
+  anywhere.
+- `Table[T]` inserts `*T` and returns `*T`. Typed and untyped calls mix freely.
+
+### Range-over-func
+
+`memdb.All(it)` and `memdb.AllOf[*Person](it)` turn any `ResultIterator` into
+an `iter.Seq`.
 
 ## Build tags
 
-By default, struct fields of indexed objects are read at a cached offset
+By default, struct fields of indexed objects are read at a cached offset, and
+a tree node finds its children at a fixed offset behind its header, both
 through `package unsafe`. Build with `-tags memdb_safe` (or `purego`) for a
-pure-safe variant that uses reflection with a cached field index instead: same
-behaviour, still far faster than upstream, tested in CI in both modes.
+pure-safe variant that uses reflection with a cached field index and an
+ordinary slice instead: same behaviour, still far faster than upstream, tested
+in CI in both modes.
 
 ## Development
 

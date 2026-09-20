@@ -1,0 +1,1716 @@
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkNewMemDB/schema=s1         	  841789	       639.2 ns/op	    1208 B/op	      13 allocs/op
+BenchmarkNewMemDB/schema=s1         	  981969	       665.4 ns/op	    1208 B/op	      13 allocs/op
+BenchmarkNewMemDB/schema=wide       	  177385	      3415 ns/op	    6752 B/op	      62 allocs/op
+BenchmarkNewMemDB/schema=wide       	  174450	      3479 ns/op	    6752 B/op	      62 allocs/op
+BenchmarkNewMemDB/schema=s50        	   12237	     49343 ns/op	   88664 B/op	     860 allocs/op
+BenchmarkNewMemDB/schema=s50        	   12260	     48955 ns/op	   88664 B/op	     860 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkTxn/read         	15311541	        37.68 ns/op	      80 B/op	       1 allocs/op
+BenchmarkTxn/read         	16169419	        37.07 ns/op	      80 B/op	       1 allocs/op
+BenchmarkTxn/write-commit-empty         	14820258	        42.36 ns/op	      80 B/op	       1 allocs/op
+BenchmarkTxn/write-commit-empty         	14296081	        41.83 ns/op	      80 B/op	       1 allocs/op
+BenchmarkTxn/write-abort-empty          	14282611	        43.14 ns/op	      80 B/op	       1 allocs/op
+BenchmarkTxn/write-abort-empty          	14656502	        42.78 ns/op	      80 B/op	       1 allocs/op
+BenchmarkTxn/write-commit-defer         	 8749092	        69.94 ns/op	     104 B/op	       3 allocs/op
+BenchmarkTxn/write-commit-defer         	 8817456	        69.31 ns/op	     104 B/op	       3 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkSnapshot 	29135818	        22.49 ns/op	      32 B/op	       1 allocs/op
+BenchmarkSnapshot 	29674690	        22.54 ns/op	      32 B/op	       1 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkSnapshotWrite 	  160621	      8086 ns/op	    7078 B/op	      41 allocs/op
+BenchmarkSnapshotWrite 	  176678	      7423 ns/op	    7078 B/op	      41 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkIndexer/FromObject/StringFieldIndex         	20068454	        28.74 ns/op	      48 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex         	20737566	        29.21 ns/op	      48 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex-lowercase         	14224596	        42.54 ns/op	      21 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex-lowercase         	14222572	        42.41 ns/op	      21 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex-pointer           	12021126	        49.77 ns/op	       8 B/op	       0 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex-pointer           	12215066	        49.72 ns/op	       8 B/op	       0 allocs/op
+BenchmarkIndexer/FromObject/IntFieldIndex                      	28966556	        21.51 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/IntFieldIndex                      	26781429	        21.69 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/UintFieldIndex                     	27582825	        21.87 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/UintFieldIndex                     	27817969	        21.83 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/BoolFieldIndex                     	31348848	        19.27 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/BoolFieldIndex                     	31149346	        19.20 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/UUIDFieldIndex                     	 5920244	       102.1 ns/op	      16 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/UUIDFieldIndex                     	 5812528	       104.6 ns/op	      16 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/FieldSetIndex                      	30611007	        19.91 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/FieldSetIndex                      	29335490	        20.04 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/ConditionalIndex                   	77037476	         7.836 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/ConditionalIndex                   	78934810	         7.713 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/CompoundIndex                      	 7506403	        80.15 ns/op	      48 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/CompoundIndex                      	 7481184	        80.40 ns/op	      48 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/StringSliceFieldIndex              	 6035882	        99.44 ns/op	     128 B/op	       3 allocs/op
+BenchmarkIndexer/FromObject/StringSliceFieldIndex              	 6008955	        99.64 ns/op	     128 B/op	       3 allocs/op
+BenchmarkIndexer/FromObject/StringMapFieldIndex                	 3127962	       196.5 ns/op	      96 B/op	       3 allocs/op
+BenchmarkIndexer/FromObject/StringMapFieldIndex                	 3009345	       202.6 ns/op	      96 B/op	       3 allocs/op
+BenchmarkIndexer/FromObject/CompoundMultiIndex                 	 2152123	       278.2 ns/op	     376 B/op	       5 allocs/op
+BenchmarkIndexer/FromObject/CompoundMultiIndex                 	 2135958	       279.0 ns/op	     376 B/op	       5 allocs/op
+BenchmarkIndexer/FromArgs/StringFieldIndex                     	28758184	        21.39 ns/op	      48 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/StringFieldIndex                     	26662222	        21.72 ns/op	      48 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/StringFieldIndex-lowercase           	18322941	        33.04 ns/op	      21 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/StringFieldIndex-lowercase           	18293518	        35.66 ns/op	      21 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/IntFieldIndex                        	52659871	        11.81 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/IntFieldIndex                        	52725619	        12.07 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/UintFieldIndex                       	52720213	        11.83 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/UintFieldIndex                       	52425783	        11.76 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/BoolFieldIndex                       	82192252	         7.544 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/BoolFieldIndex                       	81899611	         7.479 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/UUIDFieldIndex-string                	 6829249	        90.84 ns/op	      16 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/UUIDFieldIndex-string                	 6684535	        88.97 ns/op	      16 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/StringMapFieldIndex                  	25334984	        23.98 ns/op	      16 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/StringMapFieldIndex                  	25157496	        24.05 ns/op	      16 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/CompoundIndex                        	10527169	        57.49 ns/op	      48 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/CompoundIndex                        	10555807	        57.26 ns/op	      48 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/CompoundMultiIndex                   	 4078387	       149.6 ns/op	     206 B/op	       9 allocs/op
+BenchmarkIndexer/FromArgs/CompoundMultiIndex                   	 4088743	       150.5 ns/op	     206 B/op	       9 allocs/op
+BenchmarkIndexer/PrefixFromArgs/UUIDFieldIndex                 	10486538	        58.06 ns/op	      24 B/op	       2 allocs/op
+BenchmarkIndexer/PrefixFromArgs/UUIDFieldIndex                 	10518886	        58.28 ns/op	      24 B/op	       2 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkFirst/schema=s3/keys=uuid/size=1000/hit         	 6414484	        96.01 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=1000/hit         	 6241093	        95.86 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=1000/miss        	 8151466	        75.08 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=1000/miss        	 8160525	        75.72 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=100000/hit       	 1391383	       423.3 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=100000/hit       	 1473530	       403.6 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=100000/miss      	 4663208	       127.4 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=100000/miss      	 4677456	       126.8 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=1000/hit          	 6832652	        87.00 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=1000/hit          	 6802389	        86.95 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=1000/miss         	15178600	        52.86 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=1000/miss         	15173834	        53.16 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=100000/hit        	 1891497	       310.0 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=100000/hit        	 1893181	       306.4 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=100000/miss       	15483920	        38.07 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=100000/miss       	15529774	        37.93 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=1000/hit         	 5614741	       103.3 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=1000/hit         	 5720211	       103.7 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=1000/miss        	 9278553	        65.30 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=1000/miss        	 9275337	        65.26 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=100000/hit       	 1706139	       342.5 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=100000/hit       	 1784642	       335.4 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=100000/miss      	 9243045	        65.49 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=100000/miss      	 9223443	        65.43 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=1000/hit       	 5739687	       102.9 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=1000/hit       	 5783706	       102.3 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=1000/miss      	 7104016	        83.58 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=1000/miss      	 7085595	        83.64 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=100000/hit     	 1441952	       416.8 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=100000/hit     	 1441836	       414.8 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=100000/miss    	 4140579	       144.4 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=100000/miss    	 4140711	       144.0 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=1000/hit       	 5328802	       112.8 ns/op	      80 B/op	       3 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=1000/hit       	 5036149	       117.1 ns/op	      80 B/op	       3 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=1000/miss      	 6101836	        96.21 ns/op	      80 B/op	       3 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=1000/miss      	 5821210	        96.71 ns/op	      80 B/op	       3 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=100000/hit     	 1391426	       437.2 ns/op	      80 B/op	       3 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=100000/hit     	 1392715	       432.8 ns/op	      80 B/op	       3 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=100000/miss    	 3930590	       151.0 ns/op	      80 B/op	       3 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=100000/miss    	 3924549	       150.9 ns/op	      80 B/op	       3 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkTxnFirst/size=1000         	 4677603	       131.1 ns/op	      96 B/op	       2 allocs/op
+BenchmarkTxnFirst/size=1000         	 4599268	       135.1 ns/op	      96 B/op	       2 allocs/op
+BenchmarkTxnFirst/size=100000       	 1340103	       458.4 ns/op	      96 B/op	       2 allocs/op
+BenchmarkTxnFirst/size=100000       	 1270879	       480.6 ns/op	      96 B/op	       2 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkFirstIndex/nonunique-string         	 2970440	       196.4 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/nonunique-string         	 2963788	       189.8 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/unique-lowercase         	 1652454	       353.5 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/unique-lowercase         	 1708827	       348.7 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/id-prefix                	 1547941	       421.7 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/id-prefix                	 1525633	       389.9 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/string-slice             	 2558007	       324.1 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/string-slice             	 1829022	       327.0 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/string-map               	 1360455	       444.3 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/string-map               	 1961919	       298.2 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/int                      	 5761398	        96.17 ns/op	       0 B/op	       0 allocs/op
+BenchmarkFirstIndex/int                      	 5990120	        94.87 ns/op	       0 B/op	       0 allocs/op
+BenchmarkFirstIndex/uint                     	 2153719	       273.8 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFirstIndex/uint                     	 2127505	       278.1 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFirstIndex/bool                     	 7074362	        79.17 ns/op	       0 B/op	       0 allocs/op
+BenchmarkFirstIndex/bool                     	 7172578	        78.01 ns/op	       0 B/op	       0 allocs/op
+BenchmarkFirstIndex/uuid                     	 1283202	       462.8 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/uuid                     	 1292720	       461.7 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/compound                 	 2777341	       215.9 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/compound                 	 2772573	       211.2 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/compound-prefix          	 2936713	       199.6 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/compound-prefix          	 2934427	       199.0 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/no-args                  	20414904	        28.44 ns/op	       0 B/op	       0 allocs/op
+BenchmarkFirstIndex/no-args                  	21082466	        28.26 ns/op	       0 B/op	       0 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkLast/unique         	 1228350	       484.2 ns/op	      16 B/op	       1 allocs/op
+BenchmarkLast/unique         	 1296954	       464.5 ns/op	      16 B/op	       1 allocs/op
+BenchmarkLast/nonunique-string         	 2904979	       204.6 ns/op	      16 B/op	       1 allocs/op
+BenchmarkLast/nonunique-string         	 3087333	       191.7 ns/op	      16 B/op	       1 allocs/op
+BenchmarkLast/int                      	 5760453	        97.50 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLast/int                      	 5839591	        98.00 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLast/no-args                  	17285088	        30.37 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLast/no-args                  	19490749	        30.69 ns/op	       0 B/op	       0 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkGetOne/size=1000         	 3651086	       164.1 ns/op	     192 B/op	       2 allocs/op
+BenchmarkGetOne/size=1000         	 3594538	       165.8 ns/op	     192 B/op	       2 allocs/op
+BenchmarkGetOne/size=100000       	  999840	       582.6 ns/op	     192 B/op	       2 allocs/op
+BenchmarkGetOne/size=100000       	  999658	       586.8 ns/op	     192 B/op	       2 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkIterate/scan=all/keys=uuid/size=1000         	   80022	      7564 ns/op	      1000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=uuid/size=1000         	   81046	      7435 ns/op	      1000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=seq/size=1000          	  136982	      4427 ns/op	      1000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=seq/size=1000          	  136030	      4452 ns/op	      1000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=path/size=1000         	  115837	      5287 ns/op	      1000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=path/size=1000         	  118345	      5235 ns/op	      1000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=group/size=1000                 	  646287	      1034 ns/op	       100.0 rows/op	     208 B/op	       3 allocs/op
+BenchmarkIterate/scan=group/size=1000                 	  641785	      1016 ns/op	       100.0 rows/op	     208 B/op	       3 allocs/op
+BenchmarkIterate/scan=group-reverse/size=1000         	  695950	      1001 ns/op	       100.0 rows/op	     208 B/op	       3 allocs/op
+BenchmarkIterate/scan=group-reverse/size=1000         	  669860	       996.6 ns/op	       100.0 rows/op	     208 B/op	       3 allocs/op
+BenchmarkIterate/scan=tags/size=1000                  	  905768	       751.7 ns/op	        69.00 rows/op	     200 B/op	       3 allocs/op
+BenchmarkIterate/scan=tags/size=1000                  	  868154	       750.9 ns/op	        69.00 rows/op	     200 B/op	       3 allocs/op
+BenchmarkIterate/scan=all-reverse/size=1000           	   78379	      7634 ns/op	      1000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all-reverse/size=1000           	   81268	      7618 ns/op	      1000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=uuid/size=100000       	     249	   2388195 ns/op	    100000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=uuid/size=100000       	     248	   2397808 ns/op	    100000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=seq/size=100000        	     387	   1535775 ns/op	    100000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=seq/size=100000        	     388	   1532389 ns/op	    100000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=path/size=100000       	     322	   1841908 ns/op	    100000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=path/size=100000       	     326	   1837254 ns/op	    100000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=group/size=100000               	  246993	      2247 ns/op	       100.0 rows/op	     213 B/op	       3 allocs/op
+BenchmarkIterate/scan=group/size=100000               	  249234	      2242 ns/op	       100.0 rows/op	     213 B/op	       3 allocs/op
+BenchmarkIterate/scan=group-reverse/size=100000       	  239535	      2896 ns/op	       100.0 rows/op	     213 B/op	       3 allocs/op
+BenchmarkIterate/scan=group-reverse/size=100000       	  238302	      2351 ns/op	       100.0 rows/op	     213 B/op	       3 allocs/op
+BenchmarkIterate/scan=tags/size=100000                	    2484	    223428 ns/op	      6361 rows/op	     200 B/op	       3 allocs/op
+BenchmarkIterate/scan=tags/size=100000                	    2594	    218520 ns/op	      6361 rows/op	     200 B/op	       3 allocs/op
+BenchmarkIterate/scan=all-reverse/size=100000         	     211	   2846398 ns/op	    100000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all-reverse/size=100000         	     183	   3159562 ns/op	    100000 rows/op	     176 B/op	       1 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkLowerBound/int         	 2288270	       523.1 ns/op	     176 B/op	       1 allocs/op
+BenchmarkLowerBound/int         	 2072112	       473.7 ns/op	     176 B/op	       1 allocs/op
+BenchmarkLowerBound/int-reverse 	 1983330	       441.0 ns/op	     176 B/op	       1 allocs/op
+BenchmarkLowerBound/int-reverse 	 2044633	       476.3 ns/op	     176 B/op	       1 allocs/op
+BenchmarkLowerBound/uint        	 1151725	       515.8 ns/op	     184 B/op	       2 allocs/op
+BenchmarkLowerBound/uint        	 1059864	       553.3 ns/op	     184 B/op	       2 allocs/op
+BenchmarkLowerBound/string      	  607971	       863.2 ns/op	     192 B/op	       2 allocs/op
+BenchmarkLowerBound/string      	  603004	       871.6 ns/op	     192 B/op	       2 allocs/op
+BenchmarkLowerBound/string-reverse         	  554397	       923.3 ns/op	     192 B/op	       2 allocs/op
+BenchmarkLowerBound/string-reverse         	  681594	       882.4 ns/op	     192 B/op	       2 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkLongestPrefix/size=1000         	 3362779	       179.2 ns/op	      80 B/op	       3 allocs/op
+BenchmarkLongestPrefix/size=1000         	 3363606	       179.4 ns/op	      80 B/op	       3 allocs/op
+BenchmarkLongestPrefix/size=100000       	 2868423	       268.5 ns/op	      80 B/op	       3 allocs/op
+BenchmarkLongestPrefix/size=100000       	 2868366	       267.1 ns/op	      80 B/op	       3 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkFilterIterator 	  140476	      4195 ns/op	     213 B/op	       3 allocs/op
+BenchmarkFilterIterator 	  143209	      4016 ns/op	     213 B/op	       3 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkParallelTxnFirst/size=1000         	 4767432	       125.1 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000         	 4815328	       125.5 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000       	 1284798	       466.6 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000       	 1307889	       452.0 ns/op	      96 B/op	       2 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkParallelTxnFirstWithWriter 	 1338386	       445.3 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter 	 1310464	       454.3 ns/op	      96 B/op	       2 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkFirstWatch/size=1000         	 6056078	       100.1 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstWatch/size=1000         	 5902180	        98.51 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstWatch/size=100000       	 1231275	       479.0 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstWatch/size=100000       	 1323094	       452.2 ns/op	      16 B/op	       1 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkGetWatchCh/size=1000         	 2631397	       225.0 ns/op	     208 B/op	       3 allocs/op
+BenchmarkGetWatchCh/size=1000         	 2696911	       220.4 ns/op	     208 B/op	       3 allocs/op
+BenchmarkGetWatchCh/size=100000       	 1571846	       344.9 ns/op	     213 B/op	       3 allocs/op
+BenchmarkGetWatchCh/size=100000       	 1545076	       361.2 ns/op	     213 B/op	       3 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkWatchCycle/size=1000         	  156333	      3942 ns/op	    4985 B/op	      34 allocs/op
+BenchmarkWatchCycle/size=1000         	  150486	      3947 ns/op	    4985 B/op	      34 allocs/op
+BenchmarkWatchCycle/size=100000       	  156654	     10257 ns/op	    6968 B/op	      42 allocs/op
+BenchmarkWatchCycle/size=100000       	  140558	      9439 ns/op	    6969 B/op	      42 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkCommitNotify/size=1000/rows=100         	    3438	    193085 ns/op	  186075 B/op	    1830 allocs/op
+BenchmarkCommitNotify/size=1000/rows=100         	    3447	    192923 ns/op	  186075 B/op	    1830 allocs/op
+BenchmarkCommitNotify/size=100000/rows=100       	    3308	    485700 ns/op	  350424 B/op	    2546 allocs/op
+BenchmarkCommitNotify/size=100000/rows=100       	    3070	    452768 ns/op	  350424 B/op	    2546 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkWatchSetAdd 	  401178	      1520 ns/op	    2120 B/op	       7 allocs/op
+BenchmarkWatchSetAdd 	  399974	      1524 ns/op	    2120 B/op	       7 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkWatchSetWatchExpired/n=1         	 8377392	        71.89 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=1         	 8326302	        71.88 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=8         	 2307314	       259.5 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=8         	 2325346	       257.3 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=32        	  411468	      1505 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=32        	  436232	      1377 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=33        	  401497	      1498 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=33        	  407666	      1472 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=256       	28784226	        20.94 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=256       	28316912	        20.97 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=1024      	28583054	        20.89 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=1024      	28276434	        21.04 ns/op	       0 B/op	       0 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkWatchSetWatchCtxCancelled/n=1         	 6938397	        86.72 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=1         	 6961269	        86.23 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=8         	 2178710	       274.3 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=8         	 2195721	       272.0 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=32        	  430820	      1393 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=32        	  425138	      1415 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=33        	  395868	      1520 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=33        	  393471	      1512 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=256       	17055447	        35.41 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=256       	17069073	        35.32 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=1024      	16795764	        35.68 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=1024      	16981712	        35.42 ns/op	       0 B/op	       0 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkWatchSetWatchCtxFired/n=1         	10422418	        53.76 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=1         	11166555	        53.62 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=8         	 2567521	       234.5 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=8         	 2554293	       235.1 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=32        	  443466	      1369 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=32        	  444607	      1369 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=33        	  404888	      1468 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=33        	  410594	      1465 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=256       	   29618	     21202 ns/op	    2687 B/op	      19 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=256       	   29691	     20137 ns/op	    2686 B/op	      19 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=1024      	    6640	     86266 ns/op	   10141 B/op	      68 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=1024      	    7112	     85864 ns/op	   10129 B/op	      68 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkWatchSetBlockThenFire/n=8         	  930297	       655.6 ns/op	     112 B/op	       1 allocs/op
+BenchmarkWatchSetBlockThenFire/n=8         	  911356	       657.2 ns/op	     112 B/op	       1 allocs/op
+BenchmarkWatchSetBlockThenFire/n=1024      	    6700	     88436 ns/op	   10273 B/op	      69 allocs/op
+BenchmarkWatchSetBlockThenFire/n=1024      	    6704	     86932 ns/op	   10255 B/op	      69 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkInsertAbort/schema=s1/size=1000/batch=1         	 1000000	       616.6 ns/op	     951 B/op	       6 allocs/op
+BenchmarkInsertAbort/schema=s1/size=1000/batch=1         	 1000000	       621.3 ns/op	     951 B/op	       6 allocs/op
+BenchmarkInsertAbort/schema=s1/size=1000/batch=100       	   19849	     30220 ns/op	   41666 B/op	     353 allocs/op
+BenchmarkInsertAbort/schema=s1/size=1000/batch=100       	   19956	     31758 ns/op	   41665 B/op	     353 allocs/op
+BenchmarkInsertAbort/schema=s1/size=100000/batch=1       	 1000000	      1192 ns/op	    1390 B/op	       8 allocs/op
+BenchmarkInsertAbort/schema=s1/size=100000/batch=1       	 1000000	      1188 ns/op	    1390 B/op	       8 allocs/op
+BenchmarkInsertAbort/schema=s1/size=100000/batch=100     	   10000	     74172 ns/op	   82748 B/op	     529 allocs/op
+BenchmarkInsertAbort/schema=s1/size=100000/batch=100     	   10000	     76521 ns/op	   82748 B/op	     529 allocs/op
+BenchmarkInsertAbort/schema=s3/size=1000/batch=1         	  366694	      3812 ns/op	    4792 B/op	      30 allocs/op
+BenchmarkInsertAbort/schema=s3/size=1000/batch=1         	  361990	      3745 ns/op	    4792 B/op	      30 allocs/op
+BenchmarkInsertAbort/schema=s3/size=1000/batch=100       	    5562	    178520 ns/op	  197973 B/op	    1684 allocs/op
+BenchmarkInsertAbort/schema=s3/size=1000/batch=100       	    5995	    185415 ns/op	  197988 B/op	    1684 allocs/op
+BenchmarkInsertAbort/schema=s3/size=100000/batch=1       	  198264	      7525 ns/op	    6918 B/op	      39 allocs/op
+BenchmarkInsertAbort/schema=s3/size=100000/batch=1       	  204930	      7455 ns/op	    6918 B/op	      39 allocs/op
+BenchmarkInsertAbort/schema=s3/size=100000/batch=100     	    2199	    464517 ns/op	  364610 B/op	    2425 allocs/op
+BenchmarkInsertAbort/schema=s3/size=100000/batch=100     	    2805	    444999 ns/op	  364676 B/op	    2425 allocs/op
+BenchmarkInsertAbort/schema=wide/size=1000/batch=1       	  100083	     15933 ns/op	   17488 B/op	      82 allocs/op
+BenchmarkInsertAbort/schema=wide/size=1000/batch=1       	   99087	     15774 ns/op	   17487 B/op	      82 allocs/op
+BenchmarkInsertAbort/schema=wide/size=1000/batch=100     	    1635	    713015 ns/op	  564299 B/op	    4713 allocs/op
+BenchmarkInsertAbort/schema=wide/size=1000/batch=100     	    1626	    719036 ns/op	  564331 B/op	    4713 allocs/op
+BenchmarkInsertAbort/schema=wide/size=100000/batch=1     	   59397	     29739 ns/op	   26725 B/op	     103 allocs/op
+BenchmarkInsertAbort/schema=wide/size=100000/batch=1     	   58212	     28973 ns/op	   26725 B/op	     103 allocs/op
+BenchmarkInsertAbort/schema=wide/size=100000/batch=100   	     690	   2000769 ns/op	 1328570 B/op	    6596 allocs/op
+BenchmarkInsertAbort/schema=wide/size=100000/batch=100   	     752	   1863377 ns/op	 1328785 B/op	    6597 allocs/op
+BenchmarkInsertAbort/schema=func/size=1000/batch=1       	  501556	      2888 ns/op	    3042 B/op	      22 allocs/op
+BenchmarkInsertAbort/schema=func/size=1000/batch=1       	  500329	      3054 ns/op	    3042 B/op	      22 allocs/op
+BenchmarkInsertAbort/schema=func/size=1000/batch=100     	    7335	    172167 ns/op	  130906 B/op	    1361 allocs/op
+BenchmarkInsertAbort/schema=func/size=1000/batch=100     	    6259	    197791 ns/op	  130908 B/op	    1361 allocs/op
+BenchmarkInsertAbort/schema=func/size=100000/batch=1     	  265414	      5880 ns/op	    4390 B/op	      28 allocs/op
+BenchmarkInsertAbort/schema=func/size=100000/batch=1     	  252234	      6164 ns/op	    4390 B/op	      28 allocs/op
+BenchmarkInsertAbort/schema=func/size=100000/batch=100   	    3847	    351886 ns/op	  239810 B/op	    1833 allocs/op
+BenchmarkInsertAbort/schema=func/size=100000/batch=100   	    3778	    332764 ns/op	  239807 B/op	    1833 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkInsertDeleteCommit/schema=s1/keys=uuid/size=1000         	  447459	      1394 ns/op	    1991 B/op	      12 allocs/op
+BenchmarkInsertDeleteCommit/schema=s1/keys=uuid/size=1000         	  456642	      1406 ns/op	    1991 B/op	      12 allocs/op
+BenchmarkInsertDeleteCommit/schema=s1/keys=uuid/size=100000       	  645322	      2540 ns/op	    2869 B/op	      16 allocs/op
+BenchmarkInsertDeleteCommit/schema=s1/keys=uuid/size=100000       	  606734	      2587 ns/op	    2869 B/op	      16 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=uuid/size=1000         	  171908	      7874 ns/op	    9009 B/op	      53 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=uuid/size=1000         	  172762	      8185 ns/op	    9010 B/op	      53 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=uuid/size=100000       	  114552	     13316 ns/op	   13263 B/op	      71 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=uuid/size=100000       	  114718	     13594 ns/op	   13263 B/op	      71 allocs/op
+BenchmarkInsertDeleteCommit/schema=wide/keys=uuid/size=1000       	   24055	     30515 ns/op	   33040 B/op	     139 allocs/op
+BenchmarkInsertDeleteCommit/schema=wide/keys=uuid/size=1000       	   26442	     36660 ns/op	   33048 B/op	     139 allocs/op
+BenchmarkInsertDeleteCommit/schema=wide/keys=uuid/size=100000     	   32894	     63724 ns/op	   51513 B/op	     182 allocs/op
+BenchmarkInsertDeleteCommit/schema=wide/keys=uuid/size=100000     	   32589	     63472 ns/op	   51514 B/op	     182 allocs/op
+BenchmarkInsertDeleteCommit/schema=func/keys=uuid/size=1000       	  270230	      6458 ns/op	    5868 B/op	      41 allocs/op
+BenchmarkInsertDeleteCommit/schema=func/keys=uuid/size=1000       	  273800	      6457 ns/op	    5868 B/op	      41 allocs/op
+BenchmarkInsertDeleteCommit/schema=func/keys=uuid/size=100000     	  191488	      8626 ns/op	    8566 B/op	      52 allocs/op
+BenchmarkInsertDeleteCommit/schema=func/keys=uuid/size=100000     	  162396	      9969 ns/op	    8565 B/op	      52 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=seq/size=1000          	  186608	      7823 ns/op	    7601 B/op	      53 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=seq/size=1000          	  190197	      7673 ns/op	    7601 B/op	      53 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=seq/size=100000        	  147204	     10386 ns/op	    8571 B/op	      57 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=seq/size=100000        	  165664	      9683 ns/op	    8572 B/op	      57 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=path/size=1000         	  138391	     12013 ns/op	    9488 B/op	      66 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=path/size=1000         	  133105	     12345 ns/op	    9488 B/op	      66 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=path/size=100000       	  126290	     14237 ns/op	   11113 B/op	      73 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=path/size=100000       	  122571	     13416 ns/op	   11114 B/op	      73 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkInsertDeleteCommitManyTables 	   72566	      8321 ns/op	   11571 B/op	      55 allocs/op
+BenchmarkInsertDeleteCommitManyTables 	   73527	      8428 ns/op	   11569 B/op	      55 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkUpdateCommit/schema=s3/size=1000/keys=same         	  166857	      3782 ns/op	    4769 B/op	      30 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=1000/keys=same         	  164488	      3701 ns/op	    4769 B/op	      30 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=1000/keys=moved        	  143506	      4255 ns/op	    5314 B/op	      33 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=1000/keys=moved        	  142621	      4240 ns/op	    5316 B/op	      33 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=100000/keys=same       	  140035	      8679 ns/op	    6753 B/op	      38 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=100000/keys=same       	  150504	      8506 ns/op	    6752 B/op	      38 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=100000/keys=moved      	  129990	      9246 ns/op	    6935 B/op	      39 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=100000/keys=moved      	  134949	      9774 ns/op	    7030 B/op	      40 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=1000/keys=same       	   84802	     19966 ns/op	   17076 B/op	      79 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=1000/keys=same       	   85616	     20183 ns/op	   17077 B/op	      79 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=1000/keys=moved      	   76006	     23263 ns/op	   18700 B/op	      88 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=1000/keys=moved      	   71358	     24016 ns/op	   18709 B/op	      88 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=100000/keys=same     	   48896	     35633 ns/op	   26170 B/op	     100 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=100000/keys=same     	   46966	     36768 ns/op	   26169 B/op	     100 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=100000/keys=moved    	   44655	     56093 ns/op	   27733 B/op	     108 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=100000/keys=moved    	   40597	     31043 ns/op	   26181 B/op	     100 allocs/op
+BenchmarkUpdateCommit/schema=func/size=1000/keys=same       	  434473	      5378 ns/op	    3078 B/op	      24 allocs/op
+BenchmarkUpdateCommit/schema=func/size=1000/keys=same       	  414511	      5145 ns/op	    3078 B/op	      24 allocs/op
+BenchmarkUpdateCommit/schema=func/size=1000/keys=moved      	  317889	      5456 ns/op	    3701 B/op	      28 allocs/op
+BenchmarkUpdateCommit/schema=func/size=1000/keys=moved      	  343618	      6546 ns/op	    3701 B/op	      28 allocs/op
+BenchmarkUpdateCommit/schema=func/size=100000/keys=same     	  200950	      2728 ns/op	    4395 B/op	      30 allocs/op
+BenchmarkUpdateCommit/schema=func/size=100000/keys=same     	  216848	      2813 ns/op	    4395 B/op	      30 allocs/op
+BenchmarkUpdateCommit/schema=func/size=100000/keys=moved    	  166744	      3546 ns/op	    4928 B/op	      33 allocs/op
+BenchmarkUpdateCommit/schema=func/size=100000/keys=moved    	  163876	      3498 ns/op	    4956 B/op	      33 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkDeleteAbort/schema=s3/size=1000         	  197017	      3299 ns/op	    4056 B/op	      21 allocs/op
+BenchmarkDeleteAbort/schema=s3/size=1000         	  189171	      3365 ns/op	    4056 B/op	      21 allocs/op
+BenchmarkDeleteAbort/schema=s3/size=100000       	  138867	      9482 ns/op	    6100 B/op	      29 allocs/op
+BenchmarkDeleteAbort/schema=s3/size=100000       	  133014	      9319 ns/op	    6100 B/op	      29 allocs/op
+BenchmarkDeleteAbort/schema=wide/size=1000       	   96486	     18348 ns/op	   15358 B/op	      55 allocs/op
+BenchmarkDeleteAbort/schema=wide/size=1000       	   88798	     17552 ns/op	   15358 B/op	      55 allocs/op
+BenchmarkDeleteAbort/schema=wide/size=100000     	   49219	     28636 ns/op	   24539 B/op	      76 allocs/op
+BenchmarkDeleteAbort/schema=wide/size=100000     	   48462	     27742 ns/op	   24540 B/op	      76 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkDeleteAllAbort/schema=s3/size=1000         	    5112	    142612 ns/op	  100228 B/op	     613 allocs/op
+BenchmarkDeleteAllAbort/schema=s3/size=1000         	    5076	    142021 ns/op	  100228 B/op	     613 allocs/op
+BenchmarkDeleteAllAbort/schema=s3/size=100000       	    2440	    450094 ns/op	  247830 B/op	    1254 allocs/op
+BenchmarkDeleteAllAbort/schema=s3/size=100000       	    2424	    449990 ns/op	  247837 B/op	    1254 allocs/op
+BenchmarkDeleteAllAbort/schema=wide/size=1000       	    1974	    522113 ns/op	  246887 B/op	    1516 allocs/op
+BenchmarkDeleteAllAbort/schema=wide/size=1000       	    1682	    472692 ns/op	  246884 B/op	    1516 allocs/op
+BenchmarkDeleteAllAbort/schema=wide/size=100000     	     746	   1882946 ns/op	  951612 B/op	    3145 allocs/op
+BenchmarkDeleteAllAbort/schema=wide/size=100000     	     728	   1907010 ns/op	  951689 B/op	    3145 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkDeletePrefixAbort/schema=s3/size=1000         	    9597	     83342 ns/op	   40545 B/op	     234 allocs/op
+BenchmarkDeletePrefixAbort/schema=s3/size=1000         	    9667	     84157 ns/op	   40545 B/op	     234 allocs/op
+BenchmarkDeletePrefixAbort/schema=s3/size=100000       	    6681	    160395 ns/op	  109698 B/op	     518 allocs/op
+BenchmarkDeletePrefixAbort/schema=s3/size=100000       	    6738	    158900 ns/op	  109699 B/op	     518 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkChanges/n=10/dup=false         	   12326	     54107 ns/op	   45586 B/op	     281 allocs/op
+BenchmarkChanges/n=10/dup=false         	   12890	     50969 ns/op	   45586 B/op	     281 allocs/op
+BenchmarkChanges/n=10/dup=true          	   10000	     74202 ns/op	   52794 B/op	     336 allocs/op
+BenchmarkChanges/n=10/dup=true          	   10000	     66783 ns/op	   52794 B/op	     336 allocs/op
+BenchmarkChanges/n=1000/dup=false       	     158	   4362079 ns/op	 3232578 B/op	   22401 allocs/op
+BenchmarkChanges/n=1000/dup=false       	     160	   4430905 ns/op	 3232578 B/op	   22401 allocs/op
+BenchmarkChanges/n=1000/dup=true        	     122	   6018523 ns/op	 4139595 B/op	   27428 allocs/op
+BenchmarkChanges/n=1000/dup=true        	     124	   6089918 ns/op	 4139595 B/op	   27428 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkReadYourWrites/size=1000         	   27680	     21694 ns/op	   30186 B/op	     229 allocs/op
+BenchmarkReadYourWrites/size=1000         	   27825	     21698 ns/op	   30186 B/op	     229 allocs/op
+BenchmarkReadYourWrites/size=100000       	   14151	     50536 ns/op	   42506 B/op	     273 allocs/op
+BenchmarkReadYourWrites/size=100000       	   14542	     48633 ns/op	   42506 B/op	     273 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkIterateInWriteTxn/size=1000         	   92384	      6417 ns/op	    8091 B/op	      56 allocs/op
+BenchmarkIterateInWriteTxn/size=1000         	   92022	      6573 ns/op	    8092 B/op	      56 allocs/op
+BenchmarkIterateInWriteTxn/size=100000       	   66067	     18403 ns/op	   12315 B/op	      74 allocs/op
+BenchmarkIterateInWriteTxn/size=100000       	   67353	     17845 ns/op	   12316 B/op	      74 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkTxnSnapshot 	   58483	     34935 ns/op	   26933 B/op	     105 allocs/op
+BenchmarkTxnSnapshot 	   55623	     36152 ns/op	   26932 B/op	     105 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkBulkLoad/schema=s3/size=1000         	     529	   1127862 ns/op	         0.5670 gc-ms	      1114 heapB/row	        11.57 heapobjs/row	 1252850 B/op	   12752 allocs/op
+BenchmarkBulkLoad/schema=s3/size=1000         	     540	   1126309 ns/op	         0.5690 gc-ms	      1114 heapB/row	        11.57 heapobjs/row	 1252850 B/op	   12752 allocs/op
+BenchmarkBulkLoad/schema=s3/size=100000       	       3	 233417930 ns/op	       162.7 gc-ms	      1135 heapB/row	        11.68 heapobjs/row	127066477 B/op	 1276772 allocs/op
+BenchmarkBulkLoad/schema=s3/size=100000       	       3	 239125361 ns/op	       153.1 gc-ms	      1135 heapB/row	        11.68 heapobjs/row	127066482 B/op	 1276772 allocs/op
+BenchmarkBulkLoad/schema=wide/size=1000       	     156	   3804752 ns/op	         1.187 gc-ms	      2952 heapB/row	        31.36 heapobjs/row	 3312524 B/op	   34311 allocs/op
+BenchmarkBulkLoad/schema=wide/size=1000       	     154	   3845975 ns/op	         1.180 gc-ms	      2952 heapB/row	        31.36 heapobjs/row	 3312525 B/op	   34311 allocs/op
+BenchmarkBulkLoad/schema=wide/size=100000     	       1	 861602292 ns/op	       432.3 gc-ms	      2970 heapB/row	        31.51 heapobjs/row	332070776 B/op	 3427145 allocs/op
+BenchmarkBulkLoad/schema=wide/size=100000     	       1	 860185042 ns/op	       437.9 gc-ms	      2970 heapB/row	        31.51 heapobjs/row	332070792 B/op	 3427145 allocs/op
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkNewMemDB/schema=s1         	  951348	       660.8 ns/op	    1208 B/op	      13 allocs/op
+BenchmarkNewMemDB/schema=s1         	  957694	       631.5 ns/op	    1208 B/op	      13 allocs/op
+BenchmarkNewMemDB/schema=wide       	  180873	      3437 ns/op	    6752 B/op	      62 allocs/op
+BenchmarkNewMemDB/schema=wide       	  176826	      3356 ns/op	    6752 B/op	      62 allocs/op
+BenchmarkNewMemDB/schema=s50        	   12195	     49516 ns/op	   88664 B/op	     860 allocs/op
+BenchmarkNewMemDB/schema=s50        	   10000	     51341 ns/op	   88664 B/op	     860 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkTxn/read         	16459004	        37.96 ns/op	      80 B/op	       1 allocs/op
+BenchmarkTxn/read         	16386558	        37.92 ns/op	      80 B/op	       1 allocs/op
+BenchmarkTxn/write-commit-empty         	14439838	        43.17 ns/op	      80 B/op	       1 allocs/op
+BenchmarkTxn/write-commit-empty         	14627456	        42.86 ns/op	      80 B/op	       1 allocs/op
+BenchmarkTxn/write-abort-empty          	14125581	        43.54 ns/op	      80 B/op	       1 allocs/op
+BenchmarkTxn/write-abort-empty          	14321418	        43.55 ns/op	      80 B/op	       1 allocs/op
+BenchmarkTxn/write-commit-defer         	 8547601	        70.56 ns/op	     104 B/op	       3 allocs/op
+BenchmarkTxn/write-commit-defer         	 8529465	        71.40 ns/op	     104 B/op	       3 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkSnapshot 	27569886	        23.37 ns/op	      32 B/op	       1 allocs/op
+BenchmarkSnapshot 	28414921	        23.32 ns/op	      32 B/op	       1 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkSnapshotWrite 	  182821	      8092 ns/op	    7078 B/op	      41 allocs/op
+BenchmarkSnapshotWrite 	  196294	      8593 ns/op	    7078 B/op	      41 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkIndexer/FromObject/StringFieldIndex         	20915031	        28.83 ns/op	      48 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex         	20847447	        29.06 ns/op	      48 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex-lowercase         	13948959	        43.59 ns/op	      21 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex-lowercase         	14159110	        42.77 ns/op	      21 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex-pointer           	11907694	        50.33 ns/op	       8 B/op	       0 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex-pointer           	11967906	        50.59 ns/op	       8 B/op	       0 allocs/op
+BenchmarkIndexer/FromObject/IntFieldIndex                      	27521830	        21.73 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/IntFieldIndex                      	28247422	        21.40 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/UintFieldIndex                     	27241924	        22.24 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/UintFieldIndex                     	27078765	        22.58 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/BoolFieldIndex                     	30787782	        19.63 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/BoolFieldIndex                     	30556315	        19.55 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/UUIDFieldIndex                     	 5875228	       102.5 ns/op	      16 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/UUIDFieldIndex                     	 5878792	       102.9 ns/op	      16 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/FieldSetIndex                      	29459539	        20.27 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/FieldSetIndex                      	30208310	        20.07 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/ConditionalIndex                   	78062742	         7.835 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/ConditionalIndex                   	79552300	         7.795 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/CompoundIndex                      	 6986916	        82.66 ns/op	      48 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/CompoundIndex                      	 7088089	        81.80 ns/op	      48 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/StringSliceFieldIndex              	 5949158	       101.7 ns/op	     128 B/op	       3 allocs/op
+BenchmarkIndexer/FromObject/StringSliceFieldIndex              	 5822814	       101.8 ns/op	     128 B/op	       3 allocs/op
+BenchmarkIndexer/FromObject/StringMapFieldIndex                	 3016294	       199.4 ns/op	      96 B/op	       3 allocs/op
+BenchmarkIndexer/FromObject/StringMapFieldIndex                	 2989411	       200.5 ns/op	      96 B/op	       3 allocs/op
+BenchmarkIndexer/FromObject/CompoundMultiIndex                 	 2128873	       281.8 ns/op	     376 B/op	       5 allocs/op
+BenchmarkIndexer/FromObject/CompoundMultiIndex                 	 2125579	       282.3 ns/op	     376 B/op	       5 allocs/op
+BenchmarkIndexer/FromArgs/StringFieldIndex                     	28692975	        21.38 ns/op	      48 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/StringFieldIndex                     	28374327	        21.85 ns/op	      48 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/StringFieldIndex-lowercase           	17935297	        33.55 ns/op	      21 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/StringFieldIndex-lowercase           	18191464	        33.26 ns/op	      21 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/IntFieldIndex                        	51838651	        11.89 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/IntFieldIndex                        	51978050	        12.07 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/UintFieldIndex                       	52298022	        11.88 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/UintFieldIndex                       	52341176	        11.87 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/BoolFieldIndex                       	80933889	         7.682 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/BoolFieldIndex                       	80932066	         7.677 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/UUIDFieldIndex-string                	 6867135	        87.51 ns/op	      16 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/UUIDFieldIndex-string                	 6919483	        88.32 ns/op	      16 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/StringMapFieldIndex                  	24572497	        24.54 ns/op	      16 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/StringMapFieldIndex                  	24618244	        24.54 ns/op	      16 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/CompoundIndex                        	10376934	        58.23 ns/op	      48 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/CompoundIndex                        	10280257	        58.12 ns/op	      48 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/CompoundMultiIndex                   	 4001272	       150.5 ns/op	     206 B/op	       9 allocs/op
+BenchmarkIndexer/FromArgs/CompoundMultiIndex                   	 3979694	       151.1 ns/op	     206 B/op	       9 allocs/op
+BenchmarkIndexer/PrefixFromArgs/UUIDFieldIndex                 	10151002	        57.70 ns/op	      24 B/op	       2 allocs/op
+BenchmarkIndexer/PrefixFromArgs/UUIDFieldIndex                 	10360860	        57.83 ns/op	      24 B/op	       2 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkFirst/schema=s3/keys=uuid/size=1000/hit         	 6530641	        95.93 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=1000/hit         	 6335487	        96.40 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=1000/miss        	 7958359	        76.64 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=1000/miss        	 7886292	        76.52 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=100000/hit       	 1384363	       433.2 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=100000/hit       	 1454481	       419.6 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=100000/miss      	 4718301	       127.9 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=100000/miss      	 4605987	       128.4 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=1000/hit          	 6954522	        86.12 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=1000/hit          	 6835292	        86.68 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=1000/miss         	15236530	        54.04 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=1000/miss         	15212852	        53.69 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=100000/hit        	 1732855	       333.2 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=100000/hit        	 1804143	       349.8 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=100000/miss       	15414786	        37.94 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=100000/miss       	15542799	        38.04 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=1000/hit         	 5682868	       102.9 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=1000/hit         	 5702035	       103.1 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=1000/miss        	 9389928	        65.74 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=1000/miss        	 9064693	        65.93 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=100000/hit       	 1575912	       377.4 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=100000/hit       	 1510671	       378.9 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=100000/miss      	 9261319	        65.93 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=100000/miss      	 9282584	        66.27 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=1000/hit       	 5811681	       102.4 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=1000/hit       	 5809906	       102.7 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=1000/miss      	 7186542	        83.99 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=1000/miss      	 7232484	        82.64 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=100000/hit     	 1334101	       454.7 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=100000/hit     	 1301475	       465.4 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=100000/miss    	 4173063	       147.7 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=100000/miss    	 4182319	       143.9 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=1000/hit       	 5162030	       114.1 ns/op	      80 B/op	       3 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=1000/hit       	 5053555	       117.6 ns/op	      80 B/op	       3 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=1000/miss      	 6241783	        95.90 ns/op	      80 B/op	       3 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=1000/miss      	 6053533	        97.20 ns/op	      80 B/op	       3 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=100000/hit     	 1260970	       468.9 ns/op	      80 B/op	       3 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=100000/hit     	 1312285	       453.5 ns/op	      80 B/op	       3 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=100000/miss    	 3961635	       151.0 ns/op	      80 B/op	       3 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=100000/miss    	 3889474	       152.5 ns/op	      80 B/op	       3 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkTxnFirst/size=1000         	 4743646	       128.8 ns/op	      96 B/op	       2 allocs/op
+BenchmarkTxnFirst/size=1000         	 4040959	       144.3 ns/op	      96 B/op	       2 allocs/op
+BenchmarkTxnFirst/size=100000       	 1323585	       453.1 ns/op	      96 B/op	       2 allocs/op
+BenchmarkTxnFirst/size=100000       	 1339339	       449.5 ns/op	      96 B/op	       2 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkFirstIndex/nonunique-string         	 2565403	       208.5 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/nonunique-string         	 2637910	       205.0 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/unique-lowercase         	 1546377	       374.0 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/unique-lowercase         	 1545271	       378.5 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/id-prefix                	 1444179	       407.5 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/id-prefix                	 1383316	       431.3 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/string-slice             	 2272705	       261.0 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/string-slice             	 2028296	       256.6 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/string-map               	 1465400	       381.1 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/string-map               	 1761530	       361.2 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/int                      	 5869718	        98.50 ns/op	       0 B/op	       0 allocs/op
+BenchmarkFirstIndex/int                      	 6017475	        93.67 ns/op	       0 B/op	       0 allocs/op
+BenchmarkFirstIndex/uint                     	 1984196	       311.1 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFirstIndex/uint                     	 1918849	       306.7 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFirstIndex/bool                     	 6985329	        80.20 ns/op	       0 B/op	       0 allocs/op
+BenchmarkFirstIndex/bool                     	 6512697	        80.66 ns/op	       0 B/op	       0 allocs/op
+BenchmarkFirstIndex/uuid                     	 1226018	       490.3 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/uuid                     	 1211493	       489.5 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/compound                 	 2369829	       238.1 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/compound                 	 2668597	       243.7 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/compound-prefix          	 2423389	       239.5 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/compound-prefix          	 2512195	       215.5 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/no-args                  	20544133	        29.88 ns/op	       0 B/op	       0 allocs/op
+BenchmarkFirstIndex/no-args                  	21151989	        28.63 ns/op	       0 B/op	       0 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkLast/unique         	 1347867	       445.0 ns/op	      16 B/op	       1 allocs/op
+BenchmarkLast/unique         	 1291657	       461.7 ns/op	      16 B/op	       1 allocs/op
+BenchmarkLast/nonunique-string         	 2928044	       209.3 ns/op	      16 B/op	       1 allocs/op
+BenchmarkLast/nonunique-string         	 2908582	       202.3 ns/op	      16 B/op	       1 allocs/op
+BenchmarkLast/int                      	 5056762	       103.2 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLast/int                      	 5215225	       109.6 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLast/no-args                  	20031354	        29.93 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLast/no-args                  	19205889	        30.45 ns/op	       0 B/op	       0 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkGetOne/size=1000         	 3591847	       168.1 ns/op	     192 B/op	       2 allocs/op
+BenchmarkGetOne/size=1000         	 3585092	       167.5 ns/op	     192 B/op	       2 allocs/op
+BenchmarkGetOne/size=100000       	 1000000	       538.4 ns/op	     192 B/op	       2 allocs/op
+BenchmarkGetOne/size=100000       	 1000000	       547.7 ns/op	     192 B/op	       2 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkIterate/scan=all/keys=uuid/size=1000         	   75979	      7928 ns/op	      1000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=uuid/size=1000         	   76682	      7798 ns/op	      1000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=seq/size=1000          	  136849	      4451 ns/op	      1000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=seq/size=1000          	  138049	      4457 ns/op	      1000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=path/size=1000         	  115488	      5293 ns/op	      1000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=path/size=1000         	  116581	      5264 ns/op	      1000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=group/size=1000                 	  664714	      1046 ns/op	       100.0 rows/op	     208 B/op	       3 allocs/op
+BenchmarkIterate/scan=group/size=1000                 	  632596	      1037 ns/op	       100.0 rows/op	     208 B/op	       3 allocs/op
+BenchmarkIterate/scan=group-reverse/size=1000         	  689532	      1004 ns/op	       100.0 rows/op	     208 B/op	       3 allocs/op
+BenchmarkIterate/scan=group-reverse/size=1000         	  668494	       986.1 ns/op	       100.0 rows/op	     208 B/op	       3 allocs/op
+BenchmarkIterate/scan=tags/size=1000                  	  850887	       801.2 ns/op	        20.00 rows/op	     200 B/op	       3 allocs/op
+BenchmarkIterate/scan=tags/size=1000                  	  854188	       794.2 ns/op	        20.00 rows/op	     200 B/op	       3 allocs/op
+BenchmarkIterate/scan=all-reverse/size=1000           	   80300	      7649 ns/op	      1000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all-reverse/size=1000           	   81976	      7549 ns/op	      1000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=uuid/size=100000       	     231	   2605016 ns/op	    100000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=uuid/size=100000       	     223	   2636817 ns/op	    100000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=seq/size=100000        	     374	   1573436 ns/op	    100000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=seq/size=100000        	     382	   1587147 ns/op	    100000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=path/size=100000       	     294	   1969883 ns/op	    100000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=path/size=100000       	     304	   1971334 ns/op	    100000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=group/size=100000               	  227491	      2661 ns/op	       100.0 rows/op	     213 B/op	       3 allocs/op
+BenchmarkIterate/scan=group/size=100000               	  237214	      2389 ns/op	       100.0 rows/op	     213 B/op	       3 allocs/op
+BenchmarkIterate/scan=group-reverse/size=100000       	  226214	      2550 ns/op	       100.0 rows/op	     213 B/op	       3 allocs/op
+BenchmarkIterate/scan=group-reverse/size=100000       	  197199	      2597 ns/op	       100.0 rows/op	     213 B/op	       3 allocs/op
+BenchmarkIterate/scan=tags/size=100000                	    2686	    221906 ns/op	      6361 rows/op	     200 B/op	       3 allocs/op
+BenchmarkIterate/scan=tags/size=100000                	    2694	    223014 ns/op	      6361 rows/op	     200 B/op	       3 allocs/op
+BenchmarkIterate/scan=all-reverse/size=100000         	     175	   3215686 ns/op	    100000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all-reverse/size=100000         	     175	   3332492 ns/op	    100000 rows/op	     176 B/op	       1 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkLowerBound/int         	 2314370	       521.9 ns/op	     176 B/op	       1 allocs/op
+BenchmarkLowerBound/int         	 2045218	       469.6 ns/op	     176 B/op	       1 allocs/op
+BenchmarkLowerBound/int-reverse 	 1934757	       426.4 ns/op	     176 B/op	       1 allocs/op
+BenchmarkLowerBound/int-reverse 	 2120984	       496.8 ns/op	     176 B/op	       1 allocs/op
+BenchmarkLowerBound/uint        	 1173548	       511.7 ns/op	     184 B/op	       2 allocs/op
+BenchmarkLowerBound/uint        	 1158614	       515.2 ns/op	     184 B/op	       2 allocs/op
+BenchmarkLowerBound/string      	  558180	       930.0 ns/op	     192 B/op	       2 allocs/op
+BenchmarkLowerBound/string      	  669255	       883.2 ns/op	     192 B/op	       2 allocs/op
+BenchmarkLowerBound/string-reverse         	  577668	       907.9 ns/op	     192 B/op	       2 allocs/op
+BenchmarkLowerBound/string-reverse         	  573102	       894.0 ns/op	     192 B/op	       2 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkLongestPrefix/size=1000         	 3371030	       181.2 ns/op	      80 B/op	       3 allocs/op
+BenchmarkLongestPrefix/size=1000         	 3334864	       178.3 ns/op	      80 B/op	       3 allocs/op
+BenchmarkLongestPrefix/size=100000       	 2803478	       285.2 ns/op	      80 B/op	       3 allocs/op
+BenchmarkLongestPrefix/size=100000       	 2642256	       278.2 ns/op	      80 B/op	       3 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkFilterIterator 	  119200	      4648 ns/op	     213 B/op	       3 allocs/op
+BenchmarkFilterIterator 	  145566	      4062 ns/op	     213 B/op	       3 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkParallelTxnFirst/size=1000         	 4763077	       128.4 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000         	 4638102	       129.2 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000       	 1311124	       455.3 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000       	 1337598	       450.5 ns/op	      96 B/op	       2 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkParallelTxnFirstWithWriter 	 1338306	       451.4 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter 	 1277944	       444.9 ns/op	      96 B/op	       2 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkFirstWatch/size=1000         	 6102148	        98.78 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstWatch/size=1000         	 6179787	        98.74 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstWatch/size=100000       	 1000000	       508.5 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstWatch/size=100000       	 1289088	       466.0 ns/op	      16 B/op	       1 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkGetWatchCh/size=1000         	 2759056	       218.4 ns/op	     208 B/op	       3 allocs/op
+BenchmarkGetWatchCh/size=1000         	 2598637	       227.4 ns/op	     208 B/op	       3 allocs/op
+BenchmarkGetWatchCh/size=100000       	 1633873	       342.4 ns/op	     213 B/op	       3 allocs/op
+BenchmarkGetWatchCh/size=100000       	 1601582	       351.7 ns/op	     213 B/op	       3 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkWatchCycle/size=1000         	  145683	      4054 ns/op	    4986 B/op	      34 allocs/op
+BenchmarkWatchCycle/size=1000         	  148761	      4041 ns/op	    4985 B/op	      34 allocs/op
+BenchmarkWatchCycle/size=100000       	  150284	     10057 ns/op	    6968 B/op	      42 allocs/op
+BenchmarkWatchCycle/size=100000       	  142107	      9132 ns/op	    6969 B/op	      42 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkCommitNotify/size=1000/rows=100         	    3423	    192616 ns/op	  186075 B/op	    1830 allocs/op
+BenchmarkCommitNotify/size=1000/rows=100         	    3274	    192501 ns/op	  186075 B/op	    1830 allocs/op
+BenchmarkCommitNotify/size=100000/rows=100       	    3223	    490370 ns/op	  350424 B/op	    2546 allocs/op
+BenchmarkCommitNotify/size=100000/rows=100       	    3170	    473686 ns/op	  350424 B/op	    2546 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkWatchSetAdd 	  400525	      1525 ns/op	    2120 B/op	       7 allocs/op
+BenchmarkWatchSetAdd 	  399284	      1525 ns/op	    2120 B/op	       7 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkWatchSetWatchExpired/n=1         	 8304626	        71.83 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=1         	 8467101	        71.98 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=8         	 2333467	       258.0 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=8         	 2287884	       260.9 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=32        	  429105	      1404 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=32        	  423952	      1442 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=33        	  406896	      1493 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=33        	  394262	      1522 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=256       	28920307	        20.89 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=256       	27579495	        20.97 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=1024      	28600936	        20.84 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=1024      	29002262	        20.83 ns/op	       0 B/op	       0 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkWatchSetWatchCtxCancelled/n=1         	 6896809	        86.20 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=1         	 7036544	        85.71 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=8         	 2156760	       275.8 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=8         	 2151950	       275.4 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=32        	  427028	      1412 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=32        	  420495	      1429 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=33        	  394345	      1529 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=33        	  387051	      1553 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=256       	16929445	        35.61 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=256       	16959172	        35.77 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=1024      	16779304	        35.51 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=1024      	16901764	        35.53 ns/op	       0 B/op	       0 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkWatchSetWatchCtxFired/n=1         	11352849	        53.08 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=1         	11189532	        53.34 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=8         	 2522479	       235.6 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=8         	 2545154	       235.0 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=32        	  440445	      1361 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=32        	  440326	      1365 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=33        	  388138	      1517 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=33        	  411196	      1458 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=256       	   30006	     20167 ns/op	    2687 B/op	      19 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=256       	   29604	     19978 ns/op	    2688 B/op	      19 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=1024      	    7072	     86920 ns/op	   10170 B/op	      68 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=1024      	    7134	     86834 ns/op	   10125 B/op	      68 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkWatchSetBlockThenFire/n=8         	  915331	       668.7 ns/op	     112 B/op	       1 allocs/op
+BenchmarkWatchSetBlockThenFire/n=8         	  913543	       665.3 ns/op	     112 B/op	       1 allocs/op
+BenchmarkWatchSetBlockThenFire/n=1024      	    7016	     86220 ns/op	   10289 B/op	      69 allocs/op
+BenchmarkWatchSetBlockThenFire/n=1024      	    6920	     87381 ns/op	   10270 B/op	      69 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkInsertAbort/schema=s1/size=1000/batch=1         	 1000000	       622.9 ns/op	     951 B/op	       6 allocs/op
+BenchmarkInsertAbort/schema=s1/size=1000/batch=1         	 1000000	       624.7 ns/op	     951 B/op	       6 allocs/op
+BenchmarkInsertAbort/schema=s1/size=1000/batch=100       	   20241	     29630 ns/op	   41666 B/op	     353 allocs/op
+BenchmarkInsertAbort/schema=s1/size=1000/batch=100       	   20212	     29826 ns/op	   41666 B/op	     353 allocs/op
+BenchmarkInsertAbort/schema=s1/size=100000/batch=1       	 1000000	      1231 ns/op	    1390 B/op	       8 allocs/op
+BenchmarkInsertAbort/schema=s1/size=100000/batch=1       	 1000000	      1211 ns/op	    1390 B/op	       8 allocs/op
+BenchmarkInsertAbort/schema=s1/size=100000/batch=100     	   10000	     75354 ns/op	   82748 B/op	     529 allocs/op
+BenchmarkInsertAbort/schema=s1/size=100000/batch=100     	   10000	     77794 ns/op	   82748 B/op	     529 allocs/op
+BenchmarkInsertAbort/schema=s3/size=1000/batch=1         	  369969	      3813 ns/op	    4792 B/op	      30 allocs/op
+BenchmarkInsertAbort/schema=s3/size=1000/batch=1         	  373771	      3834 ns/op	    4792 B/op	      30 allocs/op
+BenchmarkInsertAbort/schema=s3/size=1000/batch=100       	    5659	    183476 ns/op	  197964 B/op	    1684 allocs/op
+BenchmarkInsertAbort/schema=s3/size=1000/batch=100       	    5906	    187068 ns/op	  197971 B/op	    1684 allocs/op
+BenchmarkInsertAbort/schema=s3/size=100000/batch=1       	  203209	      7476 ns/op	    6918 B/op	      39 allocs/op
+BenchmarkInsertAbort/schema=s3/size=100000/batch=1       	  184438	      7489 ns/op	    6918 B/op	      39 allocs/op
+BenchmarkInsertAbort/schema=s3/size=100000/batch=100     	    2420	    495647 ns/op	  364679 B/op	    2425 allocs/op
+BenchmarkInsertAbort/schema=s3/size=100000/batch=100     	    2719	    468067 ns/op	  364645 B/op	    2425 allocs/op
+BenchmarkInsertAbort/schema=wide/size=1000/batch=1       	   99772	     15840 ns/op	   17489 B/op	      82 allocs/op
+BenchmarkInsertAbort/schema=wide/size=1000/batch=1       	   99046	     15761 ns/op	   17487 B/op	      82 allocs/op
+BenchmarkInsertAbort/schema=wide/size=1000/batch=100     	    1557	    746425 ns/op	  564280 B/op	    4713 allocs/op
+BenchmarkInsertAbort/schema=wide/size=1000/batch=100     	    1585	    715646 ns/op	  564332 B/op	    4713 allocs/op
+BenchmarkInsertAbort/schema=wide/size=100000/batch=1     	   58699	     29648 ns/op	   26725 B/op	     103 allocs/op
+BenchmarkInsertAbort/schema=wide/size=100000/batch=1     	   58058	     29394 ns/op	   26725 B/op	     103 allocs/op
+BenchmarkInsertAbort/schema=wide/size=100000/batch=100   	     753	   1833958 ns/op	 1328784 B/op	    6597 allocs/op
+BenchmarkInsertAbort/schema=wide/size=100000/batch=100   	     772	   1845722 ns/op	 1328800 B/op	    6596 allocs/op
+BenchmarkInsertAbort/schema=func/size=1000/batch=1       	  474410	      2845 ns/op	    3042 B/op	      22 allocs/op
+BenchmarkInsertAbort/schema=func/size=1000/batch=1       	  487149	      2849 ns/op	    3042 B/op	      22 allocs/op
+BenchmarkInsertAbort/schema=func/size=1000/batch=100     	    7287	    174326 ns/op	  130908 B/op	    1361 allocs/op
+BenchmarkInsertAbort/schema=func/size=1000/batch=100     	    7250	    178635 ns/op	  130908 B/op	    1361 allocs/op
+BenchmarkInsertAbort/schema=func/size=100000/batch=1     	  258969	      5959 ns/op	    4390 B/op	      28 allocs/op
+BenchmarkInsertAbort/schema=func/size=100000/batch=1     	  263079	      5857 ns/op	    4390 B/op	      28 allocs/op
+BenchmarkInsertAbort/schema=func/size=100000/batch=100   	    3832	    351083 ns/op	  239807 B/op	    1833 allocs/op
+BenchmarkInsertAbort/schema=func/size=100000/batch=100   	    3578	    270256 ns/op	  239804 B/op	    1833 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkInsertDeleteCommit/schema=s1/keys=uuid/size=1000         	  437151	      1417 ns/op	    1991 B/op	      12 allocs/op
+BenchmarkInsertDeleteCommit/schema=s1/keys=uuid/size=1000         	  454759	      1405 ns/op	    1991 B/op	      12 allocs/op
+BenchmarkInsertDeleteCommit/schema=s1/keys=uuid/size=100000       	  622990	      2587 ns/op	    2869 B/op	      16 allocs/op
+BenchmarkInsertDeleteCommit/schema=s1/keys=uuid/size=100000       	  613462	      2513 ns/op	    2869 B/op	      16 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=uuid/size=1000         	  167270	      7629 ns/op	    9009 B/op	      53 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=uuid/size=1000         	  175074	      8018 ns/op	    9009 B/op	      53 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=uuid/size=100000       	  114691	     13276 ns/op	   13263 B/op	      71 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=uuid/size=100000       	  115434	     13288 ns/op	   13263 B/op	      71 allocs/op
+BenchmarkInsertDeleteCommit/schema=wide/keys=uuid/size=1000       	   25926	     37263 ns/op	   33050 B/op	     139 allocs/op
+BenchmarkInsertDeleteCommit/schema=wide/keys=uuid/size=1000       	   25177	     34928 ns/op	   33040 B/op	     139 allocs/op
+BenchmarkInsertDeleteCommit/schema=wide/keys=uuid/size=100000     	   33031	     64605 ns/op	   51513 B/op	     182 allocs/op
+BenchmarkInsertDeleteCommit/schema=wide/keys=uuid/size=100000     	   33402	     65537 ns/op	   51514 B/op	     182 allocs/op
+BenchmarkInsertDeleteCommit/schema=func/keys=uuid/size=1000       	  262806	      6218 ns/op	    5868 B/op	      41 allocs/op
+BenchmarkInsertDeleteCommit/schema=func/keys=uuid/size=1000       	  261874	      6136 ns/op	    5868 B/op	      41 allocs/op
+BenchmarkInsertDeleteCommit/schema=func/keys=uuid/size=100000     	  188127	      9098 ns/op	    8566 B/op	      52 allocs/op
+BenchmarkInsertDeleteCommit/schema=func/keys=uuid/size=100000     	  168319	      9898 ns/op	    8566 B/op	      52 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=seq/size=1000          	  171153	      8524 ns/op	    7601 B/op	      53 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=seq/size=1000          	  182407	      8061 ns/op	    7601 B/op	      53 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=seq/size=100000        	  164054	      9597 ns/op	    8571 B/op	      57 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=seq/size=100000        	  163354	      9694 ns/op	    8571 B/op	      57 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=path/size=1000         	  137245	     11998 ns/op	    9488 B/op	      66 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=path/size=1000         	  137156	     12136 ns/op	    9487 B/op	      66 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=path/size=100000       	  124898	     14034 ns/op	   11115 B/op	      73 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=path/size=100000       	  125221	     12984 ns/op	   11114 B/op	      73 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkInsertDeleteCommitManyTables 	   73077	      8622 ns/op	   11570 B/op	      55 allocs/op
+BenchmarkInsertDeleteCommitManyTables 	   70510	      8664 ns/op	   11572 B/op	      55 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkUpdateCommit/schema=s3/size=1000/keys=same         	  169546	      3758 ns/op	    4769 B/op	      30 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=1000/keys=same         	  165481	      3717 ns/op	    4769 B/op	      30 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=1000/keys=moved        	  142308	      4324 ns/op	    5314 B/op	      33 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=1000/keys=moved        	  136686	      4359 ns/op	    5317 B/op	      33 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=100000/keys=same       	  166465	      9480 ns/op	    6752 B/op	      38 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=100000/keys=same       	  142933	      8725 ns/op	    6753 B/op	      38 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=100000/keys=moved      	  147378	     11428 ns/op	    6974 B/op	      39 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=100000/keys=moved      	  128840	      9426 ns/op	    7093 B/op	      40 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=1000/keys=same       	   84798	     19880 ns/op	   17076 B/op	      79 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=1000/keys=same       	   85774	     19337 ns/op	   17075 B/op	      79 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=1000/keys=moved      	   74406	     23340 ns/op	   18691 B/op	      88 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=1000/keys=moved      	   75019	     23414 ns/op	   18699 B/op	      88 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=100000/keys=same     	   50238	     34463 ns/op	   26170 B/op	     100 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=100000/keys=same     	   44190	     38408 ns/op	   26169 B/op	     100 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=100000/keys=moved    	   43512	     49978 ns/op	   27606 B/op	     107 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=100000/keys=moved    	   45058	     44071 ns/op	   26251 B/op	     100 allocs/op
+BenchmarkUpdateCommit/schema=func/size=1000/keys=same       	  422672	      5176 ns/op	    3078 B/op	      24 allocs/op
+BenchmarkUpdateCommit/schema=func/size=1000/keys=same       	  424725	      5192 ns/op	    3078 B/op	      24 allocs/op
+BenchmarkUpdateCommit/schema=func/size=1000/keys=moved      	  300529	      4725 ns/op	    3700 B/op	      28 allocs/op
+BenchmarkUpdateCommit/schema=func/size=1000/keys=moved      	  339494	      6421 ns/op	    3700 B/op	      28 allocs/op
+BenchmarkUpdateCommit/schema=func/size=100000/keys=same     	  206001	      2706 ns/op	    4395 B/op	      30 allocs/op
+BenchmarkUpdateCommit/schema=func/size=100000/keys=same     	  222284	      2780 ns/op	    4395 B/op	      30 allocs/op
+BenchmarkUpdateCommit/schema=func/size=100000/keys=moved    	  168100	      3505 ns/op	    4928 B/op	      33 allocs/op
+BenchmarkUpdateCommit/schema=func/size=100000/keys=moved    	  159909	      3446 ns/op	    4959 B/op	      33 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkDeleteAbort/schema=s3/size=1000         	  192939	      3362 ns/op	    4056 B/op	      21 allocs/op
+BenchmarkDeleteAbort/schema=s3/size=1000         	  175882	      3464 ns/op	    4056 B/op	      21 allocs/op
+BenchmarkDeleteAbort/schema=s3/size=100000       	  133116	      9077 ns/op	    6100 B/op	      29 allocs/op
+BenchmarkDeleteAbort/schema=s3/size=100000       	  139348	      8997 ns/op	    6100 B/op	      29 allocs/op
+BenchmarkDeleteAbort/schema=wide/size=1000       	   95353	     17597 ns/op	   15358 B/op	      55 allocs/op
+BenchmarkDeleteAbort/schema=wide/size=1000       	   96738	     18159 ns/op	   15358 B/op	      55 allocs/op
+BenchmarkDeleteAbort/schema=wide/size=100000     	   47088	     28058 ns/op	   24539 B/op	      76 allocs/op
+BenchmarkDeleteAbort/schema=wide/size=100000     	   48165	     27969 ns/op	   24539 B/op	      76 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkDeleteAllAbort/schema=s3/size=1000         	    4933	    141594 ns/op	  100228 B/op	     613 allocs/op
+BenchmarkDeleteAllAbort/schema=s3/size=1000         	    5004	    141960 ns/op	  100229 B/op	     613 allocs/op
+BenchmarkDeleteAllAbort/schema=s3/size=100000       	    2457	    443696 ns/op	  247824 B/op	    1254 allocs/op
+BenchmarkDeleteAllAbort/schema=s3/size=100000       	    2347	    473110 ns/op	  247808 B/op	    1254 allocs/op
+BenchmarkDeleteAllAbort/schema=wide/size=1000       	    1796	    501936 ns/op	  246888 B/op	    1516 allocs/op
+BenchmarkDeleteAllAbort/schema=wide/size=1000       	    1940	    523627 ns/op	  246885 B/op	    1516 allocs/op
+BenchmarkDeleteAllAbort/schema=wide/size=100000     	     753	   1828936 ns/op	  951683 B/op	    3145 allocs/op
+BenchmarkDeleteAllAbort/schema=wide/size=100000     	     758	   1837247 ns/op	  951644 B/op	    3145 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkDeletePrefixAbort/schema=s3/size=1000         	    9438	     84746 ns/op	   40545 B/op	     234 allocs/op
+BenchmarkDeletePrefixAbort/schema=s3/size=1000         	    9364	     84956 ns/op	   40545 B/op	     234 allocs/op
+BenchmarkDeletePrefixAbort/schema=s3/size=100000       	    6770	    157395 ns/op	  109698 B/op	     518 allocs/op
+BenchmarkDeletePrefixAbort/schema=s3/size=100000       	    6699	    160412 ns/op	  109698 B/op	     518 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkChanges/n=10/dup=false         	   10000	     60839 ns/op	   45586 B/op	     281 allocs/op
+BenchmarkChanges/n=10/dup=false         	   13455	     48841 ns/op	   45586 B/op	     281 allocs/op
+BenchmarkChanges/n=10/dup=true          	   10000	     70364 ns/op	   52794 B/op	     336 allocs/op
+BenchmarkChanges/n=10/dup=true          	   10000	     71700 ns/op	   52794 B/op	     336 allocs/op
+BenchmarkChanges/n=1000/dup=false       	     150	   4436795 ns/op	 3232578 B/op	   22401 allocs/op
+BenchmarkChanges/n=1000/dup=false       	     147	   4389327 ns/op	 3232578 B/op	   22401 allocs/op
+BenchmarkChanges/n=1000/dup=true        	     120	   5926884 ns/op	 4139595 B/op	   27428 allocs/op
+BenchmarkChanges/n=1000/dup=true        	     123	   5988451 ns/op	 4139595 B/op	   27428 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkReadYourWrites/size=1000         	   27951	     21460 ns/op	   30186 B/op	     229 allocs/op
+BenchmarkReadYourWrites/size=1000         	   28086	     21316 ns/op	   30186 B/op	     229 allocs/op
+BenchmarkReadYourWrites/size=100000       	   14427	     51986 ns/op	   42506 B/op	     273 allocs/op
+BenchmarkReadYourWrites/size=100000       	   14588	     49159 ns/op	   42506 B/op	     273 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkIterateInWriteTxn/size=1000         	   93218	      6517 ns/op	    8090 B/op	      56 allocs/op
+BenchmarkIterateInWriteTxn/size=1000         	   93943	      6514 ns/op	    8089 B/op	      56 allocs/op
+BenchmarkIterateInWriteTxn/size=100000       	   69532	     17343 ns/op	   12315 B/op	      74 allocs/op
+BenchmarkIterateInWriteTxn/size=100000       	   69247	     17766 ns/op	   12315 B/op	      74 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkTxnSnapshot 	   57462	     34734 ns/op	   26933 B/op	     105 allocs/op
+BenchmarkTxnSnapshot 	   58155	     34768 ns/op	   26933 B/op	     105 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkBulkLoad/schema=s3/size=1000         	     531	   1130421 ns/op	         0.5580 gc-ms	      1114 heapB/row	        11.57 heapobjs/row	 1252849 B/op	   12752 allocs/op
+BenchmarkBulkLoad/schema=s3/size=1000         	     538	   1154599 ns/op	         0.5640 gc-ms	      1114 heapB/row	        11.57 heapobjs/row	 1252850 B/op	   12752 allocs/op
+BenchmarkBulkLoad/schema=s3/size=100000       	       3	 233416069 ns/op	       165.9 gc-ms	      1135 heapB/row	        11.68 heapobjs/row	127066477 B/op	 1276772 allocs/op
+BenchmarkBulkLoad/schema=s3/size=100000       	       3	 239608625 ns/op	       164.1 gc-ms	      1135 heapB/row	        11.68 heapobjs/row	127066477 B/op	 1276772 allocs/op
+BenchmarkBulkLoad/schema=wide/size=1000       	     156	   3883725 ns/op	         1.220 gc-ms	      2952 heapB/row	        31.36 heapobjs/row	 3312526 B/op	   34311 allocs/op
+BenchmarkBulkLoad/schema=wide/size=1000       	     151	   3916015 ns/op	         1.295 gc-ms	      2952 heapB/row	        31.36 heapobjs/row	 3312525 B/op	   34311 allocs/op
+BenchmarkBulkLoad/schema=wide/size=100000     	       1	 860720333 ns/op	       430.0 gc-ms	      2970 heapB/row	        31.51 heapobjs/row	332070792 B/op	 3427145 allocs/op
+BenchmarkBulkLoad/schema=wide/size=100000     	       1	 873096958 ns/op	       420.3 gc-ms	      2970 heapB/row	        31.51 heapobjs/row	332070776 B/op	 3427145 allocs/op
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkNewMemDB/schema=s1         	  970939	       691.7 ns/op	    1208 B/op	      13 allocs/op
+BenchmarkNewMemDB/schema=s1         	  835596	       648.6 ns/op	    1208 B/op	      13 allocs/op
+BenchmarkNewMemDB/schema=wide       	  162375	      3572 ns/op	    6752 B/op	      62 allocs/op
+BenchmarkNewMemDB/schema=wide       	  175473	      3512 ns/op	    6752 B/op	      62 allocs/op
+BenchmarkNewMemDB/schema=s50        	   10000	     50354 ns/op	   88664 B/op	     860 allocs/op
+BenchmarkNewMemDB/schema=s50        	   10000	     50441 ns/op	   88664 B/op	     860 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkTxn/read         	16554958	        39.79 ns/op	      80 B/op	       1 allocs/op
+BenchmarkTxn/read         	16239990	        39.52 ns/op	      80 B/op	       1 allocs/op
+BenchmarkTxn/write-commit-empty         	14017149	        45.02 ns/op	      80 B/op	       1 allocs/op
+BenchmarkTxn/write-commit-empty         	14478268	        43.51 ns/op	      80 B/op	       1 allocs/op
+BenchmarkTxn/write-abort-empty          	13627587	        45.35 ns/op	      80 B/op	       1 allocs/op
+BenchmarkTxn/write-abort-empty          	14509868	        43.04 ns/op	      80 B/op	       1 allocs/op
+BenchmarkTxn/write-commit-defer         	 8358223	        73.29 ns/op	     104 B/op	       3 allocs/op
+BenchmarkTxn/write-commit-defer         	 8625026	        71.28 ns/op	     104 B/op	       3 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkSnapshot 	28170610	        23.73 ns/op	      32 B/op	       1 allocs/op
+BenchmarkSnapshot 	29172000	        23.75 ns/op	      32 B/op	       1 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkSnapshotWrite 	  164106	      8486 ns/op	    7078 B/op	      41 allocs/op
+BenchmarkSnapshotWrite 	  186534	      7713 ns/op	    7078 B/op	      41 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkIndexer/FromObject/StringFieldIndex         	20083849	        30.18 ns/op	      48 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex         	20598441	        28.77 ns/op	      48 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex-lowercase         	13785312	        43.74 ns/op	      21 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex-lowercase         	13992278	        43.10 ns/op	      21 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex-pointer           	11762389	        49.55 ns/op	       8 B/op	       0 allocs/op
+BenchmarkIndexer/FromObject/StringFieldIndex-pointer           	12043828	        50.18 ns/op	       8 B/op	       0 allocs/op
+BenchmarkIndexer/FromObject/IntFieldIndex                      	27836575	        21.80 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/IntFieldIndex                      	27281355	        22.67 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/UintFieldIndex                     	27301942	        22.65 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/UintFieldIndex                     	26802265	        23.25 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/BoolFieldIndex                     	30469225	        19.93 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/BoolFieldIndex                     	30107256	        19.50 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/UUIDFieldIndex                     	 5801449	       105.2 ns/op	      16 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/UUIDFieldIndex                     	 5630577	       104.1 ns/op	      16 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/FieldSetIndex                      	30249114	        20.06 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/FieldSetIndex                      	30742953	        20.66 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/ConditionalIndex                   	77931358	         8.001 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/ConditionalIndex                   	78239608	         7.985 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/CompoundIndex                      	 7304768	        83.08 ns/op	      48 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/CompoundIndex                      	 7139347	        84.05 ns/op	      48 B/op	       1 allocs/op
+BenchmarkIndexer/FromObject/StringSliceFieldIndex              	 5801143	       101.7 ns/op	     128 B/op	       3 allocs/op
+BenchmarkIndexer/FromObject/StringSliceFieldIndex              	 5991606	       101.6 ns/op	     128 B/op	       3 allocs/op
+BenchmarkIndexer/FromObject/StringMapFieldIndex                	 3072391	       198.1 ns/op	      96 B/op	       3 allocs/op
+BenchmarkIndexer/FromObject/StringMapFieldIndex                	 3015032	       199.5 ns/op	      96 B/op	       3 allocs/op
+BenchmarkIndexer/FromObject/CompoundMultiIndex                 	 2115058	       283.7 ns/op	     376 B/op	       5 allocs/op
+BenchmarkIndexer/FromObject/CompoundMultiIndex                 	 2077474	       298.8 ns/op	     376 B/op	       5 allocs/op
+BenchmarkIndexer/FromArgs/StringFieldIndex                     	27033115	        22.12 ns/op	      48 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/StringFieldIndex                     	27972190	        21.85 ns/op	      48 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/StringFieldIndex-lowercase           	17962638	        33.40 ns/op	      21 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/StringFieldIndex-lowercase           	18323221	        34.14 ns/op	      21 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/IntFieldIndex                        	50724406	        12.39 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/IntFieldIndex                        	52544198	        11.93 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/UintFieldIndex                       	49721695	        12.06 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/UintFieldIndex                       	51828576	        12.01 ns/op	       8 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/BoolFieldIndex                       	82114446	         7.683 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/BoolFieldIndex                       	79752765	         7.794 ns/op	       1 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/UUIDFieldIndex-string                	 6510372	        89.75 ns/op	      16 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/UUIDFieldIndex-string                	 6850911	        91.78 ns/op	      16 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/StringMapFieldIndex                  	24669741	        25.07 ns/op	      16 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/StringMapFieldIndex                  	24715174	        24.14 ns/op	      16 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/CompoundIndex                        	 9828585	        60.11 ns/op	      48 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/CompoundIndex                        	10340838	        58.65 ns/op	      48 B/op	       1 allocs/op
+BenchmarkIndexer/FromArgs/CompoundMultiIndex                   	 3961285	       150.0 ns/op	     206 B/op	       9 allocs/op
+BenchmarkIndexer/FromArgs/CompoundMultiIndex                   	 4020764	       156.0 ns/op	     206 B/op	       9 allocs/op
+BenchmarkIndexer/PrefixFromArgs/UUIDFieldIndex                 	10439812	        58.70 ns/op	      24 B/op	       2 allocs/op
+BenchmarkIndexer/PrefixFromArgs/UUIDFieldIndex                 	 9948632	        59.69 ns/op	      24 B/op	       2 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkFirst/schema=s3/keys=uuid/size=1000/hit         	 5742792	       102.7 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=1000/hit         	 6226533	        96.99 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=1000/miss        	 7859043	        75.66 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=1000/miss        	 8104520	        76.15 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=100000/hit       	 1389279	       427.9 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=100000/hit       	 1404477	       425.5 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=100000/miss      	 4622050	       127.2 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=uuid/size=100000/miss      	 4662134	       127.4 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=1000/hit          	 6845521	        87.29 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=1000/hit          	 6754832	        87.65 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=1000/miss         	14309947	        54.68 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=1000/miss         	14969934	        53.56 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=100000/hit        	 1615573	       359.2 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=100000/hit        	 1563216	       385.8 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=100000/miss       	15763322	        38.14 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=seq/size=100000/miss       	15422991	        37.84 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=1000/hit         	 5626225	       103.4 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=1000/hit         	 5697118	       103.0 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=1000/miss        	 9405770	        64.85 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=1000/miss        	 9273682	        64.94 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=100000/hit       	 1566145	       378.6 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=100000/hit       	 1658598	       361.5 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=100000/miss      	 9145196	        65.22 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=s3/keys=path/size=100000/miss      	 9208838	        64.84 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=1000/hit       	 5442762	       103.8 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=1000/hit       	 5572375	       103.3 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=1000/miss      	 6922297	        84.74 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=1000/miss      	 7075652	        83.43 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=100000/hit     	 1417425	       423.0 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=100000/hit     	 1357746	       438.7 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=100000/miss    	 4138706	       143.1 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=wide/keys=uuid/size=100000/miss    	 4159062	       143.2 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=1000/hit       	 5326530	       112.7 ns/op	      80 B/op	       3 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=1000/hit       	 5032509	       116.4 ns/op	      80 B/op	       3 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=1000/miss      	 6219976	        95.40 ns/op	      80 B/op	       3 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=1000/miss      	 6187262	        95.19 ns/op	      80 B/op	       3 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=100000/hit     	 1388064	       432.0 ns/op	      80 B/op	       3 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=100000/hit     	 1330190	       448.3 ns/op	      80 B/op	       3 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=100000/miss    	 3965112	       149.9 ns/op	      80 B/op	       3 allocs/op
+BenchmarkFirst/schema=func/keys=uuid/size=100000/miss    	 3958718	       151.0 ns/op	      80 B/op	       3 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkTxnFirst/size=1000         	 4429464	       133.4 ns/op	      96 B/op	       2 allocs/op
+BenchmarkTxnFirst/size=1000         	 4678639	       129.5 ns/op	      96 B/op	       2 allocs/op
+BenchmarkTxnFirst/size=100000       	 1371628	       440.3 ns/op	      96 B/op	       2 allocs/op
+BenchmarkTxnFirst/size=100000       	 1370574	       440.7 ns/op	      96 B/op	       2 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkFirstIndex/nonunique-string         	 2999130	       198.6 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/nonunique-string         	 2987504	       193.7 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/unique-lowercase         	 1627864	       366.4 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/unique-lowercase         	 1607205	       376.6 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/id-prefix                	 1431918	       426.1 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/id-prefix                	 1399968	       435.0 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/string-slice             	 2510228	       232.1 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/string-slice             	 2454104	       282.4 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/string-map               	 1307258	       454.0 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/string-map               	 1913595	       304.9 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/int                      	 5143905	       114.0 ns/op	       0 B/op	       0 allocs/op
+BenchmarkFirstIndex/int                      	 5803524	       105.7 ns/op	       0 B/op	       0 allocs/op
+BenchmarkFirstIndex/uint                     	 2124812	       273.7 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFirstIndex/uint                     	 2139794	       276.7 ns/op	       8 B/op	       1 allocs/op
+BenchmarkFirstIndex/bool                     	 7343323	        76.12 ns/op	       0 B/op	       0 allocs/op
+BenchmarkFirstIndex/bool                     	 7243000	        76.44 ns/op	       0 B/op	       0 allocs/op
+BenchmarkFirstIndex/uuid                     	 1294986	       459.8 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/uuid                     	 1283727	       466.6 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/compound                 	 2756566	       212.3 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/compound                 	 2782012	       212.4 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/compound-prefix          	 2975396	       230.2 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/compound-prefix          	 2239032	       262.1 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstIndex/no-args                  	19438312	        30.04 ns/op	       0 B/op	       0 allocs/op
+BenchmarkFirstIndex/no-args                  	17809107	        29.10 ns/op	       0 B/op	       0 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkLast/unique         	 1230910	       480.2 ns/op	      16 B/op	       1 allocs/op
+BenchmarkLast/unique         	 1280686	       467.8 ns/op	      16 B/op	       1 allocs/op
+BenchmarkLast/nonunique-string         	 2196795	       260.3 ns/op	      16 B/op	       1 allocs/op
+BenchmarkLast/nonunique-string         	 2756919	       253.2 ns/op	      16 B/op	       1 allocs/op
+BenchmarkLast/int                      	 5209474	       122.2 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLast/int                      	 5406007	        98.20 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLast/no-args                  	20110916	        30.24 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLast/no-args                  	19772966	        29.78 ns/op	       0 B/op	       0 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkGetOne/size=1000         	 3161943	       187.9 ns/op	     192 B/op	       2 allocs/op
+BenchmarkGetOne/size=1000         	 3322200	       174.5 ns/op	     192 B/op	       2 allocs/op
+BenchmarkGetOne/size=100000       	 1000000	       539.6 ns/op	     192 B/op	       2 allocs/op
+BenchmarkGetOne/size=100000       	 1000000	       538.3 ns/op	     192 B/op	       2 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkIterate/scan=all/keys=uuid/size=1000         	   82190	      7509 ns/op	      1000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=uuid/size=1000         	   80380	      7493 ns/op	      1000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=seq/size=1000          	  139000	      4431 ns/op	      1000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=seq/size=1000          	  138427	      4526 ns/op	      1000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=path/size=1000         	  116413	      5204 ns/op	      1000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=path/size=1000         	  114218	      5245 ns/op	      1000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=group/size=1000                 	  638138	      1034 ns/op	       100.0 rows/op	     208 B/op	       3 allocs/op
+BenchmarkIterate/scan=group/size=1000                 	  667182	      1033 ns/op	       100.0 rows/op	     208 B/op	       3 allocs/op
+BenchmarkIterate/scan=group-reverse/size=1000         	  644148	      1003 ns/op	       100.0 rows/op	     208 B/op	       3 allocs/op
+BenchmarkIterate/scan=group-reverse/size=1000         	  702657	       995.5 ns/op	       100.0 rows/op	     208 B/op	       3 allocs/op
+BenchmarkIterate/scan=tags/size=1000                  	  894115	       789.0 ns/op	        69.00 rows/op	     200 B/op	       3 allocs/op
+BenchmarkIterate/scan=tags/size=1000                  	  858261	       778.3 ns/op	        69.00 rows/op	     200 B/op	       3 allocs/op
+BenchmarkIterate/scan=all-reverse/size=1000           	   81213	      7490 ns/op	      1000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all-reverse/size=1000           	   82024	      7572 ns/op	      1000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=uuid/size=100000       	     235	   2569554 ns/op	    100000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=uuid/size=100000       	     230	   2605269 ns/op	    100000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=seq/size=100000        	     387	   1554921 ns/op	    100000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=seq/size=100000        	     384	   1560349 ns/op	    100000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=path/size=100000       	     319	   1863415 ns/op	    100000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all/keys=path/size=100000       	     313	   1885169 ns/op	    100000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=group/size=100000               	  222513	      2606 ns/op	       100.0 rows/op	     213 B/op	       3 allocs/op
+BenchmarkIterate/scan=group/size=100000               	  213915	      2694 ns/op	       100.0 rows/op	     213 B/op	       3 allocs/op
+BenchmarkIterate/scan=group-reverse/size=100000       	  201583	      2936 ns/op	       100.0 rows/op	     213 B/op	       3 allocs/op
+BenchmarkIterate/scan=group-reverse/size=100000       	  198723	      3022 ns/op	       100.0 rows/op	     213 B/op	       3 allocs/op
+BenchmarkIterate/scan=tags/size=100000                	    2650	    216937 ns/op	      3960 rows/op	     200 B/op	       3 allocs/op
+BenchmarkIterate/scan=tags/size=100000                	    2718	    213128 ns/op	      6361 rows/op	     200 B/op	       3 allocs/op
+BenchmarkIterate/scan=all-reverse/size=100000         	     220	   2684012 ns/op	    100000 rows/op	     176 B/op	       1 allocs/op
+BenchmarkIterate/scan=all-reverse/size=100000         	     219	   2703173 ns/op	    100000 rows/op	     176 B/op	       1 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkLowerBound/int         	 2277448	       532.3 ns/op	     176 B/op	       1 allocs/op
+BenchmarkLowerBound/int         	 2252071	       526.4 ns/op	     176 B/op	       1 allocs/op
+BenchmarkLowerBound/int-reverse 	 2240026	       539.9 ns/op	     176 B/op	       1 allocs/op
+BenchmarkLowerBound/int-reverse 	 1981170	       441.9 ns/op	     176 B/op	       1 allocs/op
+BenchmarkLowerBound/uint        	 1160269	       514.2 ns/op	     184 B/op	       2 allocs/op
+BenchmarkLowerBound/uint        	 1150346	       525.0 ns/op	     184 B/op	       2 allocs/op
+BenchmarkLowerBound/string      	  604836	       853.7 ns/op	     192 B/op	       2 allocs/op
+BenchmarkLowerBound/string      	  609348	       862.7 ns/op	     192 B/op	       2 allocs/op
+BenchmarkLowerBound/string-reverse         	  629692	       963.9 ns/op	     192 B/op	       2 allocs/op
+BenchmarkLowerBound/string-reverse         	  526239	       957.2 ns/op	     192 B/op	       2 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkLongestPrefix/size=1000         	 3378817	       178.6 ns/op	      80 B/op	       3 allocs/op
+BenchmarkLongestPrefix/size=1000         	 3335328	       180.0 ns/op	      80 B/op	       3 allocs/op
+BenchmarkLongestPrefix/size=100000       	 2868579	       265.4 ns/op	      80 B/op	       3 allocs/op
+BenchmarkLongestPrefix/size=100000       	 2751038	       274.1 ns/op	      80 B/op	       3 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkFilterIterator 	  151568	      4072 ns/op	     213 B/op	       3 allocs/op
+BenchmarkFilterIterator 	  122871	      4231 ns/op	     213 B/op	       3 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkParallelTxnFirst/size=1000         	 4803336	       125.6 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=1000         	 4773615	       125.8 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000       	 1329297	       490.7 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirst/size=100000       	 1279134	       488.7 ns/op	      96 B/op	       2 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkParallelTxnFirstWithWriter 	 1000000	       542.3 ns/op	      96 B/op	       2 allocs/op
+BenchmarkParallelTxnFirstWithWriter 	 1000000	       537.5 ns/op	      96 B/op	       2 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkFirstWatch/size=1000         	 6061266	        98.82 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstWatch/size=1000         	 6057568	        98.99 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstWatch/size=100000       	 1285198	       466.3 ns/op	      16 B/op	       1 allocs/op
+BenchmarkFirstWatch/size=100000       	 1265122	       472.4 ns/op	      16 B/op	       1 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkGetWatchCh/size=1000         	 2751662	       219.6 ns/op	     208 B/op	       3 allocs/op
+BenchmarkGetWatchCh/size=1000         	 2709684	       222.2 ns/op	     208 B/op	       3 allocs/op
+BenchmarkGetWatchCh/size=100000       	 1706880	       334.8 ns/op	     213 B/op	       3 allocs/op
+BenchmarkGetWatchCh/size=100000       	 1742172	       323.6 ns/op	     213 B/op	       3 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkWatchCycle/size=1000         	  159547	      3998 ns/op	    4985 B/op	      34 allocs/op
+BenchmarkWatchCycle/size=1000         	  159640	      3965 ns/op	    4986 B/op	      34 allocs/op
+BenchmarkWatchCycle/size=100000       	  150883	      9512 ns/op	    6968 B/op	      42 allocs/op
+BenchmarkWatchCycle/size=100000       	  140193	      9391 ns/op	    6969 B/op	      42 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkCommitNotify/size=1000/rows=100         	    3393	    193185 ns/op	  186075 B/op	    1830 allocs/op
+BenchmarkCommitNotify/size=1000/rows=100         	    3445	    195709 ns/op	  186075 B/op	    1830 allocs/op
+BenchmarkCommitNotify/size=100000/rows=100       	    3249	    487913 ns/op	  350424 B/op	    2546 allocs/op
+BenchmarkCommitNotify/size=100000/rows=100       	    3307	    481026 ns/op	  350424 B/op	    2546 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkWatchSetAdd 	  401815	      1532 ns/op	    2120 B/op	       7 allocs/op
+BenchmarkWatchSetAdd 	  396931	      1526 ns/op	    2120 B/op	       7 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkWatchSetWatchExpired/n=1         	 8233746	        72.21 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=1         	 8181338	        72.85 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=8         	 2279798	       263.0 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=8         	 2283484	       263.9 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=32        	  417728	      1433 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=32        	  403429	      1455 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=33        	  390082	      1526 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=33        	  390026	      1522 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=256       	28201507	        20.88 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=256       	28789003	        20.61 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=1024      	28572165	        20.93 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchExpired/n=1024      	28370637	        20.68 ns/op	       0 B/op	       0 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkWatchSetWatchCtxCancelled/n=1         	 6783097	        87.64 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=1         	 6871480	        86.36 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=8         	 2166762	       277.5 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=8         	 2156038	       277.9 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=32        	  418621	      1435 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=32        	  411799	      1475 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=33        	  389031	      1552 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=33        	  389721	      1553 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=256       	16959013	        35.58 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=256       	16799095	        35.41 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=1024      	17064805	        35.56 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxCancelled/n=1024      	16295767	        35.71 ns/op	       0 B/op	       0 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkWatchSetWatchCtxFired/n=1         	11420132	        52.70 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=1         	11403735	        52.76 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=8         	 2493038	       241.3 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=8         	 2486143	       240.8 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=32        	  428689	      1412 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=32        	  431158	      1379 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=33        	  396214	      1522 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=33        	  397032	      1505 ns/op	       0 B/op	       0 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=256       	   29527	     20450 ns/op	    2687 B/op	      19 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=256       	   29478	     20059 ns/op	    2688 B/op	      19 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=1024      	    7126	     87848 ns/op	   10152 B/op	      68 allocs/op
+BenchmarkWatchSetWatchCtxFired/n=1024      	    6790	     91899 ns/op	   10134 B/op	      68 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkWatchSetBlockThenFire/n=8         	  923674	       661.9 ns/op	     112 B/op	       1 allocs/op
+BenchmarkWatchSetBlockThenFire/n=8         	  919316	       662.2 ns/op	     112 B/op	       1 allocs/op
+BenchmarkWatchSetBlockThenFire/n=1024      	    6798	     89164 ns/op	   10286 B/op	      69 allocs/op
+BenchmarkWatchSetBlockThenFire/n=1024      	    6942	     88375 ns/op	   10288 B/op	      69 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkInsertAbort/schema=s1/size=1000/batch=1         	 1000000	       621.2 ns/op	     951 B/op	       6 allocs/op
+BenchmarkInsertAbort/schema=s1/size=1000/batch=1         	 1000000	       625.2 ns/op	     951 B/op	       6 allocs/op
+BenchmarkInsertAbort/schema=s1/size=1000/batch=100       	   19478	     30625 ns/op	   41667 B/op	     353 allocs/op
+BenchmarkInsertAbort/schema=s1/size=1000/batch=100       	   19767	     30189 ns/op	   41666 B/op	     353 allocs/op
+BenchmarkInsertAbort/schema=s1/size=100000/batch=1       	 1000000	      1204 ns/op	    1390 B/op	       8 allocs/op
+BenchmarkInsertAbort/schema=s1/size=100000/batch=1       	 1000000	      1187 ns/op	    1390 B/op	       8 allocs/op
+BenchmarkInsertAbort/schema=s1/size=100000/batch=100     	   10000	     75056 ns/op	   82748 B/op	     529 allocs/op
+BenchmarkInsertAbort/schema=s1/size=100000/batch=100     	   10000	     74409 ns/op	   82748 B/op	     529 allocs/op
+BenchmarkInsertAbort/schema=s3/size=1000/batch=1         	  354712	      3779 ns/op	    4792 B/op	      30 allocs/op
+BenchmarkInsertAbort/schema=s3/size=1000/batch=1         	  348408	      3727 ns/op	    4792 B/op	      30 allocs/op
+BenchmarkInsertAbort/schema=s3/size=1000/batch=100       	    5467	    176760 ns/op	  197978 B/op	    1684 allocs/op
+BenchmarkInsertAbort/schema=s3/size=1000/batch=100       	    5786	    184099 ns/op	  197966 B/op	    1684 allocs/op
+BenchmarkInsertAbort/schema=s3/size=100000/batch=1       	  203286	      7347 ns/op	    6918 B/op	      39 allocs/op
+BenchmarkInsertAbort/schema=s3/size=100000/batch=1       	  193478	      7612 ns/op	    6918 B/op	      39 allocs/op
+BenchmarkInsertAbort/schema=s3/size=100000/batch=100     	    2643	    448478 ns/op	  364645 B/op	    2425 allocs/op
+BenchmarkInsertAbort/schema=s3/size=100000/batch=100     	    2434	    477216 ns/op	  364683 B/op	    2425 allocs/op
+BenchmarkInsertAbort/schema=wide/size=1000/batch=1       	  102584	     15918 ns/op	   17487 B/op	      82 allocs/op
+BenchmarkInsertAbort/schema=wide/size=1000/batch=1       	   99190	     15814 ns/op	   17488 B/op	      82 allocs/op
+BenchmarkInsertAbort/schema=wide/size=1000/batch=100     	    1645	    710817 ns/op	  564292 B/op	    4713 allocs/op
+BenchmarkInsertAbort/schema=wide/size=1000/batch=100     	    1568	    703941 ns/op	  564326 B/op	    4713 allocs/op
+BenchmarkInsertAbort/schema=wide/size=100000/batch=1     	   57674	     30026 ns/op	   26725 B/op	     103 allocs/op
+BenchmarkInsertAbort/schema=wide/size=100000/batch=1     	   57061	     28998 ns/op	   26724 B/op	     103 allocs/op
+BenchmarkInsertAbort/schema=wide/size=100000/batch=100   	     709	   1933131 ns/op	 1328667 B/op	    6596 allocs/op
+BenchmarkInsertAbort/schema=wide/size=100000/batch=100   	     760	   1842999 ns/op	 1328789 B/op	    6596 allocs/op
+BenchmarkInsertAbort/schema=func/size=1000/batch=1       	  493538	      2878 ns/op	    3042 B/op	      22 allocs/op
+BenchmarkInsertAbort/schema=func/size=1000/batch=1       	  486880	      2897 ns/op	    3042 B/op	      22 allocs/op
+BenchmarkInsertAbort/schema=func/size=1000/batch=100     	    7142	    184105 ns/op	  130910 B/op	    1361 allocs/op
+BenchmarkInsertAbort/schema=func/size=1000/batch=100     	    7008	    181946 ns/op	  130910 B/op	    1361 allocs/op
+BenchmarkInsertAbort/schema=func/size=100000/batch=1     	  284884	      5585 ns/op	    4390 B/op	      28 allocs/op
+BenchmarkInsertAbort/schema=func/size=100000/batch=1     	  253634	      6108 ns/op	    4390 B/op	      28 allocs/op
+BenchmarkInsertAbort/schema=func/size=100000/batch=100   	    3835	    346163 ns/op	  239809 B/op	    1833 allocs/op
+BenchmarkInsertAbort/schema=func/size=100000/batch=100   	    3789	    335474 ns/op	  239808 B/op	    1833 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkInsertDeleteCommit/schema=s1/keys=uuid/size=1000         	  448593	      1413 ns/op	    1991 B/op	      12 allocs/op
+BenchmarkInsertDeleteCommit/schema=s1/keys=uuid/size=1000         	  441936	      1434 ns/op	    1991 B/op	      12 allocs/op
+BenchmarkInsertDeleteCommit/schema=s1/keys=uuid/size=100000       	  621954	      2537 ns/op	    2869 B/op	      16 allocs/op
+BenchmarkInsertDeleteCommit/schema=s1/keys=uuid/size=100000       	  619959	      2493 ns/op	    2869 B/op	      16 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=uuid/size=1000         	  170043	      7805 ns/op	    9010 B/op	      53 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=uuid/size=1000         	  176065	      7884 ns/op	    9008 B/op	      53 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=uuid/size=100000       	  120801	     13198 ns/op	   13264 B/op	      71 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=uuid/size=100000       	  113133	     13307 ns/op	   13262 B/op	      71 allocs/op
+BenchmarkInsertDeleteCommit/schema=wide/keys=uuid/size=1000       	   26274	     36755 ns/op	   33050 B/op	     139 allocs/op
+BenchmarkInsertDeleteCommit/schema=wide/keys=uuid/size=1000       	   25752	     36942 ns/op	   33048 B/op	     139 allocs/op
+BenchmarkInsertDeleteCommit/schema=wide/keys=uuid/size=100000     	   32598	     62499 ns/op	   51514 B/op	     182 allocs/op
+BenchmarkInsertDeleteCommit/schema=wide/keys=uuid/size=100000     	   31332	     59483 ns/op	   51508 B/op	     182 allocs/op
+BenchmarkInsertDeleteCommit/schema=func/keys=uuid/size=1000       	  255987	      5982 ns/op	    5868 B/op	      41 allocs/op
+BenchmarkInsertDeleteCommit/schema=func/keys=uuid/size=1000       	  238465	      5878 ns/op	    5868 B/op	      41 allocs/op
+BenchmarkInsertDeleteCommit/schema=func/keys=uuid/size=100000     	  188817	      9243 ns/op	    8566 B/op	      52 allocs/op
+BenchmarkInsertDeleteCommit/schema=func/keys=uuid/size=100000     	  156516	     10201 ns/op	    8565 B/op	      52 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=seq/size=1000          	  186202	      7932 ns/op	    7601 B/op	      53 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=seq/size=1000          	  185637	      8175 ns/op	    7602 B/op	      53 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=seq/size=100000        	  155528	      9934 ns/op	    8571 B/op	      57 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=seq/size=100000        	  166501	      9597 ns/op	    8570 B/op	      57 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=path/size=1000         	  137287	     11766 ns/op	    9488 B/op	      66 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=path/size=1000         	  135236	     12225 ns/op	    9487 B/op	      66 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=path/size=100000       	  124845	     14227 ns/op	   11115 B/op	      73 allocs/op
+BenchmarkInsertDeleteCommit/schema=s3/keys=path/size=100000       	  114537	     10735 ns/op	   11114 B/op	      73 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkInsertDeleteCommitManyTables 	   69999	      8535 ns/op	   11570 B/op	      55 allocs/op
+BenchmarkInsertDeleteCommitManyTables 	   69858	      8507 ns/op	   11570 B/op	      55 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkUpdateCommit/schema=s3/size=1000/keys=same         	  170632	      3758 ns/op	    4770 B/op	      30 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=1000/keys=same         	  169954	      3739 ns/op	    4769 B/op	      30 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=1000/keys=moved        	  141674	      4262 ns/op	    5317 B/op	      33 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=1000/keys=moved        	  139159	      4296 ns/op	    5317 B/op	      33 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=100000/keys=same       	  141270	      8442 ns/op	    6753 B/op	      38 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=100000/keys=same       	  149619	      8553 ns/op	    6752 B/op	      38 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=100000/keys=moved      	  139729	     10123 ns/op	    6997 B/op	      40 allocs/op
+BenchmarkUpdateCommit/schema=s3/size=100000/keys=moved      	  126290	      9115 ns/op	    7053 B/op	      40 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=1000/keys=same       	   84106	     20923 ns/op	   17076 B/op	      79 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=1000/keys=same       	   87814	     19973 ns/op	   17077 B/op	      79 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=1000/keys=moved      	   74852	     22846 ns/op	   18695 B/op	      88 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=1000/keys=moved      	   73698	     23294 ns/op	   18689 B/op	      88 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=100000/keys=same     	   49743	     34972 ns/op	   26170 B/op	     100 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=100000/keys=same     	   45606	     37428 ns/op	   26171 B/op	     100 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=100000/keys=moved    	   43294	     51130 ns/op	   27589 B/op	     107 allocs/op
+BenchmarkUpdateCommit/schema=wide/size=100000/keys=moved    	   44654	     42801 ns/op	   26245 B/op	     100 allocs/op
+BenchmarkUpdateCommit/schema=func/size=1000/keys=same       	  441286	      5424 ns/op	    3078 B/op	      24 allocs/op
+BenchmarkUpdateCommit/schema=func/size=1000/keys=same       	  442255	      5193 ns/op	    3078 B/op	      24 allocs/op
+BenchmarkUpdateCommit/schema=func/size=1000/keys=moved      	  329337	      5773 ns/op	    3701 B/op	      28 allocs/op
+BenchmarkUpdateCommit/schema=func/size=1000/keys=moved      	  341709	      6208 ns/op	    3700 B/op	      28 allocs/op
+BenchmarkUpdateCommit/schema=func/size=100000/keys=same     	  194810	      2878 ns/op	    4395 B/op	      30 allocs/op
+BenchmarkUpdateCommit/schema=func/size=100000/keys=same     	  179654	      3021 ns/op	    4395 B/op	      30 allocs/op
+BenchmarkUpdateCommit/schema=func/size=100000/keys=moved    	  161744	      3649 ns/op	    4886 B/op	      32 allocs/op
+BenchmarkUpdateCommit/schema=func/size=100000/keys=moved    	  159715	      3519 ns/op	    4932 B/op	      33 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkDeleteAbort/schema=s3/size=1000         	  184159	      3304 ns/op	    4056 B/op	      21 allocs/op
+BenchmarkDeleteAbort/schema=s3/size=1000         	  186762	      3387 ns/op	    4056 B/op	      21 allocs/op
+BenchmarkDeleteAbort/schema=s3/size=100000       	  143038	      8725 ns/op	    6100 B/op	      29 allocs/op
+BenchmarkDeleteAbort/schema=s3/size=100000       	  138262	      8970 ns/op	    6100 B/op	      29 allocs/op
+BenchmarkDeleteAbort/schema=wide/size=1000       	   91546	     17520 ns/op	   15358 B/op	      55 allocs/op
+BenchmarkDeleteAbort/schema=wide/size=1000       	   91458	     17184 ns/op	   15358 B/op	      55 allocs/op
+BenchmarkDeleteAbort/schema=wide/size=100000     	   47269	     28065 ns/op	   24539 B/op	      76 allocs/op
+BenchmarkDeleteAbort/schema=wide/size=100000     	   48003	     28424 ns/op	   24539 B/op	      76 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkDeleteAllAbort/schema=s3/size=1000         	    5096	    140610 ns/op	  100228 B/op	     613 allocs/op
+BenchmarkDeleteAllAbort/schema=s3/size=1000         	    4988	    141161 ns/op	  100227 B/op	     613 allocs/op
+BenchmarkDeleteAllAbort/schema=s3/size=100000       	    2197	    479232 ns/op	  247786 B/op	    1253 allocs/op
+BenchmarkDeleteAllAbort/schema=s3/size=100000       	    2491	    439351 ns/op	  247822 B/op	    1254 allocs/op
+BenchmarkDeleteAllAbort/schema=wide/size=1000       	    1905	    515046 ns/op	  246889 B/op	    1516 allocs/op
+BenchmarkDeleteAllAbort/schema=wide/size=1000       	    1912	    491786 ns/op	  246885 B/op	    1516 allocs/op
+BenchmarkDeleteAllAbort/schema=wide/size=100000     	     765	   1835736 ns/op	  951680 B/op	    3145 allocs/op
+BenchmarkDeleteAllAbort/schema=wide/size=100000     	     747	   1840503 ns/op	  951644 B/op	    3145 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkDeletePrefixAbort/schema=s3/size=1000         	    9386	     83972 ns/op	   40545 B/op	     234 allocs/op
+BenchmarkDeletePrefixAbort/schema=s3/size=1000         	    9556	     83899 ns/op	   40545 B/op	     234 allocs/op
+BenchmarkDeletePrefixAbort/schema=s3/size=100000       	    6868	    158178 ns/op	  109699 B/op	     518 allocs/op
+BenchmarkDeletePrefixAbort/schema=s3/size=100000       	    6850	    162977 ns/op	  109698 B/op	     518 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkChanges/n=10/dup=false         	   10000	     57702 ns/op	   45586 B/op	     281 allocs/op
+BenchmarkChanges/n=10/dup=false         	   10000	     53497 ns/op	   45586 B/op	     281 allocs/op
+BenchmarkChanges/n=10/dup=true          	   10000	     72241 ns/op	   52794 B/op	     336 allocs/op
+BenchmarkChanges/n=10/dup=true          	   10000	     70443 ns/op	   52794 B/op	     336 allocs/op
+BenchmarkChanges/n=1000/dup=false       	     156	   4468585 ns/op	 3232578 B/op	   22401 allocs/op
+BenchmarkChanges/n=1000/dup=false       	     156	   4405144 ns/op	 3232578 B/op	   22401 allocs/op
+BenchmarkChanges/n=1000/dup=true        	     120	   6247924 ns/op	 4139595 B/op	   27428 allocs/op
+BenchmarkChanges/n=1000/dup=true        	     120	   5855966 ns/op	 4139595 B/op	   27428 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkReadYourWrites/size=1000         	   27919	     21482 ns/op	   30186 B/op	     229 allocs/op
+BenchmarkReadYourWrites/size=1000         	   27860	     21610 ns/op	   30186 B/op	     229 allocs/op
+BenchmarkReadYourWrites/size=100000       	   15390	     46058 ns/op	   42506 B/op	     273 allocs/op
+BenchmarkReadYourWrites/size=100000       	   14917	     49768 ns/op	   42506 B/op	     273 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkIterateInWriteTxn/size=1000         	   93860	      6450 ns/op	    8089 B/op	      56 allocs/op
+BenchmarkIterateInWriteTxn/size=1000         	   93399	      6459 ns/op	    8090 B/op	      56 allocs/op
+BenchmarkIterateInWriteTxn/size=100000       	   64970	     17786 ns/op	   12314 B/op	      74 allocs/op
+BenchmarkIterateInWriteTxn/size=100000       	   66511	     17911 ns/op	   12315 B/op	      74 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkTxnSnapshot 	   58688	     34832 ns/op	   26933 B/op	     105 allocs/op
+BenchmarkTxnSnapshot 	   57507	     34898 ns/op	   26933 B/op	     105 allocs/op
+PASS
+goos: darwin
+goarch: arm64
+pkg: github.com/thevilledev/go-maemmidb/benchmarks
+cpu: Apple M1 Max
+BenchmarkBulkLoad/schema=s3/size=1000         	     520	   1148725 ns/op	         0.5670 gc-ms	      1114 heapB/row	        11.57 heapobjs/row	 1252850 B/op	   12752 allocs/op
+BenchmarkBulkLoad/schema=s3/size=1000         	     525	   1140194 ns/op	         0.5700 gc-ms	      1114 heapB/row	        11.57 heapobjs/row	 1252849 B/op	   12752 allocs/op
+BenchmarkBulkLoad/schema=s3/size=100000       	       3	 234040014 ns/op	       163.7 gc-ms	      1135 heapB/row	        11.68 heapobjs/row	127066477 B/op	 1276772 allocs/op
+BenchmarkBulkLoad/schema=s3/size=100000       	       3	 248580694 ns/op	       158.2 gc-ms	      1135 heapB/row	        11.68 heapobjs/row	127066482 B/op	 1276772 allocs/op
+BenchmarkBulkLoad/schema=wide/size=1000       	     153	   3875532 ns/op	         1.162 gc-ms	      2952 heapB/row	        31.36 heapobjs/row	 3312523 B/op	   34311 allocs/op
+BenchmarkBulkLoad/schema=wide/size=1000       	     154	   3873281 ns/op	         1.210 gc-ms	      2952 heapB/row	        31.36 heapobjs/row	 3312527 B/op	   34311 allocs/op
+BenchmarkBulkLoad/schema=wide/size=100000     	       1	 843121458 ns/op	       435.2 gc-ms	      2970 heapB/row	        31.50 heapobjs/row	332070776 B/op	 3427145 allocs/op
+BenchmarkBulkLoad/schema=wide/size=100000     	       1	 860495292 ns/op	       467.2 gc-ms	      2970 heapB/row	        31.51 heapobjs/row	332070776 B/op	 3427145 allocs/op
+PASS
