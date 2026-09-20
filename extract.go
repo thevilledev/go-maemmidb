@@ -111,21 +111,14 @@ type extractor struct {
 	kind    extKind
 	indexer Indexer
 
-	// The user's indexer, typed. Its fields are read on every call rather
-	// than copied, so the extractor can never disagree with the exported
-	// methods about the configuration.
-	str      *StringFieldIndex
-	strSlice *StringSliceFieldIndex
-	strMap   *StringMapFieldIndex
-	intIdx   *IntFieldIndex
-	uintIdx  *UintFieldIndex
-	boolIdx  *BoolFieldIndex
-	uuid     *UUIDFieldIndex
-	fieldSet *FieldSetIndex
-	cond     *ConditionalIndex
-	compound *CompoundIndex
-
-	compoundMulti *CompoundMultiIndex
+	// The indexer's configuration (Field, Lowercase, Indexes ...) is read from
+	// the user's indexer on every call rather than copied, so the extractor
+	// can never disagree with the exported methods about it; the typed
+	// accessors below assert indexer to the type that kind implies. They
+	// replace one typed pointer per kind: a throw-away extractor lives on the
+	// stack of every exported indexer method (index_fast.go), which zeroes it
+	// on every call, and eleven pointers of which ten are nil cost more there
+	// than an assertion does here.
 
 	// subs are the compiled sub-indexers of a compound index. A throw-away
 	// extractor (see index_fast.go) has none and resolves them per call.
@@ -142,33 +135,45 @@ type extractor struct {
 	field *atomic.Pointer[fieldInfo]
 }
 
+func (e *extractor) str() *StringFieldIndex             { return e.indexer.(*StringFieldIndex) }
+func (e *extractor) strSlice() *StringSliceFieldIndex   { return e.indexer.(*StringSliceFieldIndex) }
+func (e *extractor) strMap() *StringMapFieldIndex       { return e.indexer.(*StringMapFieldIndex) }
+func (e *extractor) intIdx() *IntFieldIndex             { return e.indexer.(*IntFieldIndex) }
+func (e *extractor) uintIdx() *UintFieldIndex           { return e.indexer.(*UintFieldIndex) }
+func (e *extractor) boolIdx() *BoolFieldIndex           { return e.indexer.(*BoolFieldIndex) }
+func (e *extractor) uuid() *UUIDFieldIndex              { return e.indexer.(*UUIDFieldIndex) }
+func (e *extractor) fieldSet() *FieldSetIndex           { return e.indexer.(*FieldSetIndex) }
+func (e *extractor) cond() *ConditionalIndex            { return e.indexer.(*ConditionalIndex) }
+func (e *extractor) compound() *CompoundIndex           { return e.indexer.(*CompoundIndex) }
+func (e *extractor) compoundMulti() *CompoundMultiIndex { return e.indexer.(*CompoundMultiIndex) }
+
 // init points a zero extractor at an indexer and reports whether the indexer
 // is one of the built-in kinds.
 func (e *extractor) init(ix Indexer) bool {
 	e.indexer = ix
-	switch t := ix.(type) {
+	switch ix.(type) {
 	case *StringFieldIndex:
-		e.kind, e.str = extString, t
+		e.kind = extString
 	case *StringSliceFieldIndex:
-		e.kind, e.strSlice = extStringSlice, t
+		e.kind = extStringSlice
 	case *StringMapFieldIndex:
-		e.kind, e.strMap = extStringMap, t
+		e.kind = extStringMap
 	case *IntFieldIndex:
-		e.kind, e.intIdx = extInt, t
+		e.kind = extInt
 	case *UintFieldIndex:
-		e.kind, e.uintIdx = extUint, t
+		e.kind = extUint
 	case *BoolFieldIndex:
-		e.kind, e.boolIdx = extBool, t
+		e.kind = extBool
 	case *UUIDFieldIndex:
-		e.kind, e.uuid = extUUID, t
+		e.kind = extUUID
 	case *FieldSetIndex:
-		e.kind, e.fieldSet = extFieldSet, t
+		e.kind = extFieldSet
 	case *ConditionalIndex:
-		e.kind, e.cond = extConditional, t
+		e.kind = extConditional
 	case *CompoundIndex:
-		e.kind, e.compound = extCompound, t
+		e.kind = extCompound
 	case *CompoundMultiIndex:
-		e.kind, e.compoundMulti = extCompoundMulti, t
+		e.kind = extCompoundMulti
 	default:
 		e.kind = extCustom
 		return false
@@ -183,9 +188,9 @@ func compileExtractor(ix Indexer) *extractor {
 	var subIndexers []Indexer
 	switch e.kind {
 	case extCompound:
-		subIndexers = e.compound.Indexes
+		subIndexers = e.compound().Indexes
 	case extCompoundMulti:
-		subIndexers = e.compoundMulti.Indexes
+		subIndexers = e.compoundMulti().Indexes
 	default:
 		return e
 	}
@@ -199,9 +204,9 @@ func compileExtractor(ix Indexer) *extractor {
 // subIndexers returns the user's current list of sub-indexers.
 func (e *extractor) subIndexers() []Indexer {
 	if e.kind == extCompoundMulti {
-		return e.compoundMulti.Indexes
+		return e.compoundMulti().Indexes
 	}
-	return e.compound.Indexes
+	return e.compound().Indexes
 }
 
 // sub returns the extractor for sub-indexer i: the compiled one, or for a
@@ -449,10 +454,10 @@ func (e *extractor) appendObjectErr(dst []byte, obj interface{}) (out []byte, ok
 		out, ok, handled = e.appendScalar(dst, obj)
 		return out, ok, handled, nil
 	}
-	if e.cond.Conditional == nil {
+	if e.cond().Conditional == nil {
 		return dst, false, false, nil
 	}
-	res, err := e.cond.Conditional(obj)
+	res, err := e.cond().Conditional(obj)
 	if err != nil {
 		return dst, false, true, fmt.Errorf("ConditionalIndexFunc(%#v) failed: %v", obj, err)
 	}
@@ -465,7 +470,7 @@ func (e *extractor) appendObjectErr(dst []byte, obj interface{}) (out []byte, ok
 func (e *extractor) appendScalar(dst []byte, obj interface{}) (out []byte, ok bool, handled bool) {
 	switch e.kind {
 	case extString:
-		fi := e.fieldOf(obj, e.str.Field)
+		fi := e.fieldOf(obj, e.str().Field)
 		if !fi.usable || isNilObject(obj) {
 			return dst, false, false
 		}
@@ -485,11 +490,11 @@ func (e *extractor) appendScalar(dst []byte, obj interface{}) (out []byte, ok bo
 		if val == "" {
 			return dst, false, true
 		}
-		dst = appendString(dst, val, e.str.Lowercase)
+		dst = appendString(dst, val, e.str().Lowercase)
 		return append(dst, 0), true, true
 
 	case extInt:
-		fi := e.fieldOf(obj, e.intIdx.Field)
+		fi := e.fieldOf(obj, e.intIdx().Field)
 		if !fi.usable || isNilObject(obj) {
 			return dst, false, false
 		}
@@ -499,7 +504,7 @@ func (e *extractor) appendScalar(dst []byte, obj interface{}) (out []byte, ok bo
 		return appendInt(dst, readInt(obj, fi), fi.size), true, true
 
 	case extUint:
-		fi := e.fieldOf(obj, e.uintIdx.Field)
+		fi := e.fieldOf(obj, e.uintIdx().Field)
 		if !fi.usable || isNilObject(obj) {
 			return dst, false, false
 		}
@@ -509,7 +514,7 @@ func (e *extractor) appendScalar(dst []byte, obj interface{}) (out []byte, ok bo
 		return appendUint(dst, readUint(obj, fi), fi.size), true, true
 
 	case extBool:
-		fi := e.fieldOf(obj, e.boolIdx.Field)
+		fi := e.fieldOf(obj, e.boolIdx().Field)
 		if !fi.usable || fi.kind != reflect.Bool || isNilObject(obj) {
 			return dst, false, false
 		}
@@ -519,7 +524,7 @@ func (e *extractor) appendScalar(dst []byte, obj interface{}) (out []byte, ok bo
 		return append(dst, 0), true, true
 
 	case extUUID:
-		fi := e.fieldOf(obj, e.uuid.Field)
+		fi := e.fieldOf(obj, e.uuid().Field)
 		if !fi.usable || fi.kind != reflect.String || isNilObject(obj) {
 			return dst, false, false
 		}
@@ -533,7 +538,7 @@ func (e *extractor) appendScalar(dst []byte, obj interface{}) (out []byte, ok bo
 		return dst, false, false
 
 	case extFieldSet:
-		fi := e.fieldOf(obj, e.fieldSet.Field)
+		fi := e.fieldOf(obj, e.fieldSet().Field)
 		if !fi.usable || !fi.exported || isNilObject(obj) {
 			return dst, false, false
 		}
@@ -561,7 +566,7 @@ func (e *extractor) appendScalar(dst []byte, obj interface{}) (out []byte, ok bo
 		}
 		start := len(dst)
 		var scratch extractor
-		for i := range e.compound.Indexes {
+		for i := range e.compound().Indexes {
 			sub := e.sub(i, &scratch)
 			if !sub.scalar() {
 				// Nesting, user code and multi-valued sub-indexers stay
@@ -573,7 +578,7 @@ func (e *extractor) appendScalar(dst []byte, obj interface{}) (out []byte, ok bo
 				return dst[:start], false, false
 			}
 			if !ok {
-				if e.compound.AllowMissing {
+				if e.compound().AllowMissing {
 					break
 				}
 				return dst[:start], false, true
@@ -595,7 +600,7 @@ const maxCompoundDepth = 8
 func (e *extractor) appendKeys(kl, tmp *keyList, obj interface{}, suffix []byte) (ok bool, handled bool, err error) {
 	switch e.kind {
 	case extCompoundMulti:
-		if tmp == nil || !e.subsCurrent() || len(e.compoundMulti.Indexes) > maxCompoundDepth {
+		if tmp == nil || !e.subsCurrent() || len(e.compoundMulti().Indexes) > maxCompoundDepth {
 			return false, false, nil
 		}
 
@@ -605,7 +610,7 @@ func (e *extractor) appendKeys(kl, tmp *keyList, obj interface{}, suffix []byte)
 		var bounds [maxCompoundDepth + 1]int
 		var scratch extractor
 		levels := 0
-		for i := range e.compoundMulti.Indexes {
+		for i := range e.compoundMulti().Indexes {
 			sub := e.sub(i, &scratch)
 			var subOK, subHandled bool
 			switch {
@@ -623,7 +628,7 @@ func (e *extractor) appendKeys(kl, tmp *keyList, obj interface{}, suffix []byte)
 				return false, false, nil
 			}
 			if !subOK {
-				if e.compoundMulti.AllowMissing {
+				if e.compoundMulti().AllowMissing {
 					break
 				}
 				return false, true, nil
@@ -637,7 +642,7 @@ func (e *extractor) appendKeys(kl, tmp *keyList, obj interface{}, suffix []byte)
 		// of depth d <= k occurs in (that number / c[d]) of them.
 		size, keys := 0, 0
 		first := levels - 1
-		if e.compoundMulti.AllowMissing {
+		if e.compoundMulti().AllowMissing {
 			first = 0
 		}
 		for k := first; k < levels; k++ {
@@ -686,7 +691,7 @@ func (e *extractor) appendKeys(kl, tmp *keyList, obj interface{}, suffix []byte)
 			}
 			plen[depth] = len(pfx)
 			pfx = append(pfx, v...)
-			if e.compoundMulti.AllowMissing {
+			if e.compoundMulti().AllowMissing {
 				kl.buf = append(append(kl.buf, pfx...), suffix...)
 				kl.end()
 			}
@@ -695,7 +700,7 @@ func (e *extractor) appendKeys(kl, tmp *keyList, obj interface{}, suffix []byte)
 		return true, true, nil
 
 	case extStringSlice:
-		fi := e.fieldOf(obj, e.strSlice.Field)
+		fi := e.fieldOf(obj, e.strSlice().Field)
 		if !fi.usable || fi.kind != reflect.Slice || fi.elem != reflect.String || isNilObject(obj) {
 			return false, false, nil
 		}
@@ -715,7 +720,7 @@ func (e *extractor) appendKeys(kl, tmp *keyList, obj interface{}, suffix []byte)
 			if val == "" {
 				continue
 			}
-			kl.buf = appendString(kl.buf, val, e.strSlice.Lowercase)
+			kl.buf = appendString(kl.buf, val, e.strSlice().Lowercase)
 			kl.buf = append(append(kl.buf, 0), suffix...)
 			kl.end()
 			ok = true
@@ -723,7 +728,7 @@ func (e *extractor) appendKeys(kl, tmp *keyList, obj interface{}, suffix []byte)
 		return ok, true, nil
 
 	case extStringMap:
-		fi := e.fieldOf(obj, e.strMap.Field)
+		fi := e.fieldOf(obj, e.strMap().Field)
 		if !fi.usable || !fi.exact || fi.kind != reflect.Map || isNilObject(obj) {
 			return false, false, nil
 		}
@@ -743,9 +748,9 @@ func (e *extractor) appendKeys(kl, tmp *keyList, obj interface{}, suffix []byte)
 			if k == "" {
 				continue
 			}
-			kl.buf = appendString(kl.buf, k, e.strMap.Lowercase)
+			kl.buf = appendString(kl.buf, k, e.strMap().Lowercase)
 			kl.buf = append(kl.buf, 0)
-			kl.buf = appendString(kl.buf, v, e.strMap.Lowercase)
+			kl.buf = appendString(kl.buf, v, e.strMap().Lowercase)
 			kl.buf = append(append(kl.buf, 0), suffix...)
 			kl.end()
 			ok = true
@@ -780,12 +785,8 @@ func (e *extractor) appendArgs(dst []byte, args []interface{}, prefix bool) ([]b
 		if !ok {
 			return dst, false
 		}
-		lowercase := false
-		if e.kind == extString {
-			lowercase = e.str.Lowercase
-		} else {
-			lowercase = e.strSlice.Lowercase
-		}
+		lowercase := e.kind == extString && e.str().Lowercase ||
+			e.kind == extStringSlice && e.strSlice().Lowercase
 		dst = appendString(dst, arg, lowercase)
 		if prefix {
 			// PrefixFromArgs strips the terminator again.
@@ -803,7 +804,7 @@ func (e *extractor) appendArgs(dst []byte, args []interface{}, prefix bool) ([]b
 			if !ok {
 				return dst[:start], false
 			}
-			dst = append(appendString(dst, s, e.strMap.Lowercase), 0)
+			dst = append(appendString(dst, s, e.strMap().Lowercase), 0)
 		}
 		return dst, true
 
@@ -877,10 +878,10 @@ func (e *extractor) appendArgs(dst []byte, args []interface{}, prefix bool) ([]b
 			return dst, false
 		}
 		if prefix {
-			if len(args) > len(e.compound.Indexes) {
+			if len(args) > len(e.compound().Indexes) {
 				return dst, false
 			}
-		} else if len(args) != len(e.compound.Indexes) {
+		} else if len(args) != len(e.compound().Indexes) {
 			return dst, false
 		}
 		start := len(dst)

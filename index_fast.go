@@ -27,7 +27,7 @@ func copyKey(k []byte) []byte {
 }
 
 func (s *StringFieldIndex) FromObject(obj interface{}) (bool, []byte, error) {
-	e := extractor{kind: extString, str: s}
+	e := extractor{kind: extString, indexer: s}
 	var scratch [keyScratch]byte
 	if out, ok, handled := e.appendScalar(scratch[:0], obj); handled && ok {
 		return true, copyKey(out), nil
@@ -35,26 +35,39 @@ func (s *StringFieldIndex) FromObject(obj interface{}) (bool, []byte, error) {
 	return s.fromObjectSlow(obj)
 }
 
+// stringArg is the well-formed argument list of a string index: one string.
+// The key is built straight into its own allocation.
+func stringArg(args []interface{}, lowercase, terminate bool) ([]byte, bool) {
+	if len(args) != 1 {
+		return nil, false
+	}
+	arg, ok := args[0].(string)
+	if !ok {
+		return nil, false
+	}
+	out := appendString(make([]byte, 0, len(arg)+1), arg, lowercase)
+	if terminate {
+		out = append(out, 0)
+	}
+	return out, true
+}
+
 func (s *StringFieldIndex) FromArgs(args ...interface{}) ([]byte, error) {
-	e := extractor{kind: extString, str: s}
-	var scratch [keyScratch]byte
-	if out, ok := e.appendArgs(scratch[:0], args, false); ok {
-		return copyKey(out), nil
+	if out, ok := stringArg(args, s.Lowercase, true); ok {
+		return out, nil
 	}
 	return s.fromArgsSlow(args...)
 }
 
 func (s *StringFieldIndex) PrefixFromArgs(args ...interface{}) ([]byte, error) {
-	e := extractor{kind: extString, str: s}
-	var scratch [keyScratch]byte
-	if out, ok := e.appendArgs(scratch[:0], args, true); ok {
-		return copyKey(out), nil
+	if out, ok := stringArg(args, s.Lowercase, false); ok {
+		return out, nil
 	}
 	return s.prefixFromArgsSlow(args...)
 }
 
 func (s *StringSliceFieldIndex) FromObject(obj interface{}) (bool, [][]byte, error) {
-	e := extractor{kind: extStringSlice, strSlice: s}
+	e := extractor{kind: extStringSlice, indexer: s}
 	var kl keyList
 	if ok, handled, _ := e.appendKeys(&kl, nil, obj, nil); handled && ok {
 		return true, kl.split(), nil
@@ -63,25 +76,21 @@ func (s *StringSliceFieldIndex) FromObject(obj interface{}) (bool, [][]byte, err
 }
 
 func (s *StringSliceFieldIndex) FromArgs(args ...interface{}) ([]byte, error) {
-	e := extractor{kind: extStringSlice, strSlice: s}
-	var scratch [keyScratch]byte
-	if out, ok := e.appendArgs(scratch[:0], args, false); ok {
-		return copyKey(out), nil
+	if out, ok := stringArg(args, s.Lowercase, true); ok {
+		return out, nil
 	}
 	return s.fromArgsSlow(args...)
 }
 
 func (s *StringSliceFieldIndex) PrefixFromArgs(args ...interface{}) ([]byte, error) {
-	e := extractor{kind: extStringSlice, strSlice: s}
-	var scratch [keyScratch]byte
-	if out, ok := e.appendArgs(scratch[:0], args, true); ok {
-		return copyKey(out), nil
+	if out, ok := stringArg(args, s.Lowercase, false); ok {
+		return out, nil
 	}
 	return s.prefixFromArgsSlow(args...)
 }
 
 func (s *StringMapFieldIndex) FromObject(obj interface{}) (bool, [][]byte, error) {
-	e := extractor{kind: extStringMap, strMap: s}
+	e := extractor{kind: extStringMap, indexer: s}
 	var kl keyList
 	if ok, handled, _ := e.appendKeys(&kl, nil, obj, nil); handled && ok {
 		return true, kl.split(), nil
@@ -90,7 +99,7 @@ func (s *StringMapFieldIndex) FromObject(obj interface{}) (bool, [][]byte, error
 }
 
 func (s *StringMapFieldIndex) FromArgs(args ...interface{}) ([]byte, error) {
-	e := extractor{kind: extStringMap, strMap: s}
+	e := extractor{kind: extStringMap, indexer: s}
 	var scratch [keyScratch]byte
 	if out, ok := e.appendArgs(scratch[:0], args, false); ok {
 		return copyKey(out), nil
@@ -99,7 +108,7 @@ func (s *StringMapFieldIndex) FromArgs(args ...interface{}) ([]byte, error) {
 }
 
 func (i *IntFieldIndex) FromObject(obj interface{}) (bool, []byte, error) {
-	e := extractor{kind: extInt, intIdx: i}
+	e := extractor{kind: extInt, indexer: i}
 	var scratch [8]byte
 	if out, ok, handled := e.appendScalar(scratch[:0], obj); handled && ok {
 		return true, copyKey(out), nil
@@ -128,7 +137,7 @@ func (i *IntFieldIndex) FromArgs(args ...interface{}) ([]byte, error) {
 }
 
 func (u *UintFieldIndex) FromObject(obj interface{}) (bool, []byte, error) {
-	e := extractor{kind: extUint, uintIdx: u}
+	e := extractor{kind: extUint, indexer: u}
 	var scratch [8]byte
 	if out, ok, handled := e.appendScalar(scratch[:0], obj); handled && ok {
 		return true, copyKey(out), nil
@@ -155,7 +164,7 @@ func (u *UintFieldIndex) FromArgs(args ...interface{}) ([]byte, error) {
 }
 
 func (i *BoolFieldIndex) FromObject(obj interface{}) (bool, []byte, error) {
-	e := extractor{kind: extBool, boolIdx: i}
+	e := extractor{kind: extBool, indexer: i}
 	var scratch [1]byte
 	if out, ok, handled := e.appendScalar(scratch[:0], obj); handled && ok {
 		return true, copyKey(out), nil
@@ -164,7 +173,7 @@ func (i *BoolFieldIndex) FromObject(obj interface{}) (bool, []byte, error) {
 }
 
 func (u *UUIDFieldIndex) FromObject(obj interface{}) (bool, []byte, error) {
-	e := extractor{kind: extUUID, uuid: u}
+	e := extractor{kind: extUUID, indexer: u}
 	var scratch [16]byte
 	if out, ok, handled := e.appendScalar(scratch[:0], obj); handled && ok {
 		return true, copyKey(out), nil
@@ -203,7 +212,7 @@ func (u *UUIDFieldIndex) parseString(s string, enforceLength bool) ([]byte, erro
 }
 
 func (f *FieldSetIndex) FromObject(obj interface{}) (bool, []byte, error) {
-	e := extractor{kind: extFieldSet, fieldSet: f}
+	e := extractor{kind: extFieldSet, indexer: f}
 	var scratch [1]byte
 	if out, ok, handled := e.appendScalar(scratch[:0], obj); handled && ok {
 		return true, copyKey(out), nil
@@ -212,7 +221,7 @@ func (f *FieldSetIndex) FromObject(obj interface{}) (bool, []byte, error) {
 }
 
 func (c *CompoundIndex) FromObject(raw interface{}) (bool, []byte, error) {
-	e := extractor{kind: extCompound, compound: c}
+	e := extractor{kind: extCompound, indexer: c}
 	var scratch [2 * keyScratch]byte
 	if out, ok, handled := e.appendScalar(scratch[:0], raw); handled && ok && len(out) > 0 {
 		return true, copyKey(out), nil
@@ -221,7 +230,7 @@ func (c *CompoundIndex) FromObject(raw interface{}) (bool, []byte, error) {
 }
 
 func (c *CompoundIndex) FromArgs(args ...interface{}) ([]byte, error) {
-	e := extractor{kind: extCompound, compound: c}
+	e := extractor{kind: extCompound, indexer: c}
 	var scratch [2 * keyScratch]byte
 	if out, ok := e.appendArgs(scratch[:0], args, false); ok && len(out) > 0 {
 		return copyKey(out), nil
@@ -230,7 +239,7 @@ func (c *CompoundIndex) FromArgs(args ...interface{}) ([]byte, error) {
 }
 
 func (c *CompoundIndex) PrefixFromArgs(args ...interface{}) ([]byte, error) {
-	e := extractor{kind: extCompound, compound: c}
+	e := extractor{kind: extCompound, indexer: c}
 	var scratch [2 * keyScratch]byte
 	if out, ok := e.appendArgs(scratch[:0], args, true); ok && len(out) > 0 {
 		return copyKey(out), nil
@@ -239,7 +248,7 @@ func (c *CompoundIndex) PrefixFromArgs(args ...interface{}) ([]byte, error) {
 }
 
 func (c *CompoundMultiIndex) FromObject(raw interface{}) (bool, [][]byte, error) {
-	e := extractor{kind: extCompoundMulti, compoundMulti: c}
+	e := extractor{kind: extCompoundMulti, indexer: c}
 	// The intermediate values get a modest buffer up front (a key list is
 	// filled through a pointer, so it cannot live on the stack); the keys
 	// themselves are sized exactly.
