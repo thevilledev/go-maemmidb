@@ -2,7 +2,7 @@
 # Copyright (c) 2026 Ville Vesilehto
 # SPDX-License-Identifier: MPL-2.0
 #
-# Prints the Markdown "Results" section of BENCHMARKS.md from the files a
+# Prints the Markdown "Results" section of docs/benchmarks.md from the files a
 # `make bench-compare` run (and, if present, `make bench-inpkg` and
 # `make bench-parallel`) left in benchmarks/results, or in RESULTS.
 set -eu

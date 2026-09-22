@@ -7,7 +7,7 @@ numbers are.
 
 ## Method
 
-**One benchmark source, two builds.** The suite in [`benchmarks/`](benchmarks)
+**One benchmark source, two builds.** The suite in [`benchmarks/`](../benchmarks)
 is written once, against type aliases. A build tag selects which package the
 aliases point at:
 
@@ -146,7 +146,7 @@ per process, a different function layout per round) on two machines:
 
 Both runs are published unedited: no benchmark was re-measured and spliced in.
 The raw samples of the second machine are in
-[`benchmarks/results/linux-amd64-zen5`](benchmarks/results/linux-amd64-zen5).
+[`benchmarks/results/linux-amd64-zen5`](../benchmarks/results/linux-amd64-zen5).
 
 ### Environment
 
@@ -416,8 +416,8 @@ geomean                                          8.694
 
 The same run interleaved a third side: the library as of `main (a13ae5a)`,
 under the same benchmark sources (`make bench-self`). Its samples are in
-[`benchmarks/results/previous.txt`](benchmarks/results/previous.txt) and
-[`benchmarks/results/linux-amd64-zen5/previous.txt`](benchmarks/results/linux-amd64-zen5/previous.txt).
+[`benchmarks/results/previous.txt`](../benchmarks/results/previous.txt) and
+[`benchmarks/results/linux-amd64-zen5/previous.txt`](../benchmarks/results/linux-amd64-zen5/previous.txt).
 
 ```
 benchgate: 190 benchmarks compared: 101 faster, 89 statistically equal, geomean speed-up 1.06x
@@ -529,7 +529,7 @@ geomean                                            248.9n        102.3n        -
 
 ### Full results
 
-The raw samples are in [`benchmarks/results/upstream.txt`](benchmarks/results/upstream.txt) and
-[`benchmarks/results/new.txt`](benchmarks/results/new.txt); the complete `benchstat` comparison
+The raw samples are in [`benchmarks/results/upstream.txt`](../benchmarks/results/upstream.txt) and
+[`benchmarks/results/new.txt`](../benchmarks/results/new.txt); the complete `benchstat` comparison
 (time, bytes, allocations and the heap metrics of every benchmark) is in
-[`benchmarks/results/benchstat.txt`](benchmarks/results/benchstat.txt).
+[`benchmarks/results/benchstat.txt`](../benchmarks/results/benchstat.txt).

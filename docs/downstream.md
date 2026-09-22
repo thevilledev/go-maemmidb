@@ -3,7 +3,7 @@
 These benchmarks compare go-maemmidb with
 [hashicorp/go-memdb](https://github.com/hashicorp/go-memdb) in six projects that
 already use go-memdb. They measure each project's database operations and
-complement the library benchmarks in [BENCHMARKS.md](BENCHMARKS.md).
+complement the [library benchmarks](benchmarks.md).
 
 The comparisons use unchanged application source and existing tests and
 benchmarks. Dependency configuration selects the database implementation;
@@ -33,7 +33,7 @@ The replacement also passes its own test suite under the aliased module path.
 See [Reproducing](#reproducing) for setup.
 
 The runs follow the method in
-[`scripts/bench-compare.sh`](scripts/bench-compare.sh):
+[`scripts/bench-compare.sh`](../scripts/bench-compare.sh):
 
 1. Build a pair of test binaries per round with `-ldflags=-randlayout=N`,
    changing `N` each round to vary function layout.
@@ -49,7 +49,7 @@ Docker's four memdb benchmarks and SwarmKit's eight benchmarks are from those
 projects. Consul also provides `BenchmarkGetNodes` and
 `BenchmarkCheckServiceNodes`. All are run unmodified. The remaining benchmarks
 were added here; their source is in
-[`benchmarks/downstream/`](benchmarks/downstream). Fixture sizes are listed
+[`benchmarks/downstream/`](../benchmarks/downstream). Fixture sizes are listed
 with each project's results.
 
 ## Compatibility
@@ -229,7 +229,7 @@ and use their own fixtures.
 
 ## Interpreting the results
 
-The library benchmarks in [BENCHMARKS.md](BENCHMARKS.md) report a 2.74x
+The [library benchmarks](benchmarks.md) report a 2.74x
 geometric mean speedup on the M1 Max. The per-project averages here are
 smaller because each operation also includes work in the calling project.
 For example, `CatalogCheckServiceNodes` assembles service and health-check
@@ -238,13 +238,13 @@ results as well as querying memdb. Its total time falls from 93.76 µs to
 
 Writes show the largest reductions in these results. Changes to watch-channel
 allocation and writable-node tracking help explain the write improvements;
-[DESIGN.md](DESIGN.md) describes those changes. These are measurements of
+the [design notes](design.md) describe those changes. These are measurements of
 the listed database operations, not of whole applications or requests.
 
 ## Without `unsafe`
 
 `-tags memdb_safe` builds go-maemmidb without `package unsafe`; see
-[COMPATIBILITY.md](COMPATIBILITY.md#build-tags). The following runs alternate
+[compatibility notes](compatibility.md#build-tags). The following runs alternate
 between go-memdb, the default go-maemmidb build and the safe build, using the
 method above. The first column of results compares the safe build with
 go-memdb; the second shows its added time relative to the default build.
@@ -277,7 +277,7 @@ including `CatalogNodesByMeta` at -3.4%.
    for the go-memdb baseline and the go-maemmidb comparison.
 2. For Consul, Nomad, Vault and SpiceDB, copy the additional benchmark file
    into both checkouts. The destination packages are listed in
-   [`benchmarks/downstream/README.md`](benchmarks/downstream/README.md).
+   the [downstream benchmark guide](downstream-benchmarks.md).
 3. Make a separate copy of go-maemmidb. In that copy, set the `go.mod` module
    path to `github.com/hashicorp/go-memdb` and change its own `internal/...`
    imports to use that prefix. Run its tests under the new module path.
@@ -294,6 +294,6 @@ including `CatalogNodesByMeta` at -3.4%.
 5. Confirm dependency resolution with `go list -deps`, then build and run the
    project's tests and benchmarks using the [method above](#method).
 
-[`scripts/bench-compare.sh`](scripts/bench-compare.sh) implements this method
+[`scripts/bench-compare.sh`](../scripts/bench-compare.sh) implements this method
 for this repository's library benchmarks. Use its build and sampling procedure
 with the downstream package paths to reproduce these comparisons.

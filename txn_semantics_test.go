@@ -153,7 +153,7 @@ func TestWatchInWriteTxn(t *testing.T) {
 
 // TestFailedInsertLeavesTxnUnchanged: an Insert that fails on a secondary
 // index must not leave the row half-written. (Upstream leaves whatever indexes
-// it had already processed modified; see COMPATIBILITY.md.)
+// it had already processed modified; see docs/compatibility.md.)
 func TestFailedInsertLeavesTxnUnchanged(t *testing.T) {
 	db, err := NewMemDB(versionedSchema())
 	if err != nil {

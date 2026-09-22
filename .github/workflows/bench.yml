@@ -3,7 +3,7 @@
 
 # Full A/B benchmark run against hashicorp/go-memdb. Shared CI runners are far
 # too noisy to gate on, so this job only reports; the published numbers and
-# the "universally faster" gate come from dedicated hardware (BENCHMARKS.md).
+# the "universally faster" gate come from dedicated hardware (docs/benchmarks.md).
 name: Benchmarks
 
 on:

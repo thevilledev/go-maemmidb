@@ -57,7 +57,9 @@ First version: a drop-in reimplementation of
   database, like `BenchmarkSnapshot`: with 100,000 rows next to it, three
   quarters of an empty transaction's time was the collector marking them.
 
-### Fixed (relative to upstream; see COMPATIBILITY.md)
+### Fixed (relative to upstream)
+
+See the [compatibility notes](compatibility.md) for details.
 
 - `CompoundMultiIndex` with `AllowMissing` and three or more sub-indexers
   produced corrupted, duplicated keys through slice aliasing.

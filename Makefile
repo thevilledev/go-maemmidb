@@ -67,7 +67,7 @@ check: lint headers verify-upstream-tests test race test-safe diff
 #
 # All A/B runs go through scripts/bench-compare.sh: one process per benchmark
 # family, the two implementations interleaved per family, the order flipped
-# every round. See BENCHMARKS.md.
+# every round. See docs/benchmarks.md.
 
 BENCH_ENV = BENCH='$(BENCH)' BENCHTIME=$(BENCHTIME) ROUNDS=$(ROUNDS) COUNT=$(COUNT) WARMUP=$(WARMUP) CPU=$(CPU) RESULTS=results
 
@@ -93,7 +93,7 @@ bench-self-gate:
 bench-gate:
 	cd benchmarks && go run ./cmd/benchgate -old results/upstream.txt -new results/new.txt
 
-# The per-family summary table used in the README.
+# Print a per-family benchmark summary.
 bench-summary:
 	cd benchmarks && go run ./cmd/benchgate -old results/upstream.txt -new results/new.txt -summary
 

@@ -9,8 +9,8 @@ import (
 	memdb "github.com/thevilledev/go-maemmidb"
 )
 
-// The example from the README (which is the example from go-memdb's README),
-// compiled and checked on every test run.
+// The original go-memdb README example, linked from docs/getting-started.md
+// and checked on every test run.
 func Example() {
 	// Create a sample struct
 	type Person struct {

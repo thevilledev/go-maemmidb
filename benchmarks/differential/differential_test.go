@@ -44,7 +44,7 @@ const table = "objs"
 // Deliberately absent: a CompoundMultiIndex with AllowMissing and three or more
 // sub-indexers, whose upstream implementation corrupts keys through slice
 // aliasing in a way that depends on allocator size classes (see
-// COMPATIBILITY.md); we fix that rather than reproduce it.
+// docs/compatibility.md); we fix that rather than reproduce it.
 
 func oldSchema() *up.DBSchema {
 	return &up.DBSchema{Tables: map[string]*up.TableSchema{

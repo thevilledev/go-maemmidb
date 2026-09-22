@@ -1,11 +1,12 @@
 # Downstream benchmarks
 
 Additional benchmarks for Consul, Nomad, Vault and SpiceDB, used in
-[DOWNSTREAM.md](../../DOWNSTREAM.md). These cover operations beyond the
+[downstream results](downstream.md). These cover operations beyond the
 existing project benchmarks included in the comparison.
 
 Each file uses its target project's package and types. The files are stored
-under `testdata/` so Go excludes them from builds and tests in this module.
+under [`benchmarks/downstream/testdata/`](../benchmarks/downstream/testdata)
+so Go excludes them from builds and tests in the benchmark module.
 
 | File | Drop into | Fixture |
 |---|---|---|
@@ -15,9 +16,9 @@ under `testdata/` so Go excludes them from builds and tests in this module.
 | `spicedb_memdb_bench_test.go` | spicedb `internal/datastore/memdb/` | 2,000 documents, 6,000 relationships |
 
 To run a comparison, check out the project at the revision listed in
-[DOWNSTREAM.md](../../DOWNSTREAM.md) and copy its benchmark file into the
+[downstream results](downstream.md) and copy its benchmark file into the
 directory above. Use the same benchmark file for both database implementations.
-Follow the [reproduction steps](../../DOWNSTREAM.md#reproducing) to set up the
+Follow the [reproduction steps](downstream.md#reproducing) to set up the
 module-path alias, select the implementation and collect samples.
 
 Docker's and SwarmKit's existing benchmarks are in

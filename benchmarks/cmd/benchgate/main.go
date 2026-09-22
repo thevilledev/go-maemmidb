@@ -14,7 +14,7 @@
 //   - allocs/op is not higher;
 //   - B/op (and the heap footprint metrics) are not higher, except for
 //     benchmarks explicitly allowed to trade bytes, which must be justified in
-//     BENCHMARKS.md.
+//     docs/benchmarks.md.
 //
 // The same check guards against regressions relative to our own history: give
 // it the results of an older revision as -old (see `make bench-self`).
