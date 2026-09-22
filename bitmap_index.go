@@ -9,9 +9,9 @@ import (
 	"iter"
 	"strings"
 
+	"github.com/thevilledev/go-juuri"
 	"github.com/thevilledev/go-maemmidb/internal/bitmap"
 	"github.com/thevilledev/go-maemmidb/internal/pvec"
-	"github.com/thevilledev/go-maemmidb/internal/radix"
 )
 
 // This file is an extension: go-memdb has no counterpart. A database whose
@@ -146,7 +146,7 @@ type rootExt struct {
 
 // tableRows is one immutable version of a table's row bookkeeping.
 type tableRows struct {
-	ids  radix.Tree    // primary key -> row id
+	ids  juuri.Tree    // primary key -> row id
 	rows pvec.Vector   // row id -> row object
 	all  bitmap.Bitmap // the row ids in use
 	free bitmap.Bitmap // the row ids below next that are not in use
@@ -163,14 +163,14 @@ func newRootExt(tables nameIndex[*compiledTable]) *rootExt {
 		if ext == nil {
 			ext = &rootExt{tables: make([]*tableRows, len(tables.entries))}
 		}
-		ext.tables[ct.ord] = &tableRows{ids: radix.New()}
+		ext.tables[ct.ord] = &tableRows{ids: juuri.New()}
 	}
 	return ext
 }
 
 // rowsTxn is the uncommitted row bookkeeping of one table.
 type rowsTxn struct {
-	ids  radix.Txn
+	ids  juuri.Txn
 	rows pvec.Vector
 	all  bitmap.Bitmap
 	free bitmap.Bitmap
@@ -302,7 +302,7 @@ func (txn *Txn) applyBitmaps(tt *tableTxn, obj, existing interface{}, idVal []by
 			continue
 		}
 		ci := &ct.indexes[ct.classic+i]
-		var indexTxn *radix.Txn
+		var indexTxn *juuri.Txn
 		// Leave the values the row keeps alone: an update that does not move
 		// the row within the index costs the index nothing.
 		for k := kr.oldFrom; k < kr.oldTo; k++ {
@@ -472,23 +472,23 @@ func (txn *Txn) WhereWatch(table, index string, args ...interface{}) (<-chan str
 	return watch.Chan(), set, nil
 }
 
-func (txn *Txn) where(watched bool, table, index string, args []interface{}) (radix.Watch, RowSet, error) {
+func (txn *Txn) where(watched bool, table, index string, args []interface{}) (juuri.Watch, RowSet, error) {
 	if txn.root == nil {
 		panic("memdb: transaction is finished")
 	}
 	ct, ok := txn.db.tables.get(table)
 	if !ok {
-		return radix.Watch{}, RowSet{}, fmt.Errorf("invalid table '%s'", table)
+		return juuri.Watch{}, RowSet{}, fmt.Errorf("invalid table '%s'", table)
 	}
 	ref, ok := ct.bitmapIndex(index)
 	if !ok {
 		if _, classic := ct.byName.get(index); classic {
-			return radix.Watch{}, RowSet{}, fmt.Errorf("index '%s' is not a bitmap index", strings.TrimSuffix(index, prefixSuffix))
+			return juuri.Watch{}, RowSet{}, fmt.Errorf("index '%s' is not a bitmap index", strings.TrimSuffix(index, prefixSuffix))
 		}
-		return radix.Watch{}, RowSet{}, fmt.Errorf("invalid index '%s'", strings.TrimSuffix(index, prefixSuffix))
+		return juuri.Watch{}, RowSet{}, fmt.Errorf("invalid index '%s'", strings.TrimSuffix(index, prefixSuffix))
 	}
 	if len(args) == 0 {
-		return radix.Watch{}, RowSet{}, fmt.Errorf("a bitmap index is queried by value: no arguments given for index '%s'", ref.index.name)
+		return juuri.Watch{}, RowSet{}, fmt.Errorf("a bitmap index is queried by value: no arguments given for index '%s'", ref.index.name)
 	}
 
 	// The value, exactly as Get would build it.
@@ -501,12 +501,12 @@ func (txn *Txn) where(watched bool, table, index string, args []interface{}) (ra
 		case !ref.prefixScan:
 			val, err = ref.index.schema.Indexer.FromArgs(heapArgs...)
 		case ref.index.prefix == nil:
-			return radix.Watch{}, RowSet{}, fmt.Errorf("index '%s' does not support prefix scanning", ref.index.name)
+			return juuri.Watch{}, RowSet{}, fmt.Errorf("index '%s' does not support prefix scanning", ref.index.name)
 		default:
 			val, err = ref.index.prefix.PrefixFromArgs(heapArgs...)
 		}
 		if err != nil {
-			return radix.Watch{}, RowSet{}, fmt.Errorf("index error: %v", err)
+			return juuri.Watch{}, RowSet{}, fmt.Errorf("index error: %v", err)
 		}
 	}
 
@@ -519,7 +519,7 @@ func (txn *Txn) where(watched bool, table, index string, args []interface{}) (ra
 		}
 		return watch, set, nil
 	}
-	var it radix.Iterator
+	var it juuri.Iterator
 	watch := it.SeekPrefixWatch(tree, val)
 	for cur, ok := it.Next(); ok; cur, ok = it.Next() {
 		set.bits = bitmap.Or(set.bits, cur.(bitmap.Bitmap))

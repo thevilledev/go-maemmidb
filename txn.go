@@ -4,7 +4,7 @@
 // Modifications Copyright (c) 2026 Ville Vesilehto
 // Derived from github.com/hashicorp/go-memdb txn.go @ 7d3fdd5: the exported
 // API, its documentation, the error messages and the observable semantics are
-// upstream's; the implementation on top of internal/radix is new.
+// upstream's; the implementation on top of go-juuri is new.
 
 package memdb
 
@@ -15,9 +15,9 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/thevilledev/go-juuri"
 	"github.com/thevilledev/go-maemmidb/internal/bitmap"
 	"github.com/thevilledev/go-maemmidb/internal/pvec"
-	"github.com/thevilledev/go-maemmidb/internal/radix"
 )
 
 const (
@@ -77,7 +77,7 @@ type writeTxn struct {
 // of small write transactions allocates no bookkeeping at all.
 type writeState struct {
 	// nf collects what the transaction replaces, for notification at commit.
-	nf radix.Notifier
+	nf juuri.Notifier
 	// tables lists the tables written so far; nearly always one or two.
 	tables []tableTxn
 
@@ -110,7 +110,7 @@ type keyRange struct {
 // Entries are zero (not Started) until the index is first written.
 type tableTxn struct {
 	table *compiledTable
-	idx   []radix.Txn
+	idx   []juuri.Txn
 	// rows is the table's row bookkeeping, if it has bitmap indexes and has
 	// been written.
 	rows *rowsTxn
@@ -180,20 +180,20 @@ func (txn *Txn) tableTxn(ct *compiledTable) *tableTxn {
 	if cap(tt.idx) >= len(ct.indexes) {
 		tt.idx = tt.idx[:len(ct.indexes)]
 	} else {
-		tt.idx = make([]radix.Txn, len(ct.indexes))
+		tt.idx = make([]juuri.Txn, len(ct.indexes))
 	}
 	return tt
 }
 
 // writableIndex returns the tree transaction used for modifying the given
 // index, starting it if needed.
-func (txn *Txn) writableIndex(tt *tableTxn, ci *compiledIndex) *radix.Txn {
+func (txn *Txn) writableIndex(tt *tableTxn, ci *compiledIndex) *juuri.Txn {
 	it := &tt.idx[ci.ord]
 	if !it.Started() {
 		// If we are the primary DB, enable mutation tracking. Snapshots should
 		// not notify, otherwise we will trigger watches on the primary DB when
 		// the writes will not be visible.
-		var nf *radix.Notifier
+		var nf *juuri.Notifier
 		if txn.db.primary {
 			nf = &txn.w.nf
 		}
@@ -209,7 +209,7 @@ func (txn *Txn) writableIndex(tt *tableTxn, ci *compiledIndex) *radix.Txn {
 // an iterator or a watch channel. Uncommitted state is then frozen first, so
 // that later writes of this transaction copy instead of mutating what the
 // caller still observes.
-func (txn *Txn) readableIndex(ci *compiledIndex, escapes bool) radix.Tree {
+func (txn *Txn) readableIndex(ci *compiledIndex, escapes bool) juuri.Tree {
 	if x := txn.txnExtra; x != nil && x.w != nil {
 		for i := range x.w.tables {
 			if tt := &x.w.tables[i]; tt.table == ci.table {
@@ -638,12 +638,12 @@ func (txn *Txn) FirstWatch(table, index string, args ...interface{}) (<-chan str
 
 // first implements First and FirstWatch. Only the latter hands out a watch
 // channel, which requires freezing uncommitted state (see readableIndex).
-func (txn *Txn) first(watched bool, table, index string, args []interface{}) (radix.Watch, interface{}, error) {
+func (txn *Txn) first(watched bool, table, index string, args []interface{}) (juuri.Watch, interface{}, error) {
 	// Get the index value
 	var scratch [keyScratch]byte
 	ref, val, err := txn.getIndexValue(scratch[:0], table, index, args)
 	if err != nil {
-		return radix.Watch{}, nil, err
+		return juuri.Watch{}, nil, err
 	}
 
 	// Get the index itself
@@ -682,12 +682,12 @@ func (txn *Txn) LastWatch(table, index string, args ...interface{}) (<-chan stru
 	return watch.Chan(), obj, nil
 }
 
-func (txn *Txn) last(watched bool, table, index string, args []interface{}) (radix.Watch, interface{}, error) {
+func (txn *Txn) last(watched bool, table, index string, args []interface{}) (juuri.Watch, interface{}, error) {
 	// Get the index value
 	var scratch [keyScratch]byte
 	ref, val, err := txn.getIndexValue(scratch[:0], table, index, args)
 	if err != nil {
-		return radix.Watch{}, nil, err
+		return juuri.Watch{}, nil, err
 	}
 
 	// Get the index itself
@@ -1091,8 +1091,8 @@ func (txn *Txn) Defer(fn func()) {
 // radixIterator adapts a forward tree iterator to ResultIterator. The tree
 // iterator is embedded by value, so a query allocates exactly one object.
 type radixIterator struct {
-	iter  radix.Iterator
-	watch radix.Watch
+	iter  juuri.Iterator
+	watch juuri.Watch
 }
 
 func (r *radixIterator) WatchCh() <-chan struct{} {
@@ -1105,8 +1105,8 @@ func (r *radixIterator) Next() interface{} {
 }
 
 type radixReverseIterator struct {
-	iter  radix.ReverseIterator
-	watch radix.Watch
+	iter  juuri.ReverseIterator
+	watch juuri.Watch
 }
 
 func (r *radixReverseIterator) Next() interface{} {

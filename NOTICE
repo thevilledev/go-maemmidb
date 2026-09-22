@@ -32,7 +32,9 @@ suite of this project originate from go-memdb. Files fall into three groups:
     memdb.go index.go txn.go watch.go watch_few.go watch-gen/main.go
 
   New work (Copyright (c) 2026 Ville Vesilehto, MPL-2.0):
-    everything else, including internal/radix and benchmarks/.
+    everything else, including benchmarks/. The storage engine is the
+    separate module github.com/thevilledev/go-juuri (same author, same
+    licence).
 
 ===========================================================================
 Studied work: hashicorp/go-immutable-radix
@@ -43,12 +45,12 @@ Studied work: hashicorp/go-immutable-radix
     Licensed under the Mozilla Public License, version 2.0
 
 go-memdb stores its indexes in go-immutable-radix (v1.3.1). This project
-replaces it with a new radix tree (internal/radix) written from scratch. The
+replaces it with a new radix tree, go-juuri, written from scratch. The
 observable semantics of go-immutable-radix -- iteration order, prefix and
 lower-bound seeks, longest-prefix matching and the granularity at which watch
 channels fire -- were studied and are deliberately reproduced so that
 go-maemmidb stays behaviourally compatible with go-memdb. No source code of
-go-immutable-radix is included in the main module.
+go-immutable-radix is included in the main module or in go-juuri.
 
 ===========================================================================
 Benchmark- and test-only dependencies (benchmarks/ module only)

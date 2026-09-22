@@ -2,9 +2,10 @@
 
 # go-maemmidb
 
-A fast, dependency-free in-memory database for Go. A drop-in replacement for
+A fast in-memory database for Go. A drop-in replacement for
 [hashicorp/go-memdb](https://github.com/hashicorp/go-memdb), with the same
-package name and API.
+package name and API. Its one dependency is its storage engine,
+[go-juuri](https://github.com/thevilledev/go-juuri), which has none.
 
 - Atomic transactions and snapshot isolation.
 - Secondary indexes, range queries and watch channels.

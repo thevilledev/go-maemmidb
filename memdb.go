@@ -13,7 +13,7 @@ package memdb
 import (
 	"sync"
 
-	"github.com/thevilledev/go-maemmidb/internal/radix"
+	"github.com/thevilledev/go-juuri"
 )
 
 // MemDB is an in-memory database providing Atomicity, Consistency, and
@@ -55,11 +55,11 @@ const inlineTrees = 12
 // index, addressed by compiledIndex.slot. A commit publishes a new dbRoot with
 // a single atomic pointer store.
 type dbRoot struct {
-	trees []radix.Tree
+	trees []juuri.Tree
 	// ext is the row bookkeeping of the tables that have bitmap indexes; nil
 	// in a database that has none (see bitmap_index.go).
 	ext    *rootExt
-	inline [inlineTrees]radix.Tree
+	inline [inlineTrees]juuri.Tree
 }
 
 func newDBRoot(n int) *dbRoot {
@@ -67,7 +67,7 @@ func newDBRoot(n int) *dbRoot {
 	if n <= inlineTrees {
 		r.trees = r.inline[:n:n]
 	} else {
-		r.trees = make([]radix.Tree, n)
+		r.trees = make([]juuri.Tree, n)
 	}
 	return r
 }
@@ -89,7 +89,7 @@ func NewMemDB(schema *DBSchema) (*MemDB, error) {
 	// objects: watching "the whole index" watches its root node.
 	root := newDBRoot(slots)
 	for i := range root.trees {
-		root.trees[i] = radix.New()
+		root.trees[i] = juuri.New()
 	}
 	root.ext = newRootExt(tables)
 	return newMemDB(&compiled{schema: schema, tables: tables}, root, true), nil
