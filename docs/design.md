@@ -20,140 +20,35 @@ go-immutable-radix v1.3.1:
 | A query allocates ~8 objects before it returns the first row. | One (the iterator); `First`/`Last` allocate nothing. |
 | `WatchSet.Watch` starts a goroutine and a context per call, and always runs a 32-way select. | A select of the right size that includes the timeout itself. |
 
-## The storage engine (`internal/radix`)
+## The storage engine (go-juuri)
 
-A persistent, path-compressed radix tree. It must stay a radix tree: go-memdb's
-watch semantics are defined by it (a watch on a prefix *is* a watch on the node
-whose subtree holds that prefix), and a compressed radix tree's shape is
-canonical for a key set, which is what makes watch behaviour reproducible
-exactly.
+The tree is a module of its own,
+[go-juuri](https://github.com/thevilledev/go-juuri): a persistent,
+path-compressed radix tree with lazily created watch channels, ownership
+epochs instead of a modification cache, and rank-indexed children in one
+allocation per node. Its own design document explains the node layout, the
+epoch rule and the watch protocol. What matters here is the contract the
+database relies on:
 
-### Nodes
-
-```go
-type node struct {         // 96 bytes, then the child array
-    prefix string          // compressed path segment, incl. the label byte
-    val    interface{}     // value of the key ending here (valid iff leaf != nil)
-    bitmap [4]uint64       // one bit per present label
-                           // ---- end of the first cache line ----
-    leaf   *leaf           // identity of that value, for watchers
-    watch  slot            // lazily created watch channel
-    epoch  uint64          // ownership stamp
-    nkids, ckids uint16    // length and capacity of the child array
-}
-
-type leaf struct{ watch slot }
-```
-
-- **Rank-indexed children.** Child number `popcount(bitmap below label)` is the
-  child for a label -- the rank trick of Roaring bitmaps and HAMTs. Lookup is
-  branch-light and needs no search; ordered iteration is a walk over a dense
-  array; lower-bound seeks find the next label with bit operations.
-- **One allocation per node.** Nodes come in size classes (`node4` ... `node256`)
-  that embed the child array right behind the header. Copying a node on write
-  is a single allocation of the needed size (8 B per child; go-immutable-radix:
-  16 B per edge in a second allocation), and descending a level touches one
-  object.
-- **No slice for the children.** The array's address is the node's plus a
-  constant and its length is a 16-bit field, so the header needs no slice
-  header. That is 16 bytes less to allocate and copy for every node on every
-  written path, and it is what lets the three things a lookup or an iteration
-  step reads -- the segment, the bitmap that locates the next child, and the
-  value -- share the header's first cache line (the count is only read where
-  the line after it is needed anyway; `Last` and reverse iteration count the
-  bitmap instead). Reaching a child slot by address takes `unsafe`, confined to
-  five accessors in `node_unsafe.go`; the `memdb_safe` build declares the node
-  with an ordinary slice (`node_safe.go`), and every other line of the engine
-  is shared. `go test -race` runs the accessors under the runtime's pointer
-  checks.
-- **Small nodes are 128 bytes, not 112.** A 96-byte header would put the most
-  common nodes -- two children, or a short inline segment -- into the 112-byte
-  size class, whose objects do not start on cache line boundaries: the header's
-  first line would straddle two, and point lookups on small tables measured 3-6%
-  slower for it. So there is no class below 128 bytes, which is what those nodes
-  cost before the slice header was removed, with room for four children instead
-  of two.
-- **Immutable strings for path segments.** Substrings on split cost nothing,
-  one-byte segments come from a static table, and a one-byte segment is never
-  even read during lookup (the bitmap already matched its only byte).
-- **Childless nodes hold their segment inline.** One node per stored key has no
-  children, and its segment -- the tail of the key -- is the last thing a
-  lookup compares. Those nodes are allocated in classes with a trailing byte
-  array (32/48/64 bytes, each landing exactly on an allocator size class)
-  and their `prefix` string points into it. That removes an allocation per
-  inserted key and a cache miss per point lookup: measured in isolation, 10-13%
-  off `First` hits and 30% fewer heap objects, at no cost in heap bytes. Building
-  that string is the engine's other use of `unsafe` (the `memdb_safe` build uses
-  ordinary strings). The rule that keeps it from pinning dead nodes: an inline
-  segment is never shared with another node -- copying a childless node, or
-  giving part of its segment to a different node, copies the bytes.
-- **No keys in leaves, no size counter.** go-memdb consumes neither.
-- **The value lives in the node; its identity lives in a leaf.** A `leaf` is
-  eight bytes: the watch slot of one version of one key's value. It is a
-  separate object shared by every copy of the node that holds the key, so the
-  slot survives copying, splitting and merging -- watchers of an unchanged key
-  must not fire, and a reader that arrives late through an *older* copy of the
-  node must still be notified when the key finally changes (which is why the
-  leaf cannot be created lazily). The value itself sits in the node, next to
-  everything else a lookup or an iteration step touches, so reads never
-  dereference the leaf unless they ask for a watch. go-immutable-radix pays
-  that extra cache miss on every `Get` and every iterator step.
-
-### Ownership epochs instead of a modification cache
-
-Every node carries the epoch of the transaction that created it; epochs come
-from one process-wide atomic counter (trees of a database and of its snapshots
-share nodes and have independent writers, so an epoch must never be issued
-twice). A write transaction may mutate a node in place iff
-`node.epoch == txn.epoch`; any other node is copied first.
-
-`Freeze()` makes everything written so far immutable in O(1): the transaction
-forgets its epoch and draws a new one on its next write. go-memdb needs this
-whenever uncommitted state escapes: an iterator created inside a write
-transaction, `Txn.Snapshot()`, a watch channel. Plain reads (`First`, `Last`,
-`LongestPrefix`) escape nothing and freeze nothing -- so the very common
-"read, then write, in one transaction" loop never re-copies its path, whereas
-upstream clones on every such read.
-
-### Lazy watch channels, sealed on replacement
-
-A watch slot is an atomic pointer that only ever moves
-`nil -> channel -> sealed`.
-
-- A **reader** materialises a channel with `CompareAndSwap(nil, ch)`.
-- The **writer** records every object it replaces (only on the primary
-  database, mirroring upstream's `TrackMutate(db.primary)`). After the new
-  database root is published it **seals** each one: `old := slot.Swap(sealed)`
-  and closes `old` if it was a real channel. `sealed` holds a permanently
-  closed channel.
-
-Why nothing is lost: for a replaced object, either the reader's CAS precedes
-the writer's Swap, and the writer closes that very channel; or the Swap comes
-first, the CAS fails, and the reader receives the closed channel -- correct,
-because the object it looked at is stale. Because a transaction freezes before
-handing out any channel, *a materialised slot implies an immutable node*: the
-write path never reads or resets a slot, and ABA cannot occur.
-
-The remaining rules make behaviour identical to go-immutable-radix rather than
-merely safe: a miss returns the slot of the deepest node reached, *including a
-child whose prefix diverges from the key* (that is the node an insert of the
-key would replace); a failed delete copies and notifies nothing; a split seals
-the trimmed child, a merge seals the absorbed child, neither touches leaves;
-the root is never merged; `DeletePrefix` records only the subtree's root and
-walks it at commit (an abort never pays for it); every index starts with its
-own root object. A bit stolen from `epoch` marks a leaf as created in the
-node's own epoch, so rewriting one key a million times in one transaction
-records one object, not a million.
-
-Tested invariant: after a commit on the primary database, *exactly* the
-objects reachable from the old root and not from the new one are sealed.
+- A `juuri.Tree` is one word and never changes once committed; the database
+  root is a flat slice of them.
+- A `juuri.Txn` is a small value the database keeps in a preallocated array,
+  one per index of a written table. `Freeze()` makes uncommitted state
+  immutable in O(1), which the database calls whenever such state escapes: an
+  iterator, a snapshot, a watch channel.
+- Notification is the caller's: one `juuri.Notifier` per write transaction
+  collects the replaced objects of every index tree, and is told to `Notify()`
+  only after the new database root is published, and only on the primary
+  database (mirroring upstream's `TrackMutate(db.primary)`).
+- A watch on a prefix is a watch on the node whose subtree holds that prefix,
+  exactly as in go-immutable-radix, so `WatchSet` behaviour is reproduced.
 
 ## The database layer
 
 - **Compiled schema.** `NewMemDB` resolves every index to a slot, asserts
   indexers to their interfaces once, fixes a deterministic index order (`id`
   first) and precomputes name resolution for both `name` and `name_prefix`.
-  The database root is an immutable `[]radix.Tree` behind an atomic pointer.
+  The database root is an immutable `[]juuri.Tree` behind an atomic pointer.
 - **Names are resolved by length.** Every query starts by resolving a table
   name and an index name, and on a small table two map lookups cost as much as
   the tree descent. A schema has few names and they rarely share a length, so

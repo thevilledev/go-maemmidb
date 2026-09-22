@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- The storage engine is now the separate module
+  [go-juuri](https://github.com/thevilledev/go-juuri) v0.1.0, the same tree
+  that was `internal/radix`, with its own tests, fuzzers and differential test
+  against go-immutable-radix. The library's behaviour is unchanged; it now has
+  one dependency, which has none of its own. The `memdb_safe` and `purego`
+  build tags still select the engine variant that uses no package `unsafe`.
+
 ## v0.1.0 - 2026-09-20
 
 First version: a drop-in reimplementation of

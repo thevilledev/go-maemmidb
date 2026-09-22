@@ -88,15 +88,13 @@ jobs:
         uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9 # v4.0.0
         with:
           go-version: stable
-      - name: Differential tests against go-memdb and go-immutable-radix
+      - name: Differential test against go-memdb
         run: make diff
       - name: Fuzz smoke
         run: |
-          go test ./internal/radix -run '^$' -fuzz FuzzTreeOps -fuzztime 30s
           go test ./internal/bitmap -run '^$' -fuzz FuzzBitmap -fuzztime 30s
           cd benchmarks
           go test ./differential -run '^$' -fuzz FuzzOps -fuzztime 30s
-          go test ./radixdiff -run '^$' -fuzz FuzzDifferential -fuzztime 30s
       - name: Every benchmark runs against both implementations
         run: |
           cd benchmarks

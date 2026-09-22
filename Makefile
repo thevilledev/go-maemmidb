@@ -51,14 +51,15 @@ generate-check:
 	go generate ./...
 	git diff --exit-code -- watch_few.go
 
+# The storage engine has its own fuzzers and its own differential test against
+# go-immutable-radix; they live in go-juuri.
 fuzz:
-	go test ./internal/radix -run '^$$' -fuzz FuzzTreeOps -fuzztime 60s
 	go test ./internal/bitmap -run '^$$' -fuzz FuzzBitmap -fuzztime 60s
 	cd benchmarks && go test ./differential -run '^$$' -fuzz FuzzOps -fuzztime 60s
 
-# Differential tests against the original implementations.
+# Differential test against the original implementation.
 diff:
-	cd benchmarks && go test -count=1 ./differential ./radixdiff
+	cd benchmarks && go test -count=1 ./differential
 	cd benchmarks && go build ./... && go build -tags upstream ./...
 
 check: lint headers verify-upstream-tests test race test-safe diff
